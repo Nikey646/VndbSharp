@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VndbSharp.Converters;
 
@@ -14,27 +10,27 @@ namespace VndbSharp.Structs.Models
 		[JsonProperty("id")]
 		public Int32 Id;
 		[JsonProperty("title")]
-		public string Title;
+		public String Title;
 		[JsonProperty("original")]
-		public string Original;
+		public String Original;
 		[JsonProperty("released")]
 		public DateTime? Released;
 		[JsonProperty("languages")]
-		public string[] Languages;
+		public String[] Languages;
 		[JsonProperty("orig_lang")]
-		public string[] OriginalLanauges;
+		public String[] OriginalLanauges;
 		[JsonProperty("platforms")]
-		public string[] Platforms;
+		public String[] Platforms;
 		[JsonProperty("aliases"), JsonConverter(typeof(VnAliasesConverter))]
-		public string[] Aliases;
+		public String[] Aliases;
 		[JsonProperty("length")]
 		public Int32? Length; // TODO: Convert to Enum w/ DescriptionAttribute(s)
 		[JsonProperty("description")]
-		public string Description;
+		public String Description;
 		[JsonProperty("links")]
 		public VnLinks Links;
 		[JsonProperty("image")]
-		public string Image;
+		public String Image;
 		[JsonProperty("image_nsfw")]
 		public Boolean IsImageNsfw;
 		[JsonProperty("anime")]

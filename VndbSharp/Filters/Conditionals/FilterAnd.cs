@@ -6,7 +6,6 @@ namespace VndbSharp.Filters.Conditionals
 {
 	public class FilterAnd : IFilter
 	{
-
 		internal IFilter Filter1;
 		internal IFilter Filter2;
 

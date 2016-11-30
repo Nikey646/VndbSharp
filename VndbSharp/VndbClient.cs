@@ -23,9 +23,9 @@ namespace VndbSharp
 		private Int32 _receiveBufferSize = 1024 * 4;
 		private Int32 _sendBufferSize = 1024 * 4;
 
-		private const char EOTChar = (char)0x04;
+		private const Char EOTChar = (Char)0x04;
 
-		private const string ApiDomain = "api.vndb.org";
+		private const String ApiDomain = "api.vndb.org";
 
 		private const UInt16 ApiPort = 19534;
 		private const UInt16 ApiTlsPort = 19535;
@@ -80,19 +80,20 @@ namespace VndbSharp
 		{
 			await this.Login();
 
-			var data = $"get vn {string.Join(",", this.FlagsToString(flags))} ({filter})";
+			var data = $"get vn {String.Join(",", this.FlagsToString(flags))} ({filter})";
 			if (options != null)
 				data += $" {JsonConvert.SerializeObject(options, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore})}";
+
+			Debug.WriteLine(data);
 
 			await this.SendData(this.FormatRequest(data));
 			var response = await this.GetResponse();
 
 			var results = response.Split(new[] {' '}, 2);
+			Debug.WriteLine(results[1]);
 
 			if (results.Length != 2 || results[0] != "results")
 				return null; // TODO: Proper Error Handling
-
-			Debug.WriteLine(results[1]);
 
 			return JsonConvert.DeserializeObject<GetVnRoot>(results[1]);
 		}
@@ -148,7 +149,7 @@ namespace VndbSharp
 
 		#region .  Helper Methods  .
 
-		protected async Task<string> GetResponse()
+		protected async Task<String> GetResponse()
 		{
 			var memory = new MemoryStream();
 			var buffer = new Byte[this.ReceiveBufferSize];
@@ -166,32 +167,32 @@ namespace VndbSharp
 			return result;
 		}
 
-		protected async Task SendData(byte[] data)
+		protected async Task SendData(Byte[] data)
 		{
 			await this.Client.GetStream().WriteAsync(data, 0, data.Length);
 		}
 
-		protected Byte[] FormatRequest(string data)
+		protected Byte[] FormatRequest(String data)
 		{
 			return this.GetBytes($"{data}{VndbClient.EOTChar}");
 		}
 
-		protected Byte[] FormatRequest<T>(string method, T data)
+		protected Byte[] FormatRequest<T>(String method, T data)
 		{
 			return this.FormatRequest($"{method} {JsonConvert.SerializeObject(data)}");
 		}
 
-		protected Byte[] GetBytes(string data)
+		protected Byte[] GetBytes(String data)
 		{
 			return Encoding.UTF8.GetBytes(data);
 		}
 
-		protected String GetString(byte[] data)
+		protected String GetString(Byte[] data)
 		{
 			return Encoding.UTF8.GetString(data);
 		}
 
-		protected IEnumerable<string> FlagsToString(Enum inputFlags)
+		protected IEnumerable<String> FlagsToString(Enum inputFlags)
 		{
 			var type = inputFlags.GetType();
 			foreach (Enum value in Enum.GetValues(type))

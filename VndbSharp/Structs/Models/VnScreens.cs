@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace VndbSharp.Structs.Models
@@ -10,9 +6,9 @@ namespace VndbSharp.Structs.Models
 	public class VnScreens
 	{
 		[JsonProperty("image")]
-		public string Url;
+		public String Url;
 		[JsonProperty("rid")]
-		public string ReleaseId; // ??
+		public String ReleaseId; // ??
 		[JsonProperty("nsfw")]
 		public Boolean IsNsfw;
 		[JsonProperty("height")]

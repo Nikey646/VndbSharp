@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace VndbSharp.Interfaces
 {
@@ -11,7 +6,7 @@ namespace VndbSharp.Interfaces
 	{
 		Int32? Page { get; }
 		Int32? Results { get; }
-		string Sort { get; }
+		String Sort { get; }
 		Boolean? Reverse { get; }
 	}
 }

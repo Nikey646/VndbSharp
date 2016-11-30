@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace VndbSharp.Structs.Models
@@ -16,13 +12,13 @@ namespace VndbSharp.Structs.Models
 		[JsonProperty("nfo_id")]
 		public Int32 AnimeNfoId;
 		[JsonProperty("romaji_title")]
-		public string RomajiTitle;
+		public String RomajiTitle;
 		[JsonProperty("title_kanji")]
-		public string KanjiTitle;
+		public String KanjiTitle;
 		[JsonProperty("year")]
 		public DateTime? AirringYear;
 		[JsonProperty("type")]
-		public string Type; // ??
+		public String Type; // ??
 
 	}
 }
