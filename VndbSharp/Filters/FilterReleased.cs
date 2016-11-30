@@ -1,34 +1,25 @@
 ﻿using System;
-using VndbSharp.Interfaces;
 using VndbSharp.Structs;
 
 namespace VndbSharp.Filters
 {
-	/// <summary>
-	///		Note that matching on partial dates (released = "2009") doesn't do what you want, use ranges instead, e.g. (released > "2008" and released &lt;= "2009").
-	///		P.S: Currently only supports year.
-	/// </summary>
-	public class FilterReleased : IFilter
+	public class FilterReleased : AbstractFilter<Int32?>
 	{
-		internal DateTime? Date;
-		internal FilterOperator Operator;
-
-		public FilterReleased(DateTime? date, FilterOperator filterOperator)
+		public FilterReleased(DateTime? value, FilterOperator filterOperator) : base(value?.Year, filterOperator)
 		{
-			this.Date = date;
-			this.Operator = filterOperator;
+			this.CanBeNull = true;
 		}
 
-		public override String ToString()
-		{
-			if (!this.IsFilterValid())
-				throw new ArgumentOutOfRangeException("filterOperator", this.Operator, "filterOperator must be Equal, NotEqual when null, or not fuzzy when not-null for Date.");
-			return $"released {this.Operator} {this.Date?.Year.ToString() ?? "null"}";
-		}
+		protected override FilterOperator[] ValidOperators { get; } = {
+			FilterOperator.Equal, FilterOperator.NotEqual,
+			FilterOperator.Fuzzy
+		};
 
-		public Boolean IsFilterValid()
+		protected override String FilterName { get; } = "released";
+
+		public override Boolean IsFilterValid()
 		{
-			if (this.Date == null)
+			if (this.Value == null)
 				return this.Operator == FilterOperator.Equal || this.Operator == FilterOperator.NotEqual;
 			return this.Operator != FilterOperator.Fuzzy;
 		}

@@ -51,6 +51,7 @@
     <Compile Include="Enums\VnRelation.cs" />
     <Compile Include="Enums\VnSpoilerLevel.cs" />
     <Compile Include="Extensions\FilterExtensions.cs" />
+    <Compile Include="Filters\AbstractFilter.cs" />
     <Compile Include="Filters\Conditionals\FilterAnd.cs" />
     <Compile Include="Filters\Conditionals\FilterOr.cs" />
     <Compile Include="Filters\FilterFirstChar.cs" />

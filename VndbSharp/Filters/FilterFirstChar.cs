@@ -1,28 +1,20 @@
 ﻿using System;
-using VndbSharp.Interfaces;
 using VndbSharp.Structs;
 
 namespace VndbSharp.Filters
 {
-	public class FilterFirstChar : IFilter
+	public class FilterFirstChar : AbstractFilter<Char?>
 	{
-		internal char? Character;
-		internal FilterOperator Operator;
-
-		public FilterFirstChar(char? character, FilterOperator filterOperator)
+		public FilterFirstChar(Char? value, FilterOperator filterOperator) : base(value, filterOperator)
 		{
-			this.Character = character;
-			this.Operator = filterOperator;
+			this.CanBeNull = true;
 		}
 
-		public override String ToString()
-		{
-			if (!this.IsFilterValid())
-				throw new ArgumentOutOfRangeException("filterOperator", this.Operator, "filterOperator must be Equal, NotEqual for FirstChar.");
-			return $"firstchar {this.Operator} {this.Character?.ToString() ?? "null"}";
-		}
+		protected override FilterOperator[] ValidOperators { get; } = {FilterOperator.Equal, FilterOperator.NotEqual};
 
-		public Boolean IsFilterValid()
+		protected override String FilterName { get; } = "firstchar";
+
+		public override Boolean IsFilterValid()
 		{
 			return this.Operator == FilterOperator.Equal || this.Operator == FilterOperator.NotEqual;
 		}

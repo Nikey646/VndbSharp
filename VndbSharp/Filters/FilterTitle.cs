@@ -1,28 +1,21 @@
 ﻿using System;
-using VndbSharp.Interfaces;
 using VndbSharp.Structs;
 
 namespace VndbSharp.Filters
 {
-	public class FilterTitle : IFilter
+	public class FilterTitle : AbstractFilter<String>
 	{
-		internal string Title;
-		internal FilterOperator Operator;
+		public FilterTitle(String value, FilterOperator filterOperator) : base(value, filterOperator)
+		{ }
 
-		public FilterTitle(string title, FilterOperator filterOperator)
-		{
-			this.Title = title;
-			this.Operator = filterOperator;
-		}
+		protected override FilterOperator[] ValidOperators { get; } = {
+			FilterOperator.Equal, FilterOperator.NotEqual,
+			FilterOperator.Fuzzy
+		};
 
-		public override String ToString()
-		{
-			if (!this.IsFilterValid())
-				throw new ArgumentOutOfRangeException("filterOperator", this.Operator, "filterOperator must be Equal, NotEqual or Fuzzy for Title.");
-			return $"title {this.Operator} {this.Title}";
-		}
+		protected override String FilterName { get; } = "title";
 
-		public Boolean IsFilterValid()
+		public override Boolean IsFilterValid()
 		{
 			return this.Operator == FilterOperator.Equal || this.Operator == FilterOperator.NotEqual ||
 				   this.Operator == FilterOperator.Fuzzy;

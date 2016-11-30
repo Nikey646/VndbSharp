@@ -1,26 +1,18 @@
 ﻿using System;
-using VndbSharp.Interfaces;
 using VndbSharp.Structs;
 
 namespace VndbSharp.Filters
 {
-	public class FilterSearch : IFilter
+	public class FilterSearch : AbstractFilter<String>
 	{
-		internal string Search;
-		internal FilterOperator Operator;
+		public FilterSearch(String value, FilterOperator filterOperator) : base(value, filterOperator)
+		{ }
 
-		public FilterSearch(string query)
-		{
-			this.Search = query;
-			this.Operator = FilterOperator.Fuzzy;
-		}
+		protected override FilterOperator[] ValidOperators { get; } = {FilterOperator.Fuzzy};
 
-		public override String ToString()
-		{
-			return $"search ~ \"{this.Search}\"";
-		}
+		protected override String FilterName { get; } = "search";
 
-		public Boolean IsFilterValid()
+		public override Boolean IsFilterValid()
 		{
 			return this.Operator == FilterOperator.Fuzzy;
 		}

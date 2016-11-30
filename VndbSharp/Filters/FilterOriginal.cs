@@ -1,30 +1,25 @@
 ﻿using System;
-using VndbSharp.Interfaces;
 using VndbSharp.Structs;
 
 namespace VndbSharp.Filters
 {
-	public class FilterOriginal : IFilter
+	public class FilterOriginal : AbstractFilter<String>
 	{
-		internal string Original;
-		internal FilterOperator Operator;
-
-		public FilterOriginal(string original, FilterOperator filterOperator)
+		public FilterOriginal(String value, FilterOperator filterOperator) : base(value, filterOperator)
 		{
-			this.Original = original;
-			this.Operator = filterOperator;
+			this.CanBeNull = true;
 		}
 
-		public override String ToString()
-		{
-			if (!this.IsFilterValid())
-				throw new ArgumentOutOfRangeException("filterOperator", this.Operator, "filterOperator must be Equal, NotEqual when null, Equal, NotEqual or Fuzzy when not null for Original.");
-			return $"original {this.Operator} {this.Original ?? "null"}";
-		}
+		protected override FilterOperator[] ValidOperators { get; } = {
+			FilterOperator.Equal, FilterOperator.NotEqual,
+			FilterOperator.Fuzzy
+		};
 
-		public Boolean IsFilterValid()
+		protected override String FilterName { get; } = "original";
+
+		public override Boolean IsFilterValid()
 		{
-			if (this.Original == null)
+			if (this.Value == null)
 				return this.Operator == FilterOperator.Equal || this.Operator == FilterOperator.NotEqual;
 			return this.Operator == FilterOperator.Equal || this.Operator == FilterOperator.NotEqual ||
 				   this.Operator == FilterOperator.Fuzzy;
