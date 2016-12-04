@@ -62,8 +62,8 @@ namespace VndbSharp.Structs.Models.Character
 		/// <summary>
 		///		Weight in Kilograms
 		/// </summary>
-		[JsonProperty("width")]
-		public Int64? Width;
+		[JsonProperty("weight")]
+		public Int64? Weight;
 
 		[JsonProperty("traits")]
 		public Traits[] Traits;
