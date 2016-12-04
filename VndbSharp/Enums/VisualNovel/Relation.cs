@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace VndbSharp.Enums
+namespace VndbSharp.Enums.VisualNovel 
 {
-	public enum VnRelation
+	public enum Relation
 	{
 		Sequel,
 		Prequel,

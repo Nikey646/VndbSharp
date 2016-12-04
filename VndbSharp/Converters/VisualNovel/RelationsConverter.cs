@@ -1,10 +1,10 @@
 ﻿using System;
 using Newtonsoft.Json;
-using VndbSharp.Enums;
+using VndbSharp.Enums.VisualNovel;
 
-namespace VndbSharp.Converters
+namespace VndbSharp.Converters.VisualNovel
 {
-	internal class VnRelationsConverter : JsonConverter
+	internal class RelationsConverter : JsonConverter
 	{
 		public override void WriteJson(JsonWriter writer, Object value, JsonSerializer serializer)
 		{
@@ -16,25 +16,25 @@ namespace VndbSharp.Converters
 			switch (reader.Value.ToString())
 			{
 				case "seq":
-					return VnRelation.Sequel;
+					return Relation.Sequel;
 				case "preq":
-					return VnRelation.Prequel;
+					return Relation.Prequel;
 				case "set":
-					return VnRelation.SameSetting;
+					return Relation.SameSetting;
 				case "alt":
-					return VnRelation.AlternativeVersion;
+					return Relation.AlternativeVersion;
 				case "char":
-					return VnRelation.SharesCharacters;
+					return Relation.SharesCharacters;
 				case "side":
-					return VnRelation.SideStory;
+					return Relation.SideStory;
 				case "par":
-					return VnRelation.ParentStory;
+					return Relation.ParentStory;
 				case "ser":
-					return VnRelation.SameSeries;
+					return Relation.SameSeries;
 				case "fan":
-					return VnRelation.Fandisc;
+					return Relation.Fandisc;
 				default:
-					return VnRelation.OriginalGame;
+					return Relation.OriginalGame;
 			}
 		}
 

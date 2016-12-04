@@ -11,8 +11,9 @@ using Newtonsoft.Json;
 using VndbSharp.Enums;
 using VndbSharp.Filters.Conditionals;
 using VndbSharp.Interfaces;
-using VndbSharp.Structs;
 using VndbSharp.Structs.Models;
+using VndbSharp.Structs.Models.Character;
+using VisualNovel = VndbSharp.Structs.Models.VisualNovel.VisualNovel;
 
 namespace VndbSharp
 {
@@ -29,6 +30,9 @@ namespace VndbSharp
 
 		private const UInt16 ApiPort = 19534;
 		private const UInt16 ApiTlsPort = 19535;
+
+		protected String LastErrorJson;
+		protected OmniError LastError;
 
 		protected TcpClient Client;
 
@@ -76,7 +80,7 @@ namespace VndbSharp
 			this.UseTls = useTls;
 		}
 
-		public async Task<GetVnRoot> GetVn(VndbFlags flags, IFilter filter, RequestOptions options = null)
+		public async Task<RootObject<VisualNovel>> GetVisualNovel(VndbFlags flags, IFilter filter, IRequestOptions options = null)
 		{
 			await this.Login();
 
@@ -92,11 +96,39 @@ namespace VndbSharp
 			var results = response.Split(new[] {' '}, 2);
 			Debug.WriteLine(results[1]);
 
-			if (results.Length != 2 || results[0] != "results")
-				return null; // TODO: Proper Error Handling
+			if (results.Length == 2 && results[0] == "results")
+				return JsonConvert.DeserializeObject<RootObject<VisualNovel>>(results[1]);
 
-			return JsonConvert.DeserializeObject<GetVnRoot>(results[1]);
+			this.SetLastError(results[1]);
+			return null;
 		}
+
+		public async Task<RootObject<Character>> GetCharacter(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+		{
+			await this.Login();
+
+			var data = $"get character {String.Join(",", this.FlagsToString(flags))} ({filter})";
+			if (options != null)
+				data += $" {JsonConvert.SerializeObject(options, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })}";
+
+			Debug.WriteLine(data);
+
+			await this.SendData(this.FormatRequest(data));
+			var response = await this.GetResponse();
+
+			var results = response.Split(new[] {' '}, 2);
+			Debug.WriteLine(results[1]);
+
+			if (results.Length == 2 && results[0] == "results")
+				return JsonConvert.DeserializeObject<RootObject<Character>>(results[1]);
+			
+			this.SetLastError(results[1]);
+			return null;
+		}
+
+		public OmniError GetLastError() => this.LastError;
+
+		public String GetLastErrorJson() => this.LastErrorJson;
 
 		protected async Task Login()
 		{
@@ -151,6 +183,7 @@ namespace VndbSharp
 
 		protected async Task<String> GetResponse()
 		{
+			this.LastError = null;
 			var memory = new MemoryStream();
 			var buffer = new Byte[this.ReceiveBufferSize];
 			Int32 bytesRead;
@@ -170,6 +203,12 @@ namespace VndbSharp
 		protected async Task SendData(Byte[] data)
 		{
 			await this.Client.GetStream().WriteAsync(data, 0, data.Length);
+		}
+
+		protected void SetLastError(String json)
+		{
+			this.LastError = JsonConvert.DeserializeObject<OmniError>(json);
+			this.LastErrorJson = json;
 		}
 
 		protected Byte[] FormatRequest(String data)

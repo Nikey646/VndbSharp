@@ -1,9 +1,10 @@
 ﻿using System;
 using Newtonsoft.Json;
+using VndbSharp.Enums.Character;
 
-namespace VndbSharp.Converters
+namespace VndbSharp.Converters.Character
 {
-	internal class VnAliasesConverter : JsonConverter
+	public class GenderConverter : JsonConverter
 	{
 		public override void WriteJson(JsonWriter writer, Object value, JsonSerializer serializer)
 		{
@@ -12,15 +13,22 @@ namespace VndbSharp.Converters
 
 		public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
 		{
-			var values = reader.Value?.ToString().Split('\n');
-			return values;
+			switch (reader.Value.ToString())
+			{
+				case "m":
+					return Gender.Male;
+				case "f":
+					return Gender.Female;
+				default:
+					return Gender.Both;
+			}
 		}
-
-		public override Boolean CanWrite => false;
 
 		public override Boolean CanConvert(Type objectType)
 		{
 			return true;
 		}
+
+		public override Boolean CanWrite { get; } = false;
 	}
 }

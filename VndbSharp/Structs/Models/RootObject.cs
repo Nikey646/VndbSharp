@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace VndbSharp.Structs.Models
 {
 	[JsonObject]
-	public class GetVnRoot : IEnumerable
+	public class RootObject<T>
 	{
 		[JsonProperty("more")]
 		public Boolean HasMore;
@@ -14,8 +14,8 @@ namespace VndbSharp.Structs.Models
 		public Int32 Count;
 
 		[JsonProperty("items")]
-		public VisualNovel[] Items;
-		
+		public T[] Items;
+
 		public IEnumerator GetEnumerator() => this.Items.GetEnumerator();
 	}
 }

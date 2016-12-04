@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 using VndbSharp.Converters;
 
-namespace VndbSharp.Structs.Models
+namespace VndbSharp.Structs.Models.VisualNovel
 {
 	[JsonObject]
 	public class VisualNovel
@@ -21,24 +21,24 @@ namespace VndbSharp.Structs.Models
 		public String[] OriginalLanauges;
 		[JsonProperty("platforms")]
 		public String[] Platforms;
-		[JsonProperty("aliases"), JsonConverter(typeof(VnAliasesConverter))]
+		[JsonProperty("aliases"), JsonConverter(typeof(AliasesConverter))]
 		public String[] Aliases;
 		[JsonProperty("length")]
 		public Int32? Length; // TODO: Convert to Enum w/ DescriptionAttribute(s)
 		[JsonProperty("description")]
 		public String Description;
 		[JsonProperty("links")]
-		public VnLinks Links;
+		public Links Links;
 		[JsonProperty("image")]
 		public String Image;
 		[JsonProperty("image_nsfw")]
 		public Boolean IsImageNsfw;
 		[JsonProperty("anime")]
-		public VnAnime[] Anime;
+		public Anime[] Anime;
 		[JsonProperty("relations")]
-		public VnRelation[] Relations;
+		public Relation[] Relations;
 		[JsonProperty("tags")]
-		public VnTags[] Tags;
+		public Tags[] Tags;
 		[JsonProperty("popularity")]
 		public Single Popularity;
 		[JsonProperty("rating")]
@@ -46,6 +46,6 @@ namespace VndbSharp.Structs.Models
 		[JsonProperty("votecount")]
 		public Int32 VoteCount;
 		[JsonProperty("screens")]
-		public VnScreens[] Screens;
+		public Screenshots[] Screens;
 	}
 }

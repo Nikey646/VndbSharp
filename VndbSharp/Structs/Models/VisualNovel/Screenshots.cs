@@ -1,9 +1,9 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace VndbSharp.Structs.Models
+namespace VndbSharp.Structs.Models.VisualNovel
 {
-	public class VnScreens
+	public class Screenshots
 	{
 		[JsonProperty("image")]
 		public String Url;

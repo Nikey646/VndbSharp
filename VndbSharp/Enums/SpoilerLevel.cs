@@ -1,6 +1,6 @@
 ﻿namespace VndbSharp.Enums
 {
-	public enum VnSpoilerLevel
+	public enum SpoilerLevel
 	{
 		None = 0,
 		Minor = 1,

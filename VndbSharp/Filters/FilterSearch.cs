@@ -5,6 +5,9 @@ namespace VndbSharp.Filters
 {
 	public class FilterSearch : AbstractFilter<String>
 	{
+		public FilterSearch(String value) : this(value, FilterOperator.Fuzzy)
+		{ }
+
 		public FilterSearch(String value, FilterOperator filterOperator) : base(value, filterOperator)
 		{ }
 

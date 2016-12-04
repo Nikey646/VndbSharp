@@ -44,12 +44,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters\VnAliasesConverter.cs" />
-    <Compile Include="Converters\VnRelationsConverter.cs" />
-    <Compile Include="Converters\VnTagConverter.cs" />
+    <Compile Include="Converters\AliasesConverter.cs" />
+    <Compile Include="Converters\Character\BirthdayConverter.cs" />
+    <Compile Include="Converters\Character\GenderConverter.cs" />
+    <Compile Include="Converters\Character\TraitsConverter.cs" />
+    <Compile Include="Converters\Character\VisualNovelConverter.cs" />
+    <Compile Include="Enums\Character\BloodType.cs" />
+    <Compile Include="Enums\Character\Gender.cs" />
+    <Compile Include="Converters\VisualNovel\RelationsConverter.cs" />
+    <Compile Include="Converters\VisualNovel\TagConverter.cs" />
+    <Compile Include="Enums\Character\Role.cs" />
     <Compile Include="Enums\VndbFlags.cs" />
-    <Compile Include="Enums\VnRelation.cs" />
-    <Compile Include="Enums\VnSpoilerLevel.cs" />
+    <Compile Include="Enums\VisualNovel\Relation.cs" />
+    <Compile Include="Enums\SpoilerLevel.cs" />
     <Compile Include="Extensions\FilterExtensions.cs" />
     <Compile Include="Filters\AbstractFilter.cs" />
     <Compile Include="Filters\Conditionals\FilterAnd.cs" />
@@ -68,13 +75,17 @@
     <Compile Include="Interfaces\IRequestOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Structs\FilterOperator.cs" />
-    <Compile Include="Structs\Models\GetVnRoot.cs" />
-    <Compile Include="Structs\Models\VisualNovel.cs" />
-    <Compile Include="Structs\Models\VnAnime.cs" />
-    <Compile Include="Structs\Models\VnLinks.cs" />
-    <Compile Include="Structs\Models\VnRelation.cs" />
-    <Compile Include="Structs\Models\VnScreens.cs" />
-    <Compile Include="Structs\Models\VnTags.cs" />
+    <Compile Include="Structs\Models\Character\Character.cs" />
+    <Compile Include="Structs\Models\Character\Traits.cs" />
+    <Compile Include="Structs\Models\Character\VisualNovel.cs" />
+    <Compile Include="Structs\Models\RootObject.cs" />
+    <Compile Include="Structs\Models\OmniError.cs" />
+    <Compile Include="Structs\Models\VisualNovel\VisualNovel.cs" />
+    <Compile Include="Structs\Models\VisualNovel\Anime.cs" />
+    <Compile Include="Structs\Models\VisualNovel\Links.cs" />
+    <Compile Include="Structs\Models\VisualNovel\Relation.cs" />
+    <Compile Include="Structs\Models\VisualNovel\Screenshots.cs" />
+    <Compile Include="Structs\Models\VisualNovel\Tags.cs" />
     <Compile Include="Structs\RequestOptions.cs" />
     <Compile Include="VndbClient.cs" />
   </ItemGroup>

@@ -1,9 +1,9 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace VndbSharp.Structs.Models
+namespace VndbSharp.Structs.Models.VisualNovel
 {
-	public class VnLinks
+	public class Links
 	{
 		[JsonProperty("wikipedia")]
 		public String Wikipedia;

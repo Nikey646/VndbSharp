@@ -1,9 +1,9 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace VndbSharp.Structs.Models
+namespace VndbSharp.Structs.Models.VisualNovel
 {
-	public class VnAnime
+	public class Anime
 	{
 		[JsonProperty("id")]
 		public Int32 AniDbId;
