@@ -19,8 +19,10 @@ namespace VndbSharp.Converters.Character
 					return Gender.Male;
 				case "f":
 					return Gender.Female;
-				default:
+				case "b":
 					return Gender.Both;
+				default:
+					return null;
 			}
 		}
 

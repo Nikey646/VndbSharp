@@ -15,6 +15,9 @@ namespace VndbSharp.Converters.Character
 		{
 			var array = JArray.Load(reader);
 
+			if (array[0].Type == JTokenType.Null)
+				return null;
+
 			return new DateTime(DateTime.UtcNow.Year, array[1].Value<Int32>(), array[0].Value<Int32>());
 		}
 

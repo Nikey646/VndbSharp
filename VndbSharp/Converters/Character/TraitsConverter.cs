@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VndbSharp.Enums;
@@ -18,11 +17,11 @@ namespace VndbSharp.Converters.Character
 		{
 			var array = JArray.Load(reader);
 
-			return array.Select(vn => (JArray)vn).Select(vn => new Traits()
+			return new Traits()
 			{
-				Id = vn[0].Value<Int32>(),
-				SpoilerLevel = (SpoilerLevel) vn[1].Value<Int32>()
-			}).ToArray();
+				Id = array[0].Value<Int32>(),
+				SpoilerLevel = (SpoilerLevel) array[1].Value<Int32>()
+			};
 		}
 
 		public override Boolean CanConvert(Type objectType)

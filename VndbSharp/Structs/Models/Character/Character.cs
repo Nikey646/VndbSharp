@@ -18,13 +18,13 @@ namespace VndbSharp.Structs.Models.Character
 		public String Original;
 
 		[JsonProperty("gender")]
-		public Gender Gender;
+		public Gender? Gender;
 
 		[JsonProperty("bloodt")]
-		public BloodType BloodType;
+		public BloodType? BloodType;
 
 		[JsonProperty("birthday"), JsonConverter(typeof(BirthdayConverter))]
-		public DateTime Birthday;
+		public DateTime? Birthday;
 
 		[JsonProperty("aliases"), JsonConverter(typeof(AliasesConverter))]
 		public String[] Aliases;
