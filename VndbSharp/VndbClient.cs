@@ -13,6 +13,7 @@ using VndbSharp.Filters.Conditionals;
 using VndbSharp.Interfaces;
 using VndbSharp.Structs.Models;
 using VndbSharp.Structs.Models.Character;
+using VndbSharp.Structs.Models.DatabaseStats;
 using VisualNovel = VndbSharp.Structs.Models.VisualNovel.VisualNovel;
 
 namespace VndbSharp
@@ -79,6 +80,27 @@ namespace VndbSharp
 		{
 			this.UseTls = useTls;
 		}
+
+	    public async Task<DatabaseStats> GetDatabaseStats()
+	    {
+            //doesn't use root object because it doesn't contain items, more,.....
+            await this.Login();
+
+            var data = "dbstats";
+            //Debug.WriteLine(data);
+
+            await this.SendData(this.FormatRequest(data));
+            var response = await this.GetResponse();
+
+            var results = response.Split(new[] { ' ' }, 2);
+            //Debug.WriteLine(results[1]);
+
+            if (results.Length == 2 && results[0] == "dbstats")
+                return JsonConvert.DeserializeObject<DatabaseStats>(results[1]);
+
+            this.SetLastError(results[1]);
+            return null;
+        }
 
 		public async Task<RootObject<VisualNovel>> GetVisualNovel(VndbFlags flags, IFilter filter, IRequestOptions options = null)
 		{
