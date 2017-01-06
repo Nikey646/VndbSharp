@@ -79,6 +79,7 @@
     <Compile Include="Structs\Models\Character\Character.cs" />
     <Compile Include="Structs\Models\Character\Traits.cs" />
     <Compile Include="Structs\Models\Character\VisualNovel.cs" />
+    <Compile Include="Structs\Models\Login.cs" />
     <Compile Include="Structs\Models\RootObject.cs" />
     <Compile Include="Structs\Models\OmniError.cs" />
     <Compile Include="Structs\Models\VisualNovel\VisualNovel.cs" />
