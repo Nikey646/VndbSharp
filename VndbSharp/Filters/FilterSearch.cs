@@ -1,4 +1,5 @@
 ﻿using System;
+using VndbSharp.Interfaces;
 using VndbSharp.Structs;
 
 namespace VndbSharp.Filters
@@ -14,6 +15,8 @@ namespace VndbSharp.Filters
 		protected override FilterOperator[] ValidOperators { get; } = {FilterOperator.Fuzzy};
 
 		protected override String FilterName { get; } = "search";
+
+		public static IFilter FromFuzzy(String value) => new FilterSearch(value, FilterOperator.Fuzzy);
 
 		public override Boolean IsFilterValid()
 		{

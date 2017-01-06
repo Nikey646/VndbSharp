@@ -1,4 +1,5 @@
 ﻿using System;
+using VndbSharp.Interfaces;
 using VndbSharp.Structs;
 
 namespace VndbSharp.Filters
@@ -16,6 +17,10 @@ namespace VndbSharp.Filters
 		};
 
 		protected override String FilterName { get; } = "original";
+
+		public static IFilter FromEquals(String value) => new FilterOriginal(value, FilterOperator.Equal);
+		public static IFilter FromNotEquals(String value) => new FilterOriginal(value, FilterOperator.NotEqual);
+		public static IFilter FromFuzzy(String value) => new FilterOriginal(value, FilterOperator.Fuzzy);
 
 		public override Boolean IsFilterValid()
 		{

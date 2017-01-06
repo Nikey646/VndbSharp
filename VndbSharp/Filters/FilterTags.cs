@@ -1,4 +1,5 @@
 ﻿using System;
+using VndbSharp.Interfaces;
 using VndbSharp.Structs;
 
 namespace VndbSharp.Filters
@@ -11,6 +12,9 @@ namespace VndbSharp.Filters
 		protected override FilterOperator[] ValidOperators { get; } = { FilterOperator.Equal, FilterOperator.NotEqual };
 
 		protected override String FilterName { get; } = "tags";
+
+		public static IFilter FromEquals(Int32[] value) => new FilterTags(value, FilterOperator.Equal);
+		public static IFilter FromNotEquals(Int32[] value) => new FilterTags(value, FilterOperator.NotEqual);
 
 		public override Boolean IsFilterValid()
 		{

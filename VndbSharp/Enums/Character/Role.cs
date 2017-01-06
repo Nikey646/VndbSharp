@@ -2,9 +2,9 @@
 {
 	public enum Role
 	{
-		Main,
-		Primary,
-		Side,
-		Appears,
+		Main = 0,
+		Primary = 1,
+		Side = 2,
+		Appears = 3,
 	}
 }

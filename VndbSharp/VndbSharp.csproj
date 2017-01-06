@@ -71,6 +71,7 @@
     <Compile Include="Filters\FilterSearch.cs" />
     <Compile Include="Filters\FilterTags.cs" />
     <Compile Include="Filters\FilterTitle.cs" />
+    <Compile Include="Filters\FilterVisualNovel.cs" />
     <Compile Include="Interfaces\IFilter.cs" />
     <Compile Include="Interfaces\IRequestOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

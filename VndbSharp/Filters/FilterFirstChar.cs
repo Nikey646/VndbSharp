@@ -1,4 +1,5 @@
 ﻿using System;
+using VndbSharp.Interfaces;
 using VndbSharp.Structs;
 
 namespace VndbSharp.Filters
@@ -13,6 +14,9 @@ namespace VndbSharp.Filters
 		protected override FilterOperator[] ValidOperators { get; } = {FilterOperator.Equal, FilterOperator.NotEqual};
 
 		protected override String FilterName { get; } = "firstchar";
+
+		public static IFilter FromEquals(Char? value) => new FilterFirstChar(value, FilterOperator.Equal);
+		public static IFilter FromNotEquals(Char? value) => new FilterFirstChar(value, FilterOperator.NotEqual);
 
 		public override Boolean IsFilterValid()
 		{
