@@ -14,6 +14,7 @@ using VndbSharp.Interfaces;
 using VndbSharp.Structs.Models;
 using VndbSharp.Structs.Models.Character;
 using VndbSharp.Structs.Models.DatabaseStats;
+using VndbSharp.Structs.Models.Release;
 using VisualNovel = VndbSharp.Structs.Models.VisualNovel.VisualNovel;
 
 namespace VndbSharp
@@ -148,7 +149,36 @@ namespace VndbSharp
 			return null;
 		}
 
-		public OmniError GetLastError() => this.LastError;
+        public async Task<RootObject<Release>> GetRelease(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+        {
+            await this.Login();
+
+            var data = $"get release {String.Join(",", this.FlagsToString(flags))} ({filter})";
+            if (options != null)
+                data += $" {JsonConvert.SerializeObject(options, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })}";
+
+            Debug.WriteLine(data);
+
+            await this.SendData(this.FormatRequest(data));
+            var response = await this.GetResponse();
+
+            var results = response.Split(new[] { ' ' }, 2);
+            Debug.WriteLine(results[1]);
+
+
+            JsonConvert.DeserializeObject<RootObject<Release>>(results[1]);
+
+            if (results.Length == 2 && results[0] == "results")
+                return JsonConvert.DeserializeObject<RootObject<Release>>(results[1]);
+
+            this.SetLastError(results[1]);
+            return null;
+        }
+
+
+
+
+        public OmniError GetLastError() => this.LastError;
 
 		public String GetLastErrorJson() => this.LastErrorJson;
 
