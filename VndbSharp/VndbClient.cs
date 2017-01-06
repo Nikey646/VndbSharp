@@ -80,18 +80,18 @@ namespace VndbSharp
 			this.UseTls = useTls;
 		}
 
-		public async Task<RootObject<VisualNovel>> GetVisualNovel(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+		public async Task<RootObject<VisualNovel>> GetVisualNovelAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
 		{
-			await this.Login();
+			await this.LoginAsync().ConfigureAwait(false);
 
 			var data = $"get vn {String.Join(",", this.FlagsToString(flags))} ({filter})";
 			if (options != null)
-				data += $" {JsonConvert.SerializeObject(options, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore})}";
+				data = this.FormatOptions(data, options);
 
 			Debug.WriteLine(data);
 
-			await this.SendData(this.FormatRequest(data));
-			var response = await this.GetResponse();
+			await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+			var response = await this.GetResponseAsync().ConfigureAwait(false);
 
 			var results = response.Split(new[] {' '}, 2);
 			Debug.WriteLine(results[1]);
@@ -103,18 +103,18 @@ namespace VndbSharp
 			return null;
 		}
 
-		public async Task<RootObject<Character>> GetCharacter(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+		public async Task<RootObject<Character>> GetCharacterAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
 		{
-			await this.Login();
+			await this.LoginAsync().ConfigureAwait(false);
 
 			var data = $"get character {String.Join(",", this.FlagsToString(flags))} ({filter})";
 			if (options != null)
-				data += $" {JsonConvert.SerializeObject(options, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })}";
+				data = this.FormatOptions(data, options);
 
 			Debug.WriteLine(data);
 
-			await this.SendData(this.FormatRequest(data));
-			var response = await this.GetResponse();
+			await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+			var response = await this.GetResponseAsync().ConfigureAwait(false);
 
 			var results = response.Split(new[] {' '}, 2);
 			Debug.WriteLine(results[1]);
@@ -130,7 +130,7 @@ namespace VndbSharp
 
 		public String GetLastErrorJson() => this.LastErrorJson;
 
-		protected async Task Login()
+		protected async Task LoginAsync()
 		{
 			if (this.Client?.Connected == true && this.LoggedIn)
 				return;
@@ -145,12 +145,13 @@ namespace VndbSharp
 				client = "VndbSharp",
 			};
 
-			await this.Client.ConnectAsync(VndbClient.ApiDomain, this.UseTls ? VndbClient.ApiTlsPort : VndbClient.ApiPort);
+			await this.Client.ConnectAsync(VndbClient.ApiDomain, this.UseTls ? VndbClient.ApiTlsPort : VndbClient.ApiPort)
+				.ConfigureAwait(false);
 
 			if (this.UseTls)
 			{
 				var stream = new SslStream(this.Client.GetStream());
-				await stream.AuthenticateAsClientAsync(VndbClient.ApiDomain);
+				await stream.AuthenticateAsClientAsync(VndbClient.ApiDomain).ConfigureAwait(false);
 				this.Stream = stream;
 			}
 			else
@@ -158,8 +159,8 @@ namespace VndbSharp
 				this.Stream = this.Client.GetStream();
 			}
 
-			await this.SendData(this.FormatRequest("login", loginRequest));
-			var response = await this.GetResponse();
+			await this.SendDataAsync(this.FormatRequest("login", loginRequest)).ConfigureAwait(false);
+			var response = await this.GetResponseAsync().ConfigureAwait(false);
 
 			if (response != "ok")
 				throw new InvalidOperationException("Unable to login");
@@ -180,16 +181,16 @@ namespace VndbSharp
 
 		#region .  Helper Methods  .
 
-		protected async Task<String> GetResponse()
+		protected async Task<String> GetResponseAsync()
 		{
 			this.LastError = null;
 			var memory = new MemoryStream();
 			var buffer = new Byte[this.ReceiveBufferSize];
 			Int32 bytesRead;
 
-			while ((bytesRead = await this.Stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+			while ((bytesRead = await this.Stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
 			{
-				await memory.WriteAsync(buffer, 0, bytesRead);
+				await memory.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
 				if (buffer[bytesRead - 1] == VndbClient.EOTChar)
 					break;
 			}
@@ -199,9 +200,9 @@ namespace VndbSharp
 			return result;
 		}
 
-		protected async Task SendData(Byte[] data)
+		protected async Task SendDataAsync(Byte[] data)
 		{
-			await this.Stream.WriteAsync(data, 0, data.Length);
+			await this.Stream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
 		}
 
 		protected void SetLastError(String json)
@@ -209,6 +210,9 @@ namespace VndbSharp
 			this.LastError = JsonConvert.DeserializeObject<OmniError>(json);
 			this.LastErrorJson = json;
 		}
+
+		protected String FormatOptions(String request, IRequestOptions options)
+			=> request + $" {JsonConvert.SerializeObject(options, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })}";
 
 		protected Byte[] FormatRequest(String data)
 		{
