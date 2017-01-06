@@ -142,7 +142,7 @@ namespace VndbSharp
 			{
 				protocol = 1,
 				clientver = 0.1,
-				client = "VndbClient",
+				client = "VndbSharp",
 			};
 
 			await this.Client.ConnectAsync(VndbClient.ApiDomain, this.UseTls ? VndbClient.ApiTlsPort : VndbClient.ApiPort);
@@ -164,7 +164,6 @@ namespace VndbSharp
 			if (response != "ok")
 				throw new InvalidOperationException("Unable to login");
 			this.LoggedIn = true;
-
 		}
 
 		protected void InitializeClient()
@@ -188,7 +187,7 @@ namespace VndbSharp
 			var buffer = new Byte[this.ReceiveBufferSize];
 			Int32 bytesRead;
 
-			while ((bytesRead = await this.Client.GetStream().ReadAsync(buffer, 0, buffer.Length)) > 0)
+			while ((bytesRead = await this.Stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
 			{
 				await memory.WriteAsync(buffer, 0, bytesRead);
 				if (buffer[bytesRead - 1] == VndbClient.EOTChar)
@@ -202,7 +201,7 @@ namespace VndbSharp
 
 		protected async Task SendData(Byte[] data)
 		{
-			await this.Client.GetStream().WriteAsync(data, 0, data.Length);
+			await this.Stream.WriteAsync(data, 0, data.Length);
 		}
 
 		protected void SetLastError(String json)
@@ -280,14 +279,5 @@ namespace VndbSharp
 		}
 
 		#endregion
-
-#if DEBUG
-
-		public void Test()
-		{
-			var f1 = new FilterAnd(null, null);
-		}
-
-#endif
 	}
 }
