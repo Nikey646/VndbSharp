@@ -5,16 +5,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Security;
 using System.Net.Sockets;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VndbSharp.Enums;
-using VndbSharp.Filters.Conditionals;
 using VndbSharp.Interfaces;
 using VndbSharp.Structs.Models;
 using VndbSharp.Structs.Models.Character;
 using VndbSharp.Structs.Models.DatabaseStats;
-using VndbSharp.Structs.Models.Release;
 using VisualNovel = VndbSharp.Structs.Models.VisualNovel.VisualNovel;
 
 namespace VndbSharp
@@ -41,6 +40,9 @@ namespace VndbSharp
 		protected Stream Stream;
 
 		protected Boolean LoggedIn;
+
+		protected String Username;
+		protected SecureString Password;
 
 		public Int32 ReceiveBufferSize
 		{
@@ -69,6 +71,9 @@ namespace VndbSharp
 			get { return this._useTls; }
 			set
 			{
+				if (!String.IsNullOrWhiteSpace(this.Username) || this.Password != null)
+					throw new InvalidOperationException($"Cannot change {nameof(this.UseTls)} state while using a username / password.");
+
 				this._useTls = value;
 				this.LoggedIn = false;
 			}
@@ -82,39 +87,32 @@ namespace VndbSharp
 			this.UseTls = useTls;
 		}
 
-	    public async Task<DatabaseStats> GetDatabaseStats()
-	    {
-            //doesn't use root object because it doesn't contain items, more,.....
-            await this.Login();
-
-            var data = "dbstats";
-            //Debug.WriteLine(data);
-
-            await this.SendData(this.FormatRequest(data));
-            var response = await this.GetResponse();
-
-            var results = response.Split(new[] { ' ' }, 2);
-            //Debug.WriteLine(results[1]);
-
-            if (results.Length == 2 && results[0] == "dbstats")
-                return JsonConvert.DeserializeObject<DatabaseStats>(results[1]);
-
-            this.SetLastError(results[1]);
-            return null;
-        }
-
-		public async Task<RootObject<VisualNovel>> GetVisualNovel(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+		/// <summary>
+		///		This method is *not* secure on mono implementations. SecureString does *not* encrypt / decrypt as 01/2017
+		/// 	https://github.com/mono/mono/blob/master/mcs/class/corlib/System.Security/SecureString.cs#L249-L264
+		/// 
+		/// 	This will also *force* a secure connection.
+		/// </summary>
+		public VndbClient(String username, SecureString password)
 		{
-			await this.Login();
+			this.UseTls = true;
+			this.Username = username;
+			this.Password = password;
+		}
+
+		public async Task<RootObject<VisualNovel>> GetVisualNovelAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+		{
+			if (!await this.LoginAsync().ConfigureAwait(false))
+				return null;
 
 			var data = $"get vn {String.Join(",", this.FlagsToString(flags))} ({filter})";
 			if (options != null)
-				data += $" {JsonConvert.SerializeObject(options, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore})}";
+				data = this.FormatOptions(data, options);
 
 			Debug.WriteLine(data);
 
-			await this.SendData(this.FormatRequest(data));
-			var response = await this.GetResponse();
+			await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+			var response = await this.GetResponseAsync().ConfigureAwait(false);
 
 			var results = response.Split(new[] {' '}, 2);
 			Debug.WriteLine(results[1]);
@@ -126,18 +124,41 @@ namespace VndbSharp
 			return null;
 		}
 
-		public async Task<RootObject<Character>> GetCharacter(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+        public async Task<DatabaseStats> GetDatabaseStats()
+        {
+            if (!await this.LoginAsync().ConfigureAwait(false))
+                return null;
+
+            var data = "dbstats";
+
+            Debug.WriteLine(data);
+
+            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+            var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+            var results = response.Split(new[] { ' ' }, 2);
+            Debug.WriteLine(results[1]);
+
+            if (results.Length == 2 && results[0] == "dbstats")
+                return JsonConvert.DeserializeObject<DatabaseStats>(results[1]);
+
+            this.SetLastError(results[1]);
+            return null;
+        }
+
+        public async Task<RootObject<Character>> GetCharacterAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
 		{
-			await this.Login();
+			if (!await this.LoginAsync().ConfigureAwait(false))
+				return null;
 
 			var data = $"get character {String.Join(",", this.FlagsToString(flags))} ({filter})";
 			if (options != null)
-				data += $" {JsonConvert.SerializeObject(options, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })}";
+				data = this.FormatOptions(data, options);
 
 			Debug.WriteLine(data);
 
-			await this.SendData(this.FormatRequest(data));
-			var response = await this.GetResponse();
+			await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+			var response = await this.GetResponseAsync().ConfigureAwait(false);
 
 			var results = response.Split(new[] {' '}, 2);
 			Debug.WriteLine(results[1]);
@@ -149,60 +170,41 @@ namespace VndbSharp
 			return null;
 		}
 
-        public async Task<RootObject<Release>> GetRelease(VndbFlags flags, IFilter filter, IRequestOptions options = null)
-        {
-            await this.Login();
+		public async Task<String> DoRawAsync(String command)
+		{
+			try
+			{
+				if (!await this.LoginAsync().ConfigureAwait(false))
+					return this.GetLastErrorJson();
 
-            var data = $"get release {String.Join(",", this.FlagsToString(flags))} ({filter})";
-            if (options != null)
-                data += $" {JsonConvert.SerializeObject(options, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })}";
+				await this.SendDataAsync(this.FormatRequest(command)).ConfigureAwait(false);
+				var result = await this.GetResponseAsync().ConfigureAwait(true);
+				return result;
+			}
+			catch (Exception crap)
+			{
+				return crap.ToString();
+			}
+		}
 
-            Debug.WriteLine(data);
-
-            await this.SendData(this.FormatRequest(data));
-            var response = await this.GetResponse();
-
-            var results = response.Split(new[] { ' ' }, 2);
-            Debug.WriteLine(results[1]);
-
-
-            JsonConvert.DeserializeObject<RootObject<Release>>(results[1]);
-
-            if (results.Length == 2 && results[0] == "results")
-                return JsonConvert.DeserializeObject<RootObject<Release>>(results[1]);
-
-            this.SetLastError(results[1]);
-            return null;
-        }
-
-
-
-
-        public OmniError GetLastError() => this.LastError;
+		public OmniError GetLastError() => this.LastError;
 
 		public String GetLastErrorJson() => this.LastErrorJson;
 
-		protected async Task Login()
+		protected async Task<Boolean> LoginAsync()
 		{
 			if (this.Client?.Connected == true && this.LoggedIn)
-				return;
+				return true;
 
 			this.InitializeClient();
 
-			// Use a dynamic object to reduce model clutter
-			var loginRequest = new
-			{
-				protocol = 1,
-				clientver = 0.1,
-				client = "VndbClient",
-			};
-
-			await this.Client.ConnectAsync(VndbClient.ApiDomain, this.UseTls ? VndbClient.ApiTlsPort : VndbClient.ApiPort);
+			await this.Client.ConnectAsync(VndbClient.ApiDomain, this.UseTls ? VndbClient.ApiTlsPort : VndbClient.ApiPort)
+				.ConfigureAwait(false);
 
 			if (this.UseTls)
 			{
 				var stream = new SslStream(this.Client.GetStream());
-				await stream.AuthenticateAsClientAsync(VndbClient.ApiDomain);
+				await stream.AuthenticateAsClientAsync(VndbClient.ApiDomain).ConfigureAwait(false);
 				this.Stream = stream;
 			}
 			else
@@ -210,13 +212,30 @@ namespace VndbSharp
 				this.Stream = this.Client.GetStream();
 			}
 
-			await this.SendData(this.FormatRequest("login", loginRequest));
-			var response = await this.GetResponse();
+			// Create a login class that can have an optional Username / Password
+			var login = new Login(this.Username, this.Password);
+			await this.SendDataAsync(this.FormatRequest("login", login, false)).ConfigureAwait(false);
+			// Dispose of the login class *asap*, to ensure the password remains in unmanaged memory for as little as possible
+			login.Dispose();
 
-			if (response != "ok")
-				throw new InvalidOperationException("Unable to login");
-			this.LoggedIn = true;
+			var response = await this.GetResponseAsync().ConfigureAwait(false);
 
+			if (response == "ok")
+			{
+				this.LoggedIn = true;
+				return true;
+			}
+
+			if (String.IsNullOrWhiteSpace(response))
+				throw new InvalidOperationException("Response from Vndb was empty.");
+			
+			var results = response.Split(new[] { ' ' }, 2);
+
+			if (results.Length != 2 || results[0] != "error")
+				throw new InvalidOperationException($"Unexpected response. {response}");
+			
+			this.SetLastError(results[1]);
+			return false;
 		}
 
 		protected void InitializeClient()
@@ -233,16 +252,16 @@ namespace VndbSharp
 
 		#region .  Helper Methods  .
 
-		protected async Task<String> GetResponse()
+		protected async Task<String> GetResponseAsync()
 		{
 			this.LastError = null;
 			var memory = new MemoryStream();
 			var buffer = new Byte[this.ReceiveBufferSize];
 			Int32 bytesRead;
 
-			while ((bytesRead = await this.Client.GetStream().ReadAsync(buffer, 0, buffer.Length)) > 0)
+			while ((bytesRead = await this.Stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
 			{
-				await memory.WriteAsync(buffer, 0, bytesRead);
+				await memory.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
 				if (buffer[bytesRead - 1] == VndbClient.EOTChar)
 					break;
 			}
@@ -252,9 +271,9 @@ namespace VndbSharp
 			return result;
 		}
 
-		protected async Task SendData(Byte[] data)
+		protected async Task SendDataAsync(Byte[] data)
 		{
-			await this.Client.GetStream().WriteAsync(data, 0, data.Length);
+			await this.Stream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
 		}
 
 		protected void SetLastError(String json)
@@ -263,14 +282,24 @@ namespace VndbSharp
 			this.LastErrorJson = json;
 		}
 
+		protected String FormatOptions(String request, IRequestOptions options)
+			=> request + $" {JsonConvert.SerializeObject(options, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })}";
+
 		protected Byte[] FormatRequest(String data)
 		{
 			return this.GetBytes($"{data}{VndbClient.EOTChar}");
 		}
 
-		protected Byte[] FormatRequest<T>(String method, T data)
+		protected Byte[] FormatRequest<T>(String method, T data, Boolean includeNull = true)
 		{
-			return this.FormatRequest($"{method} {JsonConvert.SerializeObject(data)}");
+			var json = JsonConvert.SerializeObject(data,
+				new JsonSerializerSettings
+				{
+					NullValueHandling = includeNull 
+						? NullValueHandling.Include 
+						: NullValueHandling.Ignore
+				});
+			return this.FormatRequest($"{method} {json}");
 		}
 
 		protected Byte[] GetBytes(String data)
@@ -332,14 +361,5 @@ namespace VndbSharp
 		}
 
 		#endregion
-
-#if DEBUG
-
-		public void Test()
-		{
-			var f1 = new FilterAnd(null, null);
-		}
-
-#endif
 	}
 }

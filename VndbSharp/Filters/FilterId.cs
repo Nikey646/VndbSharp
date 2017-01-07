@@ -1,4 +1,5 @@
 ﻿using System;
+using VndbSharp.Interfaces;
 using VndbSharp.Structs;
 
 namespace VndbSharp.Filters
@@ -14,6 +15,13 @@ namespace VndbSharp.Filters
 		};
 
 		protected override String FilterName { get; } = "id";
+
+		public static IFilter FromEquals(Int32 value) => new FilterId(value, FilterOperator.Equal);
+		public static IFilter FromNotEquals(Int32 value) => new FilterId(value, FilterOperator.NotEqual);
+		public static IFilter FromGreaterThan(Int32 value) => new FilterId(value, FilterOperator.GreaterThan);
+		public static IFilter FromGreaterOrEqual(Int32 value) => new FilterId(value, FilterOperator.GreaterOrEqual);
+		public static IFilter FromLessThan(Int32 value) => new FilterId(value, FilterOperator.LessThan);
+		public static IFilter FromLessOrEqual(Int32 value) => new FilterId(value, FilterOperator.LessOrEqual);
 
 		public override Boolean IsFilterValid()
 		{

@@ -1,4 +1,5 @@
 ﻿using System;
+using VndbSharp.Interfaces;
 using VndbSharp.Structs;
 
 namespace VndbSharp.Filters
@@ -16,6 +17,10 @@ namespace VndbSharp.Filters
 		};
 
 		protected override String FilterName { get; } = "released";
+
+		public static IFilter FromEquals(DateTime? value) => new FilterReleased(value, FilterOperator.Equal);
+		public static IFilter FromNotEquals(DateTime? value) => new FilterReleased(value, FilterOperator.NotEqual);
+		public static IFilter FromFuzzy(DateTime? value) => new FilterReleased(value, FilterOperator.Fuzzy);
 
 		public override Boolean IsFilterValid()
 		{

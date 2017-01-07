@@ -29,8 +29,5 @@ namespace VndbSharp.Enums
 		Measurements = 1 << 9,
 		[Description("traits")]
 		Traits = 1 << 10,
-        [Description("vn")]
-        VisualNovel = 1 << 11,
-    }
+	}
 }
-
