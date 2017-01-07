@@ -79,6 +79,9 @@ namespace VndbSharp
 			}
 		}
 
+        // TODO: Use HasMono property on TLS to warn about lack of encryption support
+	    internal static Boolean HasMono { get; } = Type.GetType("Mono.Runtime") != null;
+
 		public VndbClient()
 		{ }
 
