@@ -156,7 +156,7 @@ namespace VndbSharp
             return null;
         }
 
-        public async Task<RootObject<Character>> GetCharacterAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+		public async Task<RootObject<Character>> GetCharacterAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
 		{
 			if (!await this.LoginAsync().ConfigureAwait(false))
 				return null;
@@ -324,7 +324,7 @@ namespace VndbSharp
             return null;
         }
 
-        public async Task<String> DoRawAsync(String command)
+		public async Task<String> DoRawAsync(String command)
 		{
 			try
 			{
