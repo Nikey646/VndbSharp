@@ -47,7 +47,7 @@ namespace VndbSharp.Structs.Models.Release
         [JsonProperty("vn")]
         public VisualNovel[] VisualNovels;
 
-        [JsonProperty("producer")]
+        [JsonProperty("producers")]
         public Producers[] Producers;
     }
 }
