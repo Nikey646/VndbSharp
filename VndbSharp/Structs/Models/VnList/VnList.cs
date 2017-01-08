@@ -16,7 +16,7 @@ namespace VndbSharp.Structs.Models.VnList
         [JsonProperty("status")]
         public Status Status;
         [JsonProperty("added"), JsonConverter(typeof(UnixTimestampConverter))]
-        public Int32 TimeAdded;
+        public DateTime TimeAdded;
         [JsonProperty("notes")]
         public Int32 Notes;
     }

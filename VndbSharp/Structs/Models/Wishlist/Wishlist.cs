@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VndbSharp.Converters;
+using VndbSharp.Enums.Wishlist;
 
 namespace VndbSharp.Structs.Models.Wishlist
 {
@@ -12,9 +13,9 @@ namespace VndbSharp.Structs.Models.Wishlist
     {
         [JsonProperty("vn")]
         public Int32 VisualNovelId;
-        [JsonProperty("priority")] //TODO: possibly also make this a Byte, sinc only 4 values are used?
-        public Int32 Priority;
+        [JsonProperty("priority")]
+        public Priority Priority;
         [JsonProperty("added"), JsonConverter(typeof(UnixTimestampConverter))]
-        public Int32 TimeAdded;
+        public DateTime TimeAdded;
     }
 }

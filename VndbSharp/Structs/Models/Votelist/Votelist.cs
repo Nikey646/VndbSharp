@@ -15,6 +15,6 @@ namespace VndbSharp.Structs.Models.Votelist
         [JsonProperty("vote")]
         public Int32 Vote;
         [JsonProperty("added"), JsonConverter(typeof(UnixTimestampConverter))]
-        public Int32 TimeAdded; //: TODO: Make a converter from the UNIX time into more manageable time format
+        public DateTime TimeAdded;
     }
 }
