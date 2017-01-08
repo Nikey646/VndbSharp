@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using VndbSharp.Converters;
 
 namespace VndbSharp.Structs.Models.VnList
 {
@@ -14,7 +15,7 @@ namespace VndbSharp.Structs.Models.VnList
         public Int32 VisualNovelId;
         [JsonProperty("status")]// : TODO: Possibly change this to a byte, since only 4 values will be returned?
         public Int32 Status;
-        [JsonProperty("added")]
+        [JsonProperty("added"), JsonConverter(typeof(UnixTimestampConverter))]
         public Int32 TimeAdded;
         [JsonProperty("notes")]
         public Int32 Notes;

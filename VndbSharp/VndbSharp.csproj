@@ -49,6 +49,7 @@
     <Compile Include="Converters\Character\GenderConverter.cs" />
     <Compile Include="Converters\Character\TraitsConverter.cs" />
     <Compile Include="Converters\Character\VisualNovelConverter.cs" />
+    <Compile Include="Converters\UnixTimestampConverter.cs" />
     <Compile Include="Enums\Character\BloodType.cs" />
     <Compile Include="Enums\Character\Gender.cs" />
     <Compile Include="Converters\VisualNovel\RelationsConverter.cs" />
@@ -107,6 +108,5 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
