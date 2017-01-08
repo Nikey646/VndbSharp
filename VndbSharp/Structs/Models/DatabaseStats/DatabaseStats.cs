@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 
 namespace VndbSharp.Structs.Models.DatabaseStats
 {
-    [JsonObject]
     public class DatabaseStats
     {
         [JsonProperty("users")]

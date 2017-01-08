@@ -8,7 +8,6 @@ using VndbSharp.Converters;
 
 namespace VndbSharp.Structs.Models.Votelist
 {
-    [JsonObject]
     public class Votelist
     {
         [JsonProperty("vn")]

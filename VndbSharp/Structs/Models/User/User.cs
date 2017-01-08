@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 
 namespace VndbSharp.Structs.Models.User
 {
-    [JsonObject]
     public class User
     {
         [JsonProperty("id")]

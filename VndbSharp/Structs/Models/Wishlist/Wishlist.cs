@@ -8,7 +8,6 @@ using VndbSharp.Converters;
 
 namespace VndbSharp.Structs.Models.Wishlist
 {
-    [JsonObject]
     public class Wishlist
     {
         [JsonProperty("vn")]
