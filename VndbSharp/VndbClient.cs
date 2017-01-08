@@ -7,6 +7,7 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Security;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VndbSharp.Enums;
@@ -14,6 +15,7 @@ using VndbSharp.Interfaces;
 using VndbSharp.Structs.Models;
 using VndbSharp.Structs.Models.Character;
 using VndbSharp.Structs.Models.DatabaseStats;
+using VndbSharp.Structs.Models.Release;
 using VisualNovel = VndbSharp.Structs.Models.VisualNovel.VisualNovel;
 
 namespace VndbSharp
@@ -172,6 +174,30 @@ namespace VndbSharp
 			this.SetLastError(results[1]);
 			return null;
 		}
+
+	    public async Task<RootObject<Release>> GetReleaseAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+	    {
+            if (!await this.LoginAsync().ConfigureAwait(false))
+                return null;
+
+            var data = $"get release {String.Join(",", this.FlagsToString(flags))} ({filter})";
+            if (options != null)
+                data = this.FormatOptions(data, options);
+
+            Debug.WriteLine(data);
+
+            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+            var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+            var results = response.Split(new[] { ' ' }, 2);
+            Debug.WriteLine(results[1]);
+
+            if (results.Length == 2 && results[0] == "results")
+                return JsonConvert.DeserializeObject<RootObject<Release>>(results[1]);
+
+            this.SetLastError(results[1]);
+            return null;
+        }
 
 		public async Task<String> DoRawAsync(String command)
 		{
