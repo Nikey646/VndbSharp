@@ -20,6 +20,7 @@ using VndbSharp.Structs.Models.Release;
 using VndbSharp.Structs.Models.User;
 using VndbSharp.Structs.Models.VnList;
 using VndbSharp.Structs.Models.Votelist;
+using VndbSharp.Structs.Models.Wishlist;
 using VisualNovel = VndbSharp.Structs.Models.VisualNovel.VisualNovel;
 
 namespace VndbSharp
@@ -294,6 +295,30 @@ namespace VndbSharp
 
             if (results.Length == 2 && results[0] == "results")
                 return JsonConvert.DeserializeObject<RootObject<VnList>>(results[1]);
+
+            this.SetLastError(results[1]);
+            return null;
+        }
+
+        public async Task<RootObject<Wishlist>> GetWishlistAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+        {
+            if (!await this.LoginAsync().ConfigureAwait(false))
+                return null;
+
+            var data = $"get wishlist {String.Join(",", this.FlagsToString(flags))} ({filter})";
+            if (options != null)
+                data = this.FormatOptions(data, options);
+
+            Debug.WriteLine(data);
+
+            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+            var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+            var results = response.Split(new[] { ' ' }, 2);
+            Debug.WriteLine(results[1]);
+
+            if (results.Length == 2 && results[0] == "results")
+                return JsonConvert.DeserializeObject<RootObject<Wishlist>>(results[1]);
 
             this.SetLastError(results[1]);
             return null;
