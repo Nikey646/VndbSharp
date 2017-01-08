@@ -58,6 +58,8 @@
     <Compile Include="Enums\VndbFlags.cs" />
     <Compile Include="Enums\VisualNovel\Relation.cs" />
     <Compile Include="Enums\SpoilerLevel.cs" />
+    <Compile Include="Enums\VnList\Status.cs" />
+    <Compile Include="Enums\Wishlist\Priority.cs" />
     <Compile Include="Extensions\FilterExtensions.cs" />
     <Compile Include="Filters\AbstractFilter.cs" />
     <Compile Include="Filters\Conditionals\FilterAnd.cs" />
