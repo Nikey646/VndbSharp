@@ -90,6 +90,7 @@
     <Compile Include="Structs\Models\Release\VisualNovel.cs" />
     <Compile Include="Structs\Models\RootObject.cs" />
     <Compile Include="Structs\Models\OmniError.cs" />
+    <Compile Include="Structs\Models\User\User.cs" />
     <Compile Include="Structs\Models\VisualNovel\VisualNovel.cs" />
     <Compile Include="Structs\Models\VisualNovel\Anime.cs" />
     <Compile Include="Structs\Models\VisualNovel\Links.cs" />
