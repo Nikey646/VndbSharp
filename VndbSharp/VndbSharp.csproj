@@ -81,7 +81,6 @@
     <Compile Include="Structs\Models\Character\Traits.cs" />
     <Compile Include="Structs\Models\Character\VisualNovel.cs" />
     <Compile Include="Structs\Models\DatabaseStats\DatabaseStats.cs" />
-    <Compile Include="Structs\Models\Login.cs" />
     <Compile Include="Structs\Models\Producer\Links.cs" />
     <Compile Include="Structs\Models\Producer\Producer.cs" />
     <Compile Include="Structs\Models\Producer\Relations.cs" />
