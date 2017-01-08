@@ -41,14 +41,13 @@ namespace VndbSharp.Structs.Models.Release
         public String Catalog;
         [JsonProperty("platforms")]
         public String[] Platforms;
+        [JsonProperty("media")]
+        public Media[] Media;
 
-        //[JsonProperty("media")]
-        //public Media Media;
+        [JsonProperty("vn")]
+        public VisualNovel[] VisualNovels;
 
-        //[JsonProperty("vn")]
-        //public VisualNovel VisualNovels;
-
-        //[JsonProperty("producer")]
-        //public Producers Producers;
+        [JsonProperty("producer")]
+        public Producers[] Producers;
     }
 }

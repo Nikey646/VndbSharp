@@ -21,13 +21,15 @@ namespace VndbSharp.Enums
 		Stats = 1 << 5,
 		[Description("screens")]
 		Screens = 1 << 6,
-		[Description("vns")]
-		VisualNovels = 1 << 7,
+		[Description("vn")]
+		VisualNovel = 1 << 7,
 		[Description("producers")]
 		Producers = 1 << 8,
 		[Description("meas")]
 		Measurements = 1 << 9,
 		[Description("traits")]
 		Traits = 1 << 10,
-	}
+        [Description("vns")]
+        VisualNovels = 1 << 11
+    }
 }
