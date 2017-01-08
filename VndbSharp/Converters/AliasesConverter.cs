@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace VndbSharp.Converters
 {
@@ -10,13 +11,23 @@ namespace VndbSharp.Converters
 			throw new NotImplementedException();
 		}
 
-		public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
-		{
-			var values = reader.Value?.ToString().Split('\n');
-			return values;
-		}
+        //have to check for both sperating values
+        public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
+        {
+            var data = reader.Value?.ToString();
+            if (data != null && data.Contains('\n'))
+            {
+                var values = data.Split('\n');
+                return values;
+            }
+            if (data == null || !data.Contains(',')) return data;
+            {
+                var values = data.Split(',');
+                return values;
+            }
+        }
 
-		public override Boolean CanWrite => false;
+        public override Boolean CanWrite => false;
 
 		public override Boolean CanConvert(Type objectType)
 		{
