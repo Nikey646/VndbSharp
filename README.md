@@ -24,6 +24,10 @@ Features that still need to be implemented:
 
 
 
+
+
 ##### Mono Security Issue
 Mono currently has no support for ProtectedMemory, and thus, TLS and use of SecureString should not be trusted.
 https://github.com/mono/mono/blob/master/mcs/class/corlib/System.Security/SecureString.cs#L249-L264
+
+Looking into possible workarounds for this issue. A possible fix may be to import a crypto library and use that for secure implementations.
