@@ -49,6 +49,7 @@
     <Compile Include="Converters\Character\GenderConverter.cs" />
     <Compile Include="Converters\Character\TraitsConverter.cs" />
     <Compile Include="Converters\Character\VisualNovelConverter.cs" />
+    <Compile Include="Converters\UnixTimestampConverter.cs" />
     <Compile Include="Enums\Character\BloodType.cs" />
     <Compile Include="Enums\Character\Gender.cs" />
     <Compile Include="Converters\VisualNovel\RelationsConverter.cs" />
@@ -57,6 +58,8 @@
     <Compile Include="Enums\VndbFlags.cs" />
     <Compile Include="Enums\VisualNovel\Relation.cs" />
     <Compile Include="Enums\SpoilerLevel.cs" />
+    <Compile Include="Enums\VnList\Status.cs" />
+    <Compile Include="Enums\Wishlist\Priority.cs" />
     <Compile Include="Extensions\FilterExtensions.cs" />
     <Compile Include="Filters\AbstractFilter.cs" />
     <Compile Include="Filters\Conditionals\FilterAnd.cs" />
@@ -79,21 +82,32 @@
     <Compile Include="Structs\Models\Character\Character.cs" />
     <Compile Include="Structs\Models\Character\Traits.cs" />
     <Compile Include="Structs\Models\Character\VisualNovel.cs" />
+    <Compile Include="Structs\Models\DatabaseStats\DatabaseStats.cs" />
+    <Compile Include="Structs\Models\Producer\Links.cs" />
+    <Compile Include="Structs\Models\Producer\Producer.cs" />
+    <Compile Include="Structs\Models\Producer\Relations.cs" />
+    <Compile Include="Structs\Models\Release\Media.cs" />
+    <Compile Include="Structs\Models\Release\Producers.cs" />
+    <Compile Include="Structs\Models\Release\Release.cs" />
+    <Compile Include="Structs\Models\Release\VisualNovel.cs" />
     <Compile Include="Structs\Models\Login.cs" />
     <Compile Include="Structs\Models\RootObject.cs" />
     <Compile Include="Structs\Models\OmniError.cs" />
+    <Compile Include="Structs\Models\User\User.cs" />
     <Compile Include="Structs\Models\VisualNovel\VisualNovel.cs" />
     <Compile Include="Structs\Models\VisualNovel\Anime.cs" />
     <Compile Include="Structs\Models\VisualNovel\Links.cs" />
     <Compile Include="Structs\Models\VisualNovel\Relation.cs" />
     <Compile Include="Structs\Models\VisualNovel\Screenshots.cs" />
     <Compile Include="Structs\Models\VisualNovel\Tags.cs" />
+    <Compile Include="Structs\Models\VnList\VnList.cs" />
+    <Compile Include="Structs\Models\Votelist\Votelist.cs" />
+    <Compile Include="Structs\Models\Wishlist\Wishlist.cs" />
     <Compile Include="Structs\RequestOptions.cs" />
     <Compile Include="VndbClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -16,7 +16,7 @@ namespace VndbSharp.Enums.VisualNovel
 		SideStory,
 		[Description("Parent Story")]
 		ParentStory,
-		[Description("SAme Series")]
+		[Description("Same Series")]
 		SameSeries,
 		Fandisc,
 		[Description("Original Game")]

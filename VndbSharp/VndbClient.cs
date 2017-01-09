@@ -7,12 +7,20 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Security;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VndbSharp.Enums;
 using VndbSharp.Interfaces;
 using VndbSharp.Structs.Models;
 using VndbSharp.Structs.Models.Character;
+using VndbSharp.Structs.Models.DatabaseStats;
+using VndbSharp.Structs.Models.Producer;
+using VndbSharp.Structs.Models.Release;
+using VndbSharp.Structs.Models.User;
+using VndbSharp.Structs.Models.VnList;
+using VndbSharp.Structs.Models.Votelist;
+using VndbSharp.Structs.Models.Wishlist;
 using VisualNovel = VndbSharp.Structs.Models.VisualNovel.VisualNovel;
 
 namespace VndbSharp
@@ -78,6 +86,9 @@ namespace VndbSharp
 			}
 		}
 
+        // TODO: Use HasMono property on TLS to warn about lack of encryption support
+	    internal static Boolean HasMono { get; } = Type.GetType("Mono.Runtime") != null;
+
 		public VndbClient()
 		{ }
 
@@ -123,6 +134,28 @@ namespace VndbSharp
 			return null;
 		}
 
+        public async Task<DatabaseStats> GetDatabaseStats()
+        {
+            if (!await this.LoginAsync().ConfigureAwait(false))
+                return null;
+
+            var data = "dbstats";
+
+            Debug.WriteLine(data);
+
+            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+            var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+            var results = response.Split(new[] { ' ' }, 2);
+            Debug.WriteLine(results[1]);
+
+            if (results.Length == 2 && results[0] == "dbstats")
+                return JsonConvert.DeserializeObject<DatabaseStats>(results[1]);
+
+            this.SetLastError(results[1]);
+            return null;
+        }
+
 		public async Task<RootObject<Character>> GetCharacterAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
 		{
 			if (!await this.LoginAsync().ConfigureAwait(false))
@@ -146,6 +179,150 @@ namespace VndbSharp
 			this.SetLastError(results[1]);
 			return null;
 		}
+
+	    public async Task<RootObject<Release>> GetReleaseAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+	    {
+            if (!await this.LoginAsync().ConfigureAwait(false))
+                return null;
+
+            var data = $"get release {String.Join(",", this.FlagsToString(flags))} ({filter})";
+            if (options != null)
+                data = this.FormatOptions(data, options);
+
+            Debug.WriteLine(data);
+
+            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+            var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+            var results = response.Split(new[] { ' ' }, 2);
+            Debug.WriteLine(results[1]);
+
+            if (results.Length == 2 && results[0] == "results")
+                return JsonConvert.DeserializeObject<RootObject<Release>>(results[1]);
+
+            this.SetLastError(results[1]);
+            return null;
+        }
+
+	    public async Task<RootObject<Producer>> GetProducerAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+	    {
+            if (!await this.LoginAsync().ConfigureAwait(false))
+                return null;
+
+            var data = $"get producer {String.Join(",", this.FlagsToString(flags))} ({filter})";
+            if (options != null)
+                data = this.FormatOptions(data, options);
+
+            Debug.WriteLine(data);
+
+            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+            var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+            var results = response.Split(new[] { ' ' }, 2);
+            Debug.WriteLine(results[1]);
+
+            if (results.Length == 2 && results[0] == "results")
+                return JsonConvert.DeserializeObject<RootObject<Producer>>(results[1]);
+
+            this.SetLastError(results[1]);
+            return null;
+        }
+
+	    public async Task<RootObject<User>> GetUserAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+	    {
+            if (!await this.LoginAsync().ConfigureAwait(false))
+                return null;
+
+            var data = $"get user {String.Join(",", this.FlagsToString(flags))} ({filter})";
+            if (options != null)
+                data = this.FormatOptions(data, options);
+
+            Debug.WriteLine(data);
+
+            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+            var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+            var results = response.Split(new[] { ' ' }, 2);
+            Debug.WriteLine(results[1]);
+
+            if (results.Length == 2 && results[0] == "results")
+                return JsonConvert.DeserializeObject<RootObject<User>>(results[1]);
+
+            this.SetLastError(results[1]);
+            return null;
+        }
+
+        public async Task<RootObject<Votelist>> GetVotelistAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+        {
+            if (!await this.LoginAsync().ConfigureAwait(false))
+                return null;
+
+            var data = $"get votelist {String.Join(",", this.FlagsToString(flags))} ({filter})";
+            if (options != null)
+                data = this.FormatOptions(data, options);
+
+            Debug.WriteLine(data);
+
+            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+            var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+            var results = response.Split(new[] { ' ' }, 2);
+            Debug.WriteLine(results[1]);
+
+            if (results.Length == 2 && results[0] == "results")
+                return JsonConvert.DeserializeObject<RootObject<Votelist>>(results[1]);
+
+            this.SetLastError(results[1]);
+            return null;
+        }
+
+        public async Task<RootObject<VnList>> GetVnListAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+        {
+            if (!await this.LoginAsync().ConfigureAwait(false))
+                return null;
+
+            var data = $"get vnlist {String.Join(",", this.FlagsToString(flags))} ({filter})";
+            if (options != null)
+                data = this.FormatOptions(data, options);
+
+            Debug.WriteLine(data);
+
+            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+            var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+            var results = response.Split(new[] { ' ' }, 2);
+            Debug.WriteLine(results[1]);
+
+            if (results.Length == 2 && results[0] == "results")
+                return JsonConvert.DeserializeObject<RootObject<VnList>>(results[1]);
+
+            this.SetLastError(results[1]);
+            return null;
+        }
+
+        public async Task<RootObject<Wishlist>> GetWishlistAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
+        {
+            if (!await this.LoginAsync().ConfigureAwait(false))
+                return null;
+
+            var data = $"get wishlist {String.Join(",", this.FlagsToString(flags))} ({filter})";
+            if (options != null)
+                data = this.FormatOptions(data, options);
+
+            Debug.WriteLine(data);
+
+            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+            var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+            var results = response.Split(new[] { ' ' }, 2);
+            Debug.WriteLine(results[1]);
+
+            if (results.Length == 2 && results[0] == "results")
+                return JsonConvert.DeserializeObject<RootObject<Wishlist>>(results[1]);
+
+            this.SetLastError(results[1]);
+            return null;
+        }
 
 		public async Task<String> DoRawAsync(String command)
 		{
