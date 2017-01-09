@@ -22,6 +22,6 @@ Features that still need to be implemented:
   [ ] Error support. Currently, it has no support for error messages at all
   [ ] Finding a way to deal with Mono's security issue(explained below)
 
-##### Examples
+##### Mono Security Issue
 Mono currently has no support for ProtectedMemory, and thus, TLS and use of SecureString should not be trusted.
 https://github.com/mono/mono/blob/master/mcs/class/corlib/System.Security/SecureString.cs#L249-L264
