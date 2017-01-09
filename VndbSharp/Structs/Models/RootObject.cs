@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 
 namespace VndbSharp.Structs.Models
 {
-	[JsonObject]
 	public class RootObject<T>
 	{
 		[JsonProperty("more")]

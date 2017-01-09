@@ -1,10 +1,10 @@
 using System;
 using Newtonsoft.Json;
 using VndbSharp.Converters;
+using VndbSharp.Enums.VisualNovel;
 
 namespace VndbSharp.Structs.Models.VisualNovel
 {
-	[JsonObject]
 	public class VisualNovel
 	{
 		[JsonProperty("id")]
@@ -23,8 +23,8 @@ namespace VndbSharp.Structs.Models.VisualNovel
 		public String[] Platforms;
 		[JsonProperty("aliases"), JsonConverter(typeof(AliasesConverter))]
 		public String[] Aliases;
-		[JsonProperty("length")]
-		public Int32? Length; // TODO: Convert to Enum w/ DescriptionAttribute(s)
+		[JsonProperty("length"), JsonConverter(typeof(NullToEnumConverter<Length>))]
+		public Length Length;
 		[JsonProperty("description")]
 		public String Description;
 		[JsonProperty("links")]

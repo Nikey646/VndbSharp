@@ -8,7 +8,6 @@ using VndbSharp.Converters;
 
 namespace VndbSharp.Structs.Models.Producer
 {
-    [JsonObject]
     public class Producer
     {
         [JsonProperty("id")]

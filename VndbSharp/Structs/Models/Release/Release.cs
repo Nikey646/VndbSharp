@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 
 namespace VndbSharp.Structs.Models.Release
 {
-    [JsonObject]
     public class Release
     {
         [JsonProperty("id")]
