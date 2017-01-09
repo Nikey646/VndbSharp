@@ -64,6 +64,8 @@
     <Compile Include="Filters\AbstractFilter.cs" />
     <Compile Include="Filters\Conditionals\FilterAnd.cs" />
     <Compile Include="Filters\Conditionals\FilterOr.cs" />
+    <Compile Include="Filters\FilterUserId.cs" />
+    <Compile Include="Filters\FilterUsername.cs" />
     <Compile Include="Filters\FilterFirstChar.cs" />
     <Compile Include="Filters\FilterId.cs" />
     <Compile Include="Filters\FilterLanguages.cs" />
