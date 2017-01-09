@@ -18,9 +18,9 @@ var result = await client.GetVisualNovel(requestFlags, new FilterId(17, FilterOp
 
 
 Features that still need to be implemented:
-  [] All of the "set" commands. Currently, VndbSharp can only get data, not set it
-  [] Error support. Currently, it has no support for error messages at all
-  [] Finding a way to deal with Mono's security issue(explained below)
+  - All of the "set" commands. Currently, VndbSharp can only get data, not set it
+  - Error support. Currently, it has no support for error messages at all
+  - Finding a way to deal with Mono's security issue(explained below)
 
 
 
