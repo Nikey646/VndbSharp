@@ -7,7 +7,7 @@ VndbSharp is a C# library for the Visual Novel Database API
   - Support for most filters and flags at this time (Jan 2017, Api version 2.27)
   - Easily Extendible
 
-#### Mono and .Net Core Usage Warning
+### Mono and .Net Core Usage Warning
 Monos current [SecureString](https://github.com/mono/mono/blob/master/mcs/class/corlib/System.Security/SecureString.cs) implementation, as of Jan 2017, does [not encrypt](https://github.com/mono/mono/blob/master/mcs/class/corlib/System.Security/SecureString.cs#L249-L264) the string in memory, making it insecure compared to the windows version. It is advisable to warn any users, or not provide login capabilities when using this library.
 
 .Net Core has stated that [it will not encrypt](https://github.com/dotnet/coreclr/blob/master/src/mscorlib/corefx/System/Security/SecureString.Unix.cs#L18) the data, which presents a similar issue to mono.
