@@ -12,5 +12,13 @@ namespace VndbSharp.Structs.Models
 		[JsonProperty("msg")]
 		public String Message;
 
-	}
+	    [JsonProperty("type")]
+        public String Type;
+
+        [JsonProperty("minwait")]
+        public Double? MinimumWait;
+
+        [JsonProperty("fullwait")]
+        public Double? MaximumWait;
+    }
 }
