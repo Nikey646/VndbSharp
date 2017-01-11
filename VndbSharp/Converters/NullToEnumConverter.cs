@@ -28,15 +28,15 @@ namespace VndbSharp.Converters
 		}
 
 		// Credits for this amazing snippet to Raif Atef (http://stackoverflow.com/users/111830/raif-atef), from http://stackoverflow.com/a/26289874
-		private static class EnumConverter<TEnum> where TEnum : struct, IConvertible
+		private static class EnumConverter<TInnerEnum> where TInnerEnum : struct, IConvertible
 		{
-			public static readonly Func<Int64, TEnum> Convert = EnumConverter<TEnum>.GenerateConverter();
+			public static readonly Func<Int64, TInnerEnum> Convert = EnumConverter<TInnerEnum>.GenerateConverter();
 
-			private static Func<Int64, TEnum> GenerateConverter()
+			private static Func<Int64, TInnerEnum> GenerateConverter()
 			{
 				var paramter = Expression.Parameter(typeof(Int64));
-				var dynamicMethod = Expression.Lambda<Func<Int64, TEnum>>
-					(Expression.ConvertChecked(paramter, typeof(TEnum)), paramter);
+				var dynamicMethod = Expression.Lambda<Func<Int64, TInnerEnum>>
+					(Expression.ConvertChecked(paramter, typeof(TInnerEnum)), paramter);
 				return dynamicMethod.Compile();
 			}
 		}
