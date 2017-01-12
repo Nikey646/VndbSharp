@@ -33,6 +33,7 @@ namespace VndbSharp
 
 		// Result values
 		public const String Results = "results";
+		public const String DbStats = "dbstats"; // Yes, this is identical to DbStatsCommand.
 		public const String Error = "error";
 		public const String Ok = "ok";
 	}
