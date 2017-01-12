@@ -10,11 +10,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using VndbSharp.Enums;
 using VndbSharp.Interfaces;
 using VndbSharp.Structs.Models;
 using VndbSharp.Structs.Models.Character;
 using VndbSharp.Structs.Models.DatabaseStats;
+using VndbSharp.Structs.Models.Error;
 using VndbSharp.Structs.Models.Producer;
 using VndbSharp.Structs.Models.Release;
 using VndbSharp.Structs.Models.User;
@@ -40,7 +42,7 @@ namespace VndbSharp
 		private const UInt16 ApiTlsPort = 19535;
 
 		protected String LastErrorJson;
-		protected OmniError LastError;
+		protected IVndbError LastError;
 
 		protected TcpClient Client;
 
@@ -341,7 +343,7 @@ namespace VndbSharp
 			}
 		}
 
-		public OmniError GetLastError() => this.LastError;
+		public IVndbError GetLastError() => this.LastError;
 
 		public String GetLastErrorJson() => this.LastErrorJson;
 
@@ -432,8 +434,53 @@ namespace VndbSharp
 
 		protected void SetLastError(String json)
 		{
-			this.LastError = JsonConvert.DeserializeObject<OmniError>(json);
+			this.LastError = null;
 			this.LastErrorJson = json;
+
+			var response = JObject.Parse(json);
+			JToken typeToken;
+			if (!response.TryGetValue("id", StringComparison.OrdinalIgnoreCase, out typeToken))
+				return;
+			
+			switch (typeToken.Value<String>())
+			{
+				case "parse":
+					this.LastError = BasicError.Build<ParseError>(response);
+					break;
+				case "settype":
+					this.LastError = BasicError.Build<SetTypeError>(response);
+					break;
+				case "needlogin":
+					this.LastError = BasicError.Build<LoginRequiredError>(response);//(LoginRequiredError) basic;
+					break;
+				case "auth":
+					this.LastError = BasicError.Build<BadAuthenticiationError>(response);//(BadAuthenticiationError) basic;
+					break;
+				case "loggedind":
+					this.LastError = BasicError.Build<LoggedInError>(response);//(LoggedInError) basic;
+					break;
+				case "gettype":
+					this.LastError = BasicError.Build<GetTypeError>(response);//(GetTypeError) basic;
+					break;
+				case "missing":
+					this.LastError = BasicError.Build<MissingError>(response);//JsonConvert.DeserializeObject<MissingError>(json);
+					break;
+				case "badarg":
+					this.LastError = BasicError.Build<BadArgumentError>(response);//JsonConvert.DeserializeObject<BadArgumentError>(json);
+					break;
+				case "throttled":
+					this.LastError = BasicError.Build<ThrottledError>(response);//JsonConvert.DeserializeObject<ThrottledError>(json);
+					break;
+				case "getinfo":
+					this.LastError = BasicError.Build<GetInfoError>(response);//JsonConvert.DeserializeObject<GetInfoError>(json);
+					break;
+				case "filter":
+					this.LastError = BasicError.Build<InvalidFilterError>(response);//JsonConvert.DeserializeObject<InvalidFilterError>(json);
+					break;
+				default:
+					this.LastError = null;
+					break;
+			}
 		}
 
 		protected String FormatOptions(String request, IRequestOptions options)
