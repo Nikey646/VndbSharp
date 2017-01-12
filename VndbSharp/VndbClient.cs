@@ -106,42 +106,42 @@ namespace VndbSharp
 			=> await this.SendRequestInternalAsync<DatabaseStats>(Constants.DbStatsCommand).ConfigureAwait(false);
 
 		public async Task<RootObject<VisualNovel>> GetVisualNovelAsync(VndbFlags flags, IFilter filters,
-				IRequestOptions options = null)
+			IRequestOptions options = null)
 			=> await this.SendRequestInternalAsync<RootObject<VisualNovel>>(Constants.GetVotelistCommand, flags, filters, options)
 				.ConfigureAwait(false);
 
 		public async Task<RootObject<Release>> GetReleaseAsync(VndbFlags flags, IFilter filters,
-				IRequestOptions options = null)
+			IRequestOptions options = null)
 			=> await this.SendRequestInternalAsync<RootObject<Release>>(Constants.GetReleaseCommand, flags, filters, options)
 				.ConfigureAwait(false);
 
 		public async Task<RootObject<Producer>> GetProducerAsync(VndbFlags flags, IFilter filters,
-				IRequestOptions options = null)
+			IRequestOptions options = null)
 			=> await this.SendRequestInternalAsync<RootObject<Producer>>(Constants.GetProducerCommand, flags, filters, options)
 				.ConfigureAwait(false);
 
 		public async Task<RootObject<Character>> GetCharacterAsync(VndbFlags flags, IFilter filters,
-				IRequestOptions options = null)
+			IRequestOptions options = null)
 			=> await this.SendRequestInternalAsync<RootObject<Character>>(Constants.GetCharacterCommand, flags, filters, options)
 				.ConfigureAwait(false);
 
 		public async Task<RootObject<User>> GetUserAsync(VndbFlags flags, IFilter filters,
-				IRequestOptions options = null)
+			IRequestOptions options = null)
 			=> await this.SendRequestInternalAsync<RootObject<User>>(Constants.GetUserCommand, flags, filters, options)
 				.ConfigureAwait(false);
 
 		public async Task<RootObject<Votelist>> GetVotelistAsync(VndbFlags flags, IFilter filters,
-				IRequestOptions options = null)
+			IRequestOptions options = null)
 			=> await this.SendRequestInternalAsync<RootObject<Votelist>>(Constants.GetVotelistCommand, flags, filters, options)
 				.ConfigureAwait(false);
 
 		public async Task<RootObject<VnList>> GetVnListAsync(VndbFlags flags, IFilter filters,
-				IRequestOptions options = null)
+			IRequestOptions options = null)
 			=> await this.SendRequestInternalAsync<RootObject<VnList>>(Constants.GetVisualNovelListCommand, flags, filters, options)
 				.ConfigureAwait(false);
 
 		public async Task<RootObject<Wishlist>> GetWishlistAsync(VndbFlags flags, IFilter filters,
-				IRequestOptions options = null)
+			IRequestOptions options = null)
 			=> await this.SendRequestInternalAsync<RootObject<Wishlist>>(Constants.GetWishlistCommand, flags, filters, options)
 				.ConfigureAwait(false);
 
