@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="Converters\AliasesConverter.cs" />
     <Compile Include="Converters\Character\BirthdayConverter.cs" />
     <Compile Include="Converters\Character\GenderConverter.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Structs\Models\Votelist\Votelist.cs" />
     <Compile Include="Structs\Models\Wishlist\Wishlist.cs" />
     <Compile Include="Structs\RequestOptions.cs" />
+    <Compile Include="UnexpectedResponseException.cs" />
     <Compile Include="VndbClient.cs" />
   </ItemGroup>
   <ItemGroup>

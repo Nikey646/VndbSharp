@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -33,13 +31,6 @@ namespace VndbSharp
 
 		private Int32 _receiveBufferSize = 1024 * 4;
 		private Int32 _sendBufferSize = 1024 * 4;
-
-		private const Char EOTChar = (Char)0x04;
-
-		private const String ApiDomain = "api.vndb.org";
-
-		private const UInt16 ApiPort = 19534;
-		private const UInt16 ApiTlsPort = 19535;
 
 		protected String LastErrorJson;
 		protected IVndbError LastError;
@@ -100,8 +91,7 @@ namespace VndbSharp
 		}
 
 		/// <summary>
-		///		This method is *not* secure on mono implementations. SecureString does *not* encrypt / decrypt as 01/2017
-		/// 	https://github.com/mono/mono/blob/master/mcs/class/corlib/System.Security/SecureString.cs#L249-L264
+		///		If using .Net Core or Mono, please read https://github.com/Nikey646/VndbSharp/wiki/Mono-and-.Net-Core#securestring--username--password-logins
 		/// 
 		/// 	This will also *force* a secure connection.
 		/// </summary>
@@ -112,219 +102,48 @@ namespace VndbSharp
 			this.Password = password;
 		}
 
-		public async Task<RootObject<VisualNovel>> GetVisualNovelAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
-		{
-			if (!await this.LoginAsync().ConfigureAwait(false))
-				return null;
+		public async Task<DatabaseStats> GetDatabaseStatsAsync()
+			=> await this.SendRequestInternalAsync<DatabaseStats>(Constants.DbStatsCommand).ConfigureAwait(false);
 
-			var data = $"get vn {String.Join(",", this.FlagsToString(flags))} ({filter})";
-			if (options != null)
-				data = this.FormatOptions(data, options);
+		public async Task<RootObject<VisualNovel>> GetVisualNovelAsync(VndbFlags flags, IFilter filters,
+				IRequestOptions options = null)
+			=> await this.SendRequestInternalAsync<RootObject<VisualNovel>>(Constants.GetVotelistCommand, flags, filters, options)
+				.ConfigureAwait(false);
 
-			Debug.WriteLine(data);
+		public async Task<RootObject<Release>> GetReleaseAsync(VndbFlags flags, IFilter filters,
+				IRequestOptions options = null)
+			=> await this.SendRequestInternalAsync<RootObject<Release>>(Constants.GetReleaseCommand, flags, filters, options)
+				.ConfigureAwait(false);
 
-			await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
-			var response = await this.GetResponseAsync().ConfigureAwait(false);
+		public async Task<RootObject<Producer>> GetProducerAsync(VndbFlags flags, IFilter filters,
+				IRequestOptions options = null)
+			=> await this.SendRequestInternalAsync<RootObject<Producer>>(Constants.GetProducerCommand, flags, filters, options)
+				.ConfigureAwait(false);
 
-			var results = response.Split(new[] {' '}, 2);
-			Debug.WriteLine(results[1]);
+		public async Task<RootObject<Character>> GetCharacterAsync(VndbFlags flags, IFilter filters,
+				IRequestOptions options = null)
+			=> await this.SendRequestInternalAsync<RootObject<Character>>(Constants.GetCharacterCommand, flags, filters, options)
+				.ConfigureAwait(false);
 
-			if (results.Length == 2 && results[0] == "results")
-				return JsonConvert.DeserializeObject<RootObject<VisualNovel>>(results[1]);
+		public async Task<RootObject<User>> GetUserAsync(VndbFlags flags, IFilter filters,
+				IRequestOptions options = null)
+			=> await this.SendRequestInternalAsync<RootObject<User>>(Constants.GetUserCommand, flags, filters, options)
+				.ConfigureAwait(false);
 
-			this.SetLastError(results[1]);
-			return null;
-		}
+		public async Task<RootObject<Votelist>> GetVotelistAsync(VndbFlags flags, IFilter filters,
+				IRequestOptions options = null)
+			=> await this.SendRequestInternalAsync<RootObject<Votelist>>(Constants.GetVotelistCommand, flags, filters, options)
+				.ConfigureAwait(false);
 
-        public async Task<DatabaseStats> GetDatabaseStats()
-        {
-            if (!await this.LoginAsync().ConfigureAwait(false))
-                return null;
+		public async Task<RootObject<VnList>> GetVnListAsync(VndbFlags flags, IFilter filters,
+				IRequestOptions options = null)
+			=> await this.SendRequestInternalAsync<RootObject<VnList>>(Constants.GetVisualNovelListCommand, flags, filters, options)
+				.ConfigureAwait(false);
 
-            var data = "dbstats";
-
-            Debug.WriteLine(data);
-
-            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
-            var response = await this.GetResponseAsync().ConfigureAwait(false);
-
-            var results = response.Split(new[] { ' ' }, 2);
-            Debug.WriteLine(results[1]);
-
-            if (results.Length == 2 && results[0] == "dbstats")
-                return JsonConvert.DeserializeObject<DatabaseStats>(results[1]);
-
-            this.SetLastError(results[1]);
-            return null;
-        }
-
-		public async Task<RootObject<Character>> GetCharacterAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
-		{
-			if (!await this.LoginAsync().ConfigureAwait(false))
-				return null;
-
-			var data = $"get character {String.Join(",", this.FlagsToString(flags))} ({filter})";
-			if (options != null)
-				data = this.FormatOptions(data, options);
-
-			Debug.WriteLine(data);
-
-			await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
-			var response = await this.GetResponseAsync().ConfigureAwait(false);
-
-			var results = response.Split(new[] {' '}, 2);
-			Debug.WriteLine(results[1]);
-
-			if (results.Length == 2 && results[0] == "results")
-				return JsonConvert.DeserializeObject<RootObject<Character>>(results[1]);
-			
-			this.SetLastError(results[1]);
-			return null;
-		}
-
-	    public async Task<RootObject<Release>> GetReleaseAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
-	    {
-            if (!await this.LoginAsync().ConfigureAwait(false))
-                return null;
-
-            var data = $"get release {String.Join(",", this.FlagsToString(flags))} ({filter})";
-            if (options != null)
-                data = this.FormatOptions(data, options);
-
-            Debug.WriteLine(data);
-
-            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
-            var response = await this.GetResponseAsync().ConfigureAwait(false);
-
-            var results = response.Split(new[] { ' ' }, 2);
-            Debug.WriteLine(results[1]);
-
-            if (results.Length == 2 && results[0] == "results")
-                return JsonConvert.DeserializeObject<RootObject<Release>>(results[1]);
-
-            this.SetLastError(results[1]);
-            return null;
-        }
-
-	    public async Task<RootObject<Producer>> GetProducerAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
-	    {
-            if (!await this.LoginAsync().ConfigureAwait(false))
-                return null;
-
-            var data = $"get producer {String.Join(",", this.FlagsToString(flags))} ({filter})";
-            if (options != null)
-                data = this.FormatOptions(data, options);
-
-            Debug.WriteLine(data);
-
-            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
-            var response = await this.GetResponseAsync().ConfigureAwait(false);
-
-            var results = response.Split(new[] { ' ' }, 2);
-            Debug.WriteLine(results[1]);
-
-            if (results.Length == 2 && results[0] == "results")
-                return JsonConvert.DeserializeObject<RootObject<Producer>>(results[1]);
-
-            this.SetLastError(results[1]);
-            return null;
-        }
-
-	    public async Task<RootObject<User>> GetUserAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
-	    {
-            if (!await this.LoginAsync().ConfigureAwait(false))
-                return null;
-
-            var data = $"get user {String.Join(",", this.FlagsToString(flags))} ({filter})";
-            if (options != null)
-                data = this.FormatOptions(data, options);
-
-            Debug.WriteLine(data);
-
-            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
-            var response = await this.GetResponseAsync().ConfigureAwait(false);
-
-            var results = response.Split(new[] { ' ' }, 2);
-            Debug.WriteLine(results[1]);
-
-            if (results.Length == 2 && results[0] == "results")
-                return JsonConvert.DeserializeObject<RootObject<User>>(results[1]);
-
-            this.SetLastError(results[1]);
-            return null;
-        }
-
-        public async Task<RootObject<Votelist>> GetVotelistAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
-        {
-            if (!await this.LoginAsync().ConfigureAwait(false))
-                return null;
-
-            var data = $"get votelist {String.Join(",", this.FlagsToString(flags))} ({filter})";
-            if (options != null)
-                data = this.FormatOptions(data, options);
-
-            Debug.WriteLine(data);
-
-            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
-            var response = await this.GetResponseAsync().ConfigureAwait(false);
-
-            var results = response.Split(new[] { ' ' }, 2);
-            Debug.WriteLine(results[1]);
-
-            if (results.Length == 2 && results[0] == "results")
-                return JsonConvert.DeserializeObject<RootObject<Votelist>>(results[1]);
-
-            this.SetLastError(results[1]);
-            return null;
-        }
-
-        public async Task<RootObject<VnList>> GetVnListAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
-        {
-            if (!await this.LoginAsync().ConfigureAwait(false))
-                return null;
-
-            var data = $"get vnlist {String.Join(",", this.FlagsToString(flags))} ({filter})";
-            if (options != null)
-                data = this.FormatOptions(data, options);
-
-            Debug.WriteLine(data);
-
-            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
-            var response = await this.GetResponseAsync().ConfigureAwait(false);
-
-            var results = response.Split(new[] { ' ' }, 2);
-            Debug.WriteLine(results[1]);
-
-            if (results.Length == 2 && results[0] == "results")
-                return JsonConvert.DeserializeObject<RootObject<VnList>>(results[1]);
-
-            this.SetLastError(results[1]);
-            return null;
-        }
-
-        public async Task<RootObject<Wishlist>> GetWishlistAsync(VndbFlags flags, IFilter filter, IRequestOptions options = null)
-        {
-            if (!await this.LoginAsync().ConfigureAwait(false))
-                return null;
-
-            var data = $"get wishlist {String.Join(",", this.FlagsToString(flags))} ({filter})";
-            if (options != null)
-                data = this.FormatOptions(data, options);
-
-            Debug.WriteLine(data);
-
-            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
-            var response = await this.GetResponseAsync().ConfigureAwait(false);
-
-            var results = response.Split(new[] { ' ' }, 2);
-            Debug.WriteLine(results[1]);
-
-            if (results.Length == 2 && results[0] == "results")
-                return JsonConvert.DeserializeObject<RootObject<Wishlist>>(results[1]);
-
-            this.SetLastError(results[1]);
-            return null;
-        }
+		public async Task<RootObject<Wishlist>> GetWishlistAsync(VndbFlags flags, IFilter filters,
+				IRequestOptions options = null)
+			=> await this.SendRequestInternalAsync<RootObject<Wishlist>>(Constants.GetWishlistCommand, flags, filters, options)
+				.ConfigureAwait(false);
 
 		public async Task<String> DoRawAsync(String command)
 		{
@@ -334,8 +153,7 @@ namespace VndbSharp
 					return this.GetLastErrorJson();
 
 				await this.SendDataAsync(this.FormatRequest(command)).ConfigureAwait(false);
-				var result = await this.GetResponseAsync().ConfigureAwait(true);
-				return result;
+				return await this.GetResponseAsync().ConfigureAwait(true);
 			}
 			catch (Exception crap)
 			{
@@ -343,10 +161,12 @@ namespace VndbSharp
 			}
 		}
 
-		public IVndbError GetLastError() => this.LastError;
+		public IVndbError GetLastError()
+			=> this.LastError;
 
-		public String GetLastErrorJson() => this.LastErrorJson;
-
+		public String GetLastErrorJson()
+			=> this.LastErrorJson;
+		
 		protected async Task<Boolean> LoginAsync()
 		{
 			if (this.Client?.Connected == true && this.LoggedIn)
@@ -354,13 +174,13 @@ namespace VndbSharp
 
 			this.InitializeClient();
 
-			await this.Client.ConnectAsync(VndbClient.ApiDomain, this.UseTls ? VndbClient.ApiTlsPort : VndbClient.ApiPort)
+			await this.Client.ConnectAsync(Constants.ApiDomain, this.UseTls ? Constants.ApiPortTls : Constants.ApiPort)
 				.ConfigureAwait(false);
 
 			if (this.UseTls)
 			{
 				var stream = new SslStream(this.Client.GetStream());
-				await stream.AuthenticateAsClientAsync(VndbClient.ApiDomain).ConfigureAwait(false);
+				await stream.AuthenticateAsClientAsync(Constants.ApiDomain).ConfigureAwait(false);
 				this.Stream = stream;
 			}
 			else
@@ -370,26 +190,25 @@ namespace VndbSharp
 
 			// Create a login class that can have an optional Username / Password
 			var login = new Login(this.Username, this.Password);
-			await this.SendDataAsync(this.FormatRequest("login", login, false)).ConfigureAwait(false);
+			await this.SendDataAsync(this.FormatRequest(Constants.LoginCommand, login, false)).ConfigureAwait(false);
 			// Dispose of the login class *asap*, to ensure the password remains in unmanaged memory for as little as possible
 			login.Dispose();
 
 			var response = await this.GetResponseAsync().ConfigureAwait(false);
 
-			if (response == "ok")
+			if (response == Constants.Ok)
 			{
 				this.LoggedIn = true;
 				return true;
 			}
 
-			if (String.IsNullOrWhiteSpace(response))
-				throw new InvalidOperationException("Response from Vndb was empty.");
-			
-			var results = response.Split(new[] { ' ' }, 2);
+			if (String.IsNullOrWhiteSpace(response)) // Do not provide the full request data here. Contains the password in plain text.
+				throw new UnexpectedResponseException("login", response);
 
-			if (results.Length != 2 || results[0] != "error")
-				throw new InvalidOperationException($"Unexpected response. {response}");
-			
+			var results = response.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+			if (results.Length != 2 || results[0] != Constants.Error) // Do not provide the full request data here. Contains the password in plain text.
+				throw new UnexpectedResponseException("login", response);
+
 			this.SetLastError(results[1]);
 			return false;
 		}
@@ -400,17 +219,84 @@ namespace VndbSharp
 
 			this.Client = new TcpClient
 			{
-				SendBufferSize = this._sendBufferSize,
-				ReceiveBufferSize = this._receiveBufferSize,
+				SendBufferSize = this.SendBufferSize,
+				ReceiveBufferSize = this.ReceiveBufferSize,
 			};
 			this.LoggedIn = false;
 		}
 
 		#region .  Helper Methods  .
+		
+		// for DbStats and other similar / new commands
+		protected async Task<T> SendRequestInternalAsync<T>(String method)
+			where T : class
+			=> await this.SendRequestInternalAsync<T>(this.FormatRequest(method)).ConfigureAwait(false);
+
+		// for get comands
+		protected async Task<T> SendRequestInternalAsync<T>(String method, VndbFlags flags, IFilter filters,
+			IRequestOptions options) where T : class
+		{
+			// Construct the request EG: "get vn basic,details (id=17) {"page":1}"
+			var requestData = this.FormatRequest($"{method} {String.Join(",", this.FlagsToString(flags))} ({filters})", options, false);
+			return await this.SendRequestInternalAsync<T>(requestData).ConfigureAwait(false);
+		}
+
+		// generic get code
+		protected async Task<T> SendRequestInternalAsync<T>(Byte[] requestData)
+			where T : class
+		{
+			// Ensure we are logged in
+			if (!await this.LoginAsync().ConfigureAwait(false))
+				return null;
+
+			await this.SendDataAsync(requestData).ConfigureAwait(false);
+			var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+			// Ensure we only split on the first space
+			var result = response.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+			// TODO: Make a JsonContractResolver for the models, to remove [JsonProperty(...)] spam
+			if (result.Length == 2 && result[0] == Constants.Results || result[0] == Constants.DbStats) // wai you do this, dbstats?
+				return JsonConvert.DeserializeObject<T>(result[1]);
+
+			// This is a response we don't know how to handle, since we only expect error {json} and results {json} / dbstats {json}
+			if (result.Length != 2 || result[0] != Constants.Error)
+				throw new UnexpectedResponseException(this.GetString(requestData), response);
+
+			this.SetLastError(result[1]);
+			return null; // A null return indicates an error.
+		}
+
+		// for set commands
+		protected async Task<Boolean> SendRequestInternalAsync(String method, UInt32 id, Object data)
+		{
+			// Ensure we are logged in
+			if (!await this.LoginAsync().ConfigureAwait(false))
+				return false;
+
+			// Construct the request EG: "set votelist 1 {"vote": 100}" or "set votelist 1" when data is null
+			var requestData = this.FormatRequest($"{method} {id}", data, false);
+
+			await this.SendDataAsync(requestData).ConfigureAwait(false);
+			var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+			if (response == Constants.Ok)
+				return true;
+
+			// Ensure we only split on the first space
+			var result = response.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+
+			// This is a response we don't know how to handle, since we only expect error {json} and ok
+			if (result.Length != 2 || result[0] != Constants.Error)
+				throw new UnexpectedResponseException(this.GetString(requestData), response);
+
+			this.SetLastError(result[1]);
+			return false;
+		}
 
 		protected async Task<String> GetResponseAsync()
 		{
 			this.LastError = null;
+			this.LastErrorJson = String.Empty;
 			var memory = new MemoryStream();
 			var buffer = new Byte[this.ReceiveBufferSize];
 			Int32 bytesRead;
@@ -418,19 +304,17 @@ namespace VndbSharp
 			while ((bytesRead = await this.Stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
 			{
 				await memory.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
-				if (buffer[bytesRead - 1] == VndbClient.EOTChar)
+				if (buffer[bytesRead - 1] == Constants.EotChar)
 					break;
 			}
 
-			var result = this.GetString(memory.ToArray()).TrimEnd(VndbClient.EOTChar);
+			var result = this.GetString(memory.ToArray()).TrimEnd(Constants.EotChar);
 			memory.Dispose();
 			return result;
 		}
 
 		protected async Task SendDataAsync(Byte[] data)
-		{
-			await this.Stream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
-		}
+			=> await this.Stream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
 
 		protected void SetLastError(String json)
 		{
@@ -451,31 +335,31 @@ namespace VndbSharp
 					this.LastError = BasicError.Build<SetTypeError>(response);
 					break;
 				case "needlogin":
-					this.LastError = BasicError.Build<LoginRequiredError>(response);//(LoginRequiredError) basic;
+					this.LastError = BasicError.Build<LoginRequiredError>(response);
 					break;
 				case "auth":
-					this.LastError = BasicError.Build<BadAuthenticiationError>(response);//(BadAuthenticiationError) basic;
+					this.LastError = BasicError.Build<BadAuthenticiationError>(response);
 					break;
 				case "loggedind":
-					this.LastError = BasicError.Build<LoggedInError>(response);//(LoggedInError) basic;
+					this.LastError = BasicError.Build<LoggedInError>(response);
 					break;
 				case "gettype":
-					this.LastError = BasicError.Build<GetTypeError>(response);//(GetTypeError) basic;
+					this.LastError = BasicError.Build<GetTypeError>(response);
 					break;
 				case "missing":
-					this.LastError = BasicError.Build<MissingError>(response);//JsonConvert.DeserializeObject<MissingError>(json);
+					this.LastError = BasicError.Build<MissingError>(response);
 					break;
 				case "badarg":
-					this.LastError = BasicError.Build<BadArgumentError>(response);//JsonConvert.DeserializeObject<BadArgumentError>(json);
+					this.LastError = BasicError.Build<BadArgumentError>(response);
 					break;
 				case "throttled":
-					this.LastError = BasicError.Build<ThrottledError>(response);//JsonConvert.DeserializeObject<ThrottledError>(json);
+					this.LastError = BasicError.Build<ThrottledError>(response);
 					break;
 				case "getinfo":
-					this.LastError = BasicError.Build<GetInfoError>(response);//JsonConvert.DeserializeObject<GetInfoError>(json);
+					this.LastError = BasicError.Build<GetInfoError>(response);
 					break;
 				case "filter":
-					this.LastError = BasicError.Build<InvalidFilterError>(response);//JsonConvert.DeserializeObject<InvalidFilterError>(json);
+					this.LastError = BasicError.Build<InvalidFilterError>(response);
 					break;
 				default:
 					this.LastError = null;
@@ -483,16 +367,15 @@ namespace VndbSharp
 			}
 		}
 
-		protected String FormatOptions(String request, IRequestOptions options)
-			=> request + $" {JsonConvert.SerializeObject(options, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })}";
-
 		protected Byte[] FormatRequest(String data)
-		{
-			return this.GetBytes($"{data}{VndbClient.EOTChar}");
-		}
+			=> this.GetBytes($"{data}{Constants.EotChar}");
 
-		protected Byte[] FormatRequest<T>(String method, T data, Boolean includeNull = true)
+		protected Byte[] FormatRequest<T>(String prefix, T data, Boolean includeNull = true)
 		{
+			// If null was passed for data, and we don't want to include nulls, just return the prefix
+			if (data == null && !includeNull)
+				return this.FormatRequest(prefix);
+
 			var json = JsonConvert.SerializeObject(data,
 				new JsonSerializerSettings
 				{
@@ -500,18 +383,15 @@ namespace VndbSharp
 						? NullValueHandling.Include 
 						: NullValueHandling.Ignore
 				});
-			return this.FormatRequest($"{method} {json}");
+
+			return this.FormatRequest($"{prefix} {json}");
 		}
 
 		protected Byte[] GetBytes(String data)
-		{
-			return Encoding.UTF8.GetBytes(data);
-		}
+			=> Encoding.UTF8.GetBytes(data);
 
 		protected String GetString(Byte[] data)
-		{
-			return Encoding.UTF8.GetString(data);
-		}
+			=> Encoding.UTF8.GetString(data);
 
 		protected IEnumerable<String> FlagsToString(Enum inputFlags)
 		{
@@ -539,7 +419,8 @@ namespace VndbSharp
 			this.Dispose(false);
 		}
 
-		public void Dispose() => ((IDisposable)this).Dispose();
+		public void Dispose()
+			=> ((IDisposable)this).Dispose();
 
 		void IDisposable.Dispose()
 		{
@@ -547,7 +428,7 @@ namespace VndbSharp
 			GC.SuppressFinalize(this);
 		}
 
-		private void Dispose(Boolean disposing)
+		protected void Dispose(Boolean disposing)
 		{
 			if (disposing)
 			{
