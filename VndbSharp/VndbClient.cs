@@ -327,6 +327,25 @@ namespace VndbSharp
             return null;
         }
 
+	    public async Task SetVoteListAsync(int id, int? vote)
+	    {
+	        if (!await this.LoginAsync().ConfigureAwait(false))
+	            return;
+	        var data = $"set votelist "+id;
+	        if (vote != null)
+	            data = data + " {\"vote\":" + vote + "}";
+            Debug.WriteLine(data);
+
+            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+            var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+
+	        if (response == "ok") return;
+	        var results = response.Split(new[] { ' ' }, 2);
+	        Debug.WriteLine(results[1]);
+	        this.SetLastError(results[1]);
+            //not sure if I should have this as a Task<>, and deserialize any error messages, returning them to the client. On Success, response returns "ok
+        }
 		public async Task<String> DoRawAsync(String command)
 		{
 			try
