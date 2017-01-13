@@ -147,9 +147,6 @@ namespace VndbSharp
 			IRequestOptions options = null)
 			=> await this.SendRequestInternalAsync<RootObject<Wishlist>>(Constants.GetWishlistCommand, flags, filters, options)
 				.ConfigureAwait(false);
-
-		public async Task<Boolean> SetVotelistAsync(UInt32 id, Byte? data)
-			=> await this.SendRequestInternalAsync(Constants.SetVotelistCommand, id, data).ConfigureAwait(false);
 		
 		// Should we internally rate limit the usage of this method?
 		// Hell, should this be moved to a separate, static class called VndbUtils?
