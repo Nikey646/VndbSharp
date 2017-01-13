@@ -53,7 +53,9 @@ namespace VndbSharp
 		protected String Username;
 		protected SecureString Password;
 
-		public Int32 ReceiveBufferSize
+        internal static Boolean HasMono { get; } = Type.GetType("Mono.Runtime") != null;
+
+        public Int32 ReceiveBufferSize
 		{
 			get { return this.Client?.ReceiveBufferSize ?? this._receiveBufferSize; }
 			set
@@ -88,8 +90,7 @@ namespace VndbSharp
 			}
 		}
 
-        // TODO: Use HasMono property on TLS to warn about lack of encryption support
-	    internal static Boolean HasMono { get; } = Type.GetType("Mono.Runtime") != null;
+
 
 		public VndbClient()
 		{ }
@@ -107,7 +108,9 @@ namespace VndbSharp
 		/// </summary>
 		public VndbClient(String username, SecureString password)
 		{
-			this.UseTls = true;
+            if(HasMono != true)
+                Console.WriteLine("Mono and .NET Core's SecureString is NOT secure. Please consider an alternative, or warn your users");
+            this.UseTls = true;
 			this.Username = username;
 			this.Password = password;
 		}
@@ -326,6 +329,25 @@ namespace VndbSharp
             return null;
         }
 
+	    public async Task<Object> SetVoteListAsync(int id, int? vote)
+	    {
+	        if (!await this.LoginAsync().ConfigureAwait(false))
+	            return null;
+	        var data = $"set votelist "+id;
+	        if (vote != null)
+	            data = data + " {\"vote\":" + vote + "}";
+            Debug.WriteLine(data);
+
+            await this.SendDataAsync(this.FormatRequest(data)).ConfigureAwait(false);
+            var response = await this.GetResponseAsync().ConfigureAwait(false);
+
+
+	        if (response == "ok") return "ok";
+	        var results = response.Split(new[] { ' ' }, 2);
+	        Debug.WriteLine(results[1]);
+	        this.SetLastError(results[1]);
+            return JsonConvert.DeserializeObject<OmniError>(results[1]);
+        }
 		public async Task<String> DoRawAsync(String command)
 		{
 			try
