@@ -107,7 +107,7 @@ namespace VndbSharp
 
 		public async Task<RootObject<VisualNovel>> GetVisualNovelAsync(VndbFlags flags, IFilter filters,
 			IRequestOptions options = null)
-			=> await this.SendRequestInternalAsync<RootObject<VisualNovel>>(Constants.GetVotelistCommand, flags, filters, options)
+			=> await this.SendRequestInternalAsync<RootObject<VisualNovel>>(Constants.GetVisualNovelCommand, flags, filters, options)
 				.ConfigureAwait(false);
 
 		public async Task<RootObject<Release>> GetReleaseAsync(VndbFlags flags, IFilter filters,
