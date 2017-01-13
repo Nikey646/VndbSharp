@@ -52,6 +52,7 @@
     <Compile Include="Converters\Character\VisualNovelConverter.cs" />
     <Compile Include="Converters\DurationToDateTimeConverter.cs" />
     <Compile Include="Converters\Enums\ErrorTypeConverter.cs" />
+    <Compile Include="Converters\Enums\TagCategoryConverter.cs" />
     <Compile Include="Converters\Enums\ThrottledTypeConverter.cs" />
     <Compile Include="Converters\NullToEnumConverter.cs" />
     <Compile Include="Converters\UnixTimestampConverter.cs" />
@@ -60,6 +61,8 @@
     <Compile Include="Converters\VisualNovel\RelationsConverter.cs" />
     <Compile Include="Converters\VisualNovel\TagConverter.cs" />
     <Compile Include="Enums\Character\Role.cs" />
+    <Compile Include="Enums\Dumps\TagCategory.cs" />
+    <Compile Include="Structs\Models\Dumps\Trait.cs" />
     <Compile Include="Enums\ErrorType.cs" />
     <Compile Include="Enums\ThrottledType.cs" />
     <Compile Include="Enums\VisualNovel\Length.cs" />
@@ -94,6 +97,7 @@
     <Compile Include="Structs\Models\Character\Traits.cs" />
     <Compile Include="Structs\Models\Character\VisualNovel.cs" />
     <Compile Include="Structs\Models\DatabaseStats\DatabaseStats.cs" />
+    <Compile Include="Structs\Models\Dumps\Tag.cs" />
     <Compile Include="Structs\Models\Error\BadArgumentError.cs" />
     <Compile Include="Structs\Models\Error\BadAuthenticiationError.cs" />
     <Compile Include="Structs\Models\Error\BasicError.cs" />

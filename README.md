@@ -25,8 +25,8 @@ var result = await client.GetVisualNovelAsync(requestFlags, FilterId.FromEquals(
 
 ## TODO
   - [ ] The various "set" commands.
-  - [ ] Retreiving Tag, Trait and Vote Dumps and providng Models (Will not store this information)
-  - [ ] Better Error Handling.
+  - [x] Retrieving Tag, Trait and Vote Dumps and providing Models (Will not store this information)
+  - [x] Better Error Handling.
   - [ ] .Net Core / .Net Standard support
   - [ ] Restructure the Models to reduce repeated data
   - [ ] Wiki everything!
