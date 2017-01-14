@@ -145,8 +145,8 @@ namespace VndbSharp
 			=> await this.SendRequestInternalAsync<RootObject<Wishlist>>(Constants.GetWishlistCommand, flags, filters, options)
 				.ConfigureAwait(false);
 
-        public async Task<Boolean> SetVotelistAsync(UInt32 id, Object data)
-            => await this.SendRequestInternalAsync(Constants.SetVotelistCommand, id, data)
+        public async Task<Boolean> SetVotelistAsync(UInt32 id, Byte? vote)
+            => await this.SendRequestInternalAsync(Constants.SetVotelistCommand, id, vote)
                 .ConfigureAwait(false);
 
 
