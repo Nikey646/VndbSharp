@@ -157,7 +157,7 @@ namespace VndbSharp
 			=> await this.GetDumpAsync<IEnumerable<Trait>>(Constants.TraitsDump).ConfigureAwait(false);
 
         public async Task<Boolean> SetVotelistAsync(UInt32 id, Byte? vote)
-            => await this.SendRequestInternalAsync(Constants.SetVotelistCommand, id, vote)
+            => await this.SendRequestInternalAsync(Constants.SetVotelistCommand, id, vote.HasValue ? new { vote } : null)
                 .ConfigureAwait(false);
 
 
