@@ -110,7 +110,7 @@ namespace VndbSharp
 
 		public async Task<RootObject<VisualNovel>> GetVisualNovelAsync(VndbFlags flags, IFilter filters,
 			IRequestOptions options = null)
-			=> await this.SendRequestInternalAsync<RootObject<VisualNovel>>(Constants.GetVotelistCommand, flags, filters, options)
+			=> await this.SendRequestInternalAsync<RootObject<VisualNovel>>(Constants.GetVisualNovelCommand, flags, filters, options)
 				.ConfigureAwait(false);
 
 		public async Task<RootObject<Release>> GetReleaseAsync(VndbFlags flags, IFilter filters,
@@ -156,7 +156,12 @@ namespace VndbSharp
 		public async Task<IEnumerable<Trait>> GetTraitDumpAsync()
 			=> await this.GetDumpAsync<IEnumerable<Trait>>(Constants.TraitsDump).ConfigureAwait(false);
 
-		public async Task<String> DoRawAsync(String command)
+        public async Task<Boolean> SetVotelistAsync(UInt32 id, Byte? vote)
+            => await this.SendRequestInternalAsync(Constants.SetVotelistCommand, id, vote)
+                .ConfigureAwait(false);
+
+
+        public async Task<String> DoRawAsync(String command)
 		{
 			try
 			{
