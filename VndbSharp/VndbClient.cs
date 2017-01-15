@@ -307,14 +307,14 @@ namespace VndbSharp
 		}
 
 		// for set commands
-		protected async Task<Boolean> SendRequestInternalAsync(String method, UInt32 id, Object data)
+		protected async Task<Boolean> SendRequestInternalAsync(String method, UInt32 id, Object data, Boolean includeNulls = false)
 		{
 			// Ensure we are logged in
 			if (!await this.LoginAsync().ConfigureAwait(false))
 				return false;
 
 			// Construct the request EG: "set votelist 1 {"vote": 100}" or "set votelist 1" when data is null
-			var requestData = this.FormatRequest($"{method} {id}", data, false);
+			var requestData = this.FormatRequest($"{method} {id}", data, includeNulls);
 
 			await this.SendDataAsync(requestData).ConfigureAwait(false);
 			var response = await this.GetResponseAsync().ConfigureAwait(false);
@@ -482,7 +482,8 @@ namespace VndbSharp
 						: NullValueHandling.Ignore
 				});
 
-			return this.FormatRequest($"{prefix} {json}");
+			// This may cause problems elsewhere
+			return this.FormatRequest(json == "null" ? prefix : $"{prefix} {json}");
 		}
 
 		protected Byte[] GetBytes(String data)
