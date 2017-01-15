@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.IO.Compression;
-using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security;
@@ -16,7 +14,6 @@ using VndbSharp.Interfaces;
 using VndbSharp.Structs.Models;
 using VndbSharp.Structs.Models.Character;
 using VndbSharp.Structs.Models.DatabaseStats;
-using VndbSharp.Structs.Models.Dumps;
 using VndbSharp.Structs.Models.Error;
 using VndbSharp.Structs.Models.Producer;
 using VndbSharp.Structs.Models.Release;
@@ -148,14 +145,6 @@ namespace VndbSharp
 			=> await this.SendRequestInternalAsync<RootObject<Wishlist>>(Constants.GetWishlistCommand, flags, filters, options)
 				.ConfigureAwait(false);
 		
-		// Should we internally rate limit the usage of this method?
-		// Hell, should this be moved to a separate, static class called VndbUtils?
-		public async Task<IEnumerable<Tag>> GetTagDumpAsync()
-			=> await this.GetDumpAsync<IEnumerable<Tag>>(Constants.TagsDump).ConfigureAwait(false);
-
-		public async Task<IEnumerable<Trait>> GetTraitDumpAsync()
-			=> await this.GetDumpAsync<IEnumerable<Trait>>(Constants.TraitsDump).ConfigureAwait(false);
-
         public async Task<Boolean> SetVotelistAsync(UInt32 id, Byte? vote)
             => await this.SendRequestInternalAsync(Constants.SetVotelistCommand, id, vote.HasValue ? new { vote } : null)
                 .ConfigureAwait(false);
@@ -331,64 +320,6 @@ namespace VndbSharp
 
 			this.SetLastError(result[1]);
 			return false;
-		}
-
-		protected async Task<T> GetDumpAsync<T>(String dumpUrl) where T : class
-		{
-			var request = (HttpWebRequest) WebRequest.Create(dumpUrl);
-			request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-			request.Method = WebRequestMethods.Http.Get;
-			request.Timeout = 5000;
-			request.Proxy = null;
-			request.UserAgent = "VndbSharp (v0.1)"; // TODO: Make this non-static
-
-			HttpWebResponse response = null;
-			Stream responseStream = null;
-			MemoryStream responseContent = null;
-
-			try
-			{
-				response = (HttpWebResponse) await request.GetResponseAsync().ConfigureAwait(false);
-				responseStream = response.GetResponseStream();
-				responseContent = new MemoryStream();
-
-				if (responseStream == null)
-					return null;
-
-//				var headers = response.Headers; // Not used
-				var buffer = new Byte[4096]; // Use the receive buffer size here maybe?
-				var encoding = String.IsNullOrWhiteSpace(response.CharacterSet) 
-					? Encoding.UTF8 
-					: Encoding.GetEncoding(response.CharacterSet);
-
-
-				Int32 bytesRead;
-				while ((bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
-					await responseContent.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
-
-				// Reset out position and bytesRead
-				responseContent.Position = bytesRead = 0;
-				// Reset the buffer as well
-				buffer = new Byte[4096];
-				using (var gzipStream = new GZipStream(responseContent, CompressionMode.Decompress))
-				using (var finalStream = new MemoryStream())
-				{
-					while ((bytesRead = await gzipStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
-						await finalStream.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
-					
-					return JsonConvert.DeserializeObject<T>(encoding.GetString(finalStream.ToArray()));
-				}
-			}
-			catch (WebException) // Catch bad requests from vndb
-			{
-				return null;
-			}
-			finally
-			{
-				response?.Dispose();
-				responseStream?.Dispose();
-				responseContent?.Dispose();
-			}
 		}
 
 		protected async Task<String> GetResponseAsync()
