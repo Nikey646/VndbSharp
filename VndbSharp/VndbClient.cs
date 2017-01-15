@@ -161,6 +161,10 @@ namespace VndbSharp
                 .ConfigureAwait(false);
 
 
+        public async Task<Boolean> SetWishlistAsync(UInt32 id, Byte? priority)
+            => await this.SendRequestInternalAsync(Constants.SetWishlistCommand, id, priority.HasValue ? new { priority } : null)
+                .ConfigureAwait(false);
+
         public async Task<String> DoRawAsync(String command)
 		{
 			try
