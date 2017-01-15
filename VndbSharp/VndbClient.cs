@@ -160,6 +160,26 @@ namespace VndbSharp
             => await this.SendRequestInternalAsync(Constants.SetVotelistCommand, id, vote.HasValue ? new { vote } : null)
                 .ConfigureAwait(false);
 
+        public async Task<Boolean> SetVisualNovelListAsync(UInt32 id, Byte? status, String notes)
+        {
+            //TODO: Fix these ugly if statements. Hopefully into a single line if you can.
+            if (status != null && notes != null)
+            {
+                await this.SendRequestInternalAsync(Constants.SetVisualNovelListCommand, id, new { status, notes })
+                    .ConfigureAwait(false);
+            }
+            if (notes == null)
+            {
+                await this.SendRequestInternalAsync(Constants.SetVisualNovelListCommand, id, new { status })
+                    .ConfigureAwait(false);
+            }
+            if (status == null)
+            {
+                await this.SendRequestInternalAsync(Constants.SetVisualNovelListCommand, id, new { notes })
+                    .ConfigureAwait(false);
+            }
+            return false;
+        }
 
         public async Task<Boolean> SetWishlistAsync(UInt32 id, Byte? priority)
             => await this.SendRequestInternalAsync(Constants.SetWishlistCommand, id, priority.HasValue ? new { priority } : null)
