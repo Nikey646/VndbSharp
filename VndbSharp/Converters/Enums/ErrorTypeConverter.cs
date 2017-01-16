@@ -20,6 +20,11 @@ namespace VndbSharp.Converters.Enums
 			if (String.IsNullOrWhiteSpace(val))
 				return default(ErrorType);
 
+			// Try to parse
+			ErrorType errorType;
+			if (Enum.TryParse(val, true, out errorType))
+				return errorType;
+
 			switch (val)
 			{
 				case "parse":

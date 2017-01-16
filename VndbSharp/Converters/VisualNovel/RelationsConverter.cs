@@ -13,7 +13,14 @@ namespace VndbSharp.Converters.VisualNovel
 
 		public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
 		{
-			switch (reader.Value.ToString())
+			var val = reader.Value.ToString();
+			
+			// Try to parse
+			Relation relation;
+			if (Enum.TryParse(val, true, out relation))
+				return relation;
+
+			switch (val)
 			{
 				case "seq":
 					return Relation.Sequel;

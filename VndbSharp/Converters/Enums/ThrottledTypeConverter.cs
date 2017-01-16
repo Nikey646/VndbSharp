@@ -20,6 +20,11 @@ namespace VndbSharp.Converters.Enums
 			if (String.IsNullOrWhiteSpace(val))
 				return default(ThrottledType);
 
+			// Try to parse
+			ThrottledType throttledType;
+			if (Enum.TryParse(val, true, out throttledType))
+				return throttledType;
+
 			if (val == "cmd")
 				return ThrottledType.Command;
 			return val == "sql" ? ThrottledType.Sql : default(ThrottledType);

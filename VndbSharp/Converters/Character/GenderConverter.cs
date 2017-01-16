@@ -13,7 +13,14 @@ namespace VndbSharp.Converters.Character
 
 		public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
 		{
-			switch (reader.Value.ToString())
+			var val = reader.Value.ToString();
+
+			// Try to parse
+			Gender gender;
+			if (Enum.TryParse(val, true, out gender))
+				return gender;
+
+			switch (val)
 			{
 				case "m":
 					return Gender.Male;
