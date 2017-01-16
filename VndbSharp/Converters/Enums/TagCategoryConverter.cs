@@ -19,6 +19,13 @@ namespace VndbSharp.Converters.Enums
 			if (String.IsNullOrWhiteSpace(val))
 				return default(TagCategory);
 
+			// TODO: Do this on all the enum converters
+			// Try to parse
+			TagCategory tagCat;
+			if (Enum.TryParse(val, true, out tagCat))
+				return tagCat;
+
+			// Resort to vndb responses
 			switch (val)
 			{
 				case "cont":
