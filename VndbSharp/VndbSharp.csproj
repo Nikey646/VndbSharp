@@ -133,6 +133,7 @@
     <Compile Include="Structs\RequestOptions.cs" />
     <Compile Include="UnexpectedResponseException.cs" />
     <Compile Include="VndbClient.cs" />
+    <Compile Include="VndbUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
