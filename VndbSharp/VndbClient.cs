@@ -79,8 +79,6 @@ namespace VndbSharp
 				this.LoggedIn = false;
 			}
 		}
-
-        // TODO: Use HasMono property on TLS to warn about lack of encryption support
 	    internal static Boolean HasMono { get; } = Type.GetType("Mono.Runtime") != null;
 
 		public VndbClient()
@@ -91,14 +89,17 @@ namespace VndbSharp
 			this.UseTls = useTls;
 		}
 
-		/// <summary>
-		///		If using .Net Core or Mono, please read https://github.com/Nikey646/VndbSharp/wiki/Mono-and-.Net-Core#securestring--username--password-logins
-		/// 
-		/// 	This will also *force* a secure connection.
-		/// </summary>
-		public VndbClient(String username, SecureString password)
+        /// <summary>
+        ///		If using .Net Core or Mono, please read https://github.com/Nikey646/VndbSharp/wiki/Mono-and-.Net-Core#securestring--username--password-logins
+        ///     .Net Core seems to have implemented a fix for SecureString, though without encryption support: 
+        ///      https://github.com/dotnet/coreclr/blob/e74cdcb1ed6021eaf03eea5ee7f6ba3c6b403daf/src/mscorlib/corefx/System/Security/SecureString.Unix.cs
+        /// 	This will also *force* a secure connection.
+        /// </summary>
+        public VndbClient(String username, SecureString password)
 		{
-			this.UseTls = true;
+		    if (HasMono ==false)
+		        Console.WriteLine("Mono's SecureString is not secure. Consider warning your users if they are using mono runtime");
+            this.UseTls = true;
 			this.Username = username;
 			this.Password = password;
 		}
