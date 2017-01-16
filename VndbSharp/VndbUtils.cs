@@ -17,6 +17,8 @@ namespace VndbSharp
 
 		private static DateTime? _lastTime = null;
 
+		public static Int32 BufferSize { get; set; } = 4096;
+
         public static async Task<IEnumerable<Tag>> GetTagDumpAsync()
             => await VndbUtils.GetDumpAsync<IEnumerable<Tag>>(Constants.TagsDump).ConfigureAwait(false);
 
@@ -50,7 +52,7 @@ namespace VndbSharp
                     return null;
 
                 //				var headers = response.Headers; // Not used
-                var buffer = new Byte[4096]; // Use the receive buffer size here maybe?
+                var buffer = new Byte[VndbUtils.BufferSize];
                 var encoding = String.IsNullOrWhiteSpace(response.CharacterSet)
                     ? Encoding.UTF8
                     : Encoding.GetEncoding(response.CharacterSet);
@@ -60,10 +62,10 @@ namespace VndbSharp
                 while ((bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
                     await responseContent.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
 
-                // Reset out position;
+                // Reset our position;
                 responseContent.Position = 0;
                 // Reset the buffer as well
-                buffer = new Byte[4096];
+                buffer = new Byte[VndbUtils.BufferSize];
                 using (var gzipStream = new GZipStream(responseContent, CompressionMode.Decompress))
                 using (var finalStream = new MemoryStream())
                 {
