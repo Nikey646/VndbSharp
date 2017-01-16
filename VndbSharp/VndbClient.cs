@@ -97,7 +97,7 @@ namespace VndbSharp
         /// </summary>
         public VndbClient(String username, SecureString password)
 		{
-		    if (HasMono ==false)
+		    if (HasMono)
 		        Console.WriteLine("Mono's SecureString is not secure. Consider warning your users if they are using mono runtime");
             this.UseTls = true;
 			this.Username = username;
