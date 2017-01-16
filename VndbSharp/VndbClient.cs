@@ -157,8 +157,16 @@ namespace VndbSharp
             => await this.SendRequestInternalAsync(Constants.SetVotelistCommand, id, vote.HasValue ? new { vote } : null)
                 .ConfigureAwait(false);
 
-        public async Task<Boolean> SetVisualNovelListAsync(UInt32 id, Status? status, String notes)
-        => await this.SendRequestInternalAsync(Constants.SetVisualNovelListCommand, id, status.HasValue ? new { status, notes } : null, true).ConfigureAwait(false);
+		public async Task<Boolean> SetVisualNovelListAsync(UInt32 id, Status? status)
+			=> await this.SendRequestInternalAsync(Constants.SetVisualNovelListCommand, id, status.HasValue ? new { status } : null)
+				.ConfigureAwait(false);
+
+		public async Task<Boolean> SetVisualNovelListAsync(UInt32 id, String notes)
+			=> await this.SendRequestInternalAsync(Constants.SetVisualNovelListCommand, id, new { notes }, true).ConfigureAwait(false);
+
+		public async Task<Boolean> SetVisualNovelListAsync(UInt32 id, Status? status, String notes)
+			=> await this.SendRequestInternalAsync(Constants.SetVisualNovelListCommand, id, status.HasValue ? new { status, notes } : null, true)
+				.ConfigureAwait(false);
 
         public async Task<Boolean> SetWishlistAsync(UInt32 id, Byte? priority)
             => await this.SendRequestInternalAsync(Constants.SetWishlistCommand, id, priority.HasValue ? new { priority } : null)
