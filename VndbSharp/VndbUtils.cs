@@ -25,6 +25,9 @@ namespace VndbSharp
         public static async Task<IEnumerable<Trait>> GetTraitDumpAsync()
             => await VndbUtils.GetDumpAsync<IEnumerable<Trait>>(Constants.TraitsDump).ConfigureAwait(false);
 
+	    public static async Task<IEnumerable<Vote>> GetVotesDumpAsync()
+		    => await VndbUtils.GetAndParseVotesAsync().ConfigureAwait(false);
+
         private static async Task<T> GetDumpAsync<T>(String dumpUrl) where T : class
         {
             //sets a delay of 1 minute between fetching each dump
@@ -40,6 +43,44 @@ namespace VndbSharp
 			VndbUtils._lastTime = DateTime.Now;
 			return JsonConvert.DeserializeObject<T>(response);
 		}
+
+	    private static async Task<IEnumerable<Vote>> GetAndParseVotesAsync()
+	    {
+		    var request = VndbUtils.GetRequest(Constants.VotesDump);
+		    var response = await VndbUtils.GetResponseAsync(request).ConfigureAwait(false);
+
+		    if (response == null)
+			    return null;
+
+		    var votes = new List<Vote>();
+
+			// Why this isn't just a json array of arrays is beyond me >:(
+		    var lines = response.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
+
+		    foreach (var line in lines)
+		    {
+			    var values = line.Split(new[] {' '}, 3, StringSplitOptions.RemoveEmptyEntries);
+			    if (values.Length != 3)
+				    continue; // Invalid
+			    UInt32 vnId = 0;
+			    UInt32 uid = 0;
+			    Byte vote = 0;
+
+				if (!UInt32.TryParse(values[0], out vnId) && 
+					!UInt32.TryParse(values[1], out uid) && 
+					!Byte.TryParse(values[2], out vote))
+					continue; // One of our numbers was... not numbers?
+			    
+				votes.Add(new Vote
+				{
+					VisualNovelId = vnId,
+					UserId = uid,
+					VoteValue = vote,
+				});
+		    }
+
+		    return votes;
+	    }
 
 	    private static WebRequest GetRequest(String url)
 		{

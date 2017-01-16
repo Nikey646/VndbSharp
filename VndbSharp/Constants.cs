@@ -12,7 +12,7 @@ namespace VndbSharp
 		// Dump info
 		public const String TagsDump = "https://vndb.org/api/tags.json.gz";
 		public const String TraitsDump = "https://vndb.org/api/traits.json.gz";
-//		public const String VotesDump = "https://vndb.org/api/votes.gz"; // Nope. Not doing this. "It's vnId userId voteVal\n" Does not seem worth it.
+		public const String VotesDump = "https://vndb.org/api/votes.gz";
 
 		// Command End Character
 		public const Char EotChar = '\u0004';
