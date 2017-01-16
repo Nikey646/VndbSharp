@@ -32,9 +32,8 @@ namespace VndbSharp
                 return null; //should we send a message of "too many requests" or similar here instead of null?
 
             var request = (HttpWebRequest)WebRequest.Create(dumpUrl);
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
             request.Method = WebRequestMethods.Http.Get;
-            request.Timeout = 5000;
+            request.Timeout = 20000;
             request.Proxy = null;
             request.UserAgent = $"{VndbUtils.ClientName} (v{VndbUtils.Version})";
 
