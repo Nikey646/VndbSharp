@@ -31,60 +31,75 @@ namespace VndbSharp
             if (VndbUtils._lastTime ==null && DateTime.Now - VndbUtils._lastTime < TimeSpan.FromSeconds(60))
                 return null; //should we send a message of "too many requests" or similar here instead of null?
 
-            var request = (HttpWebRequest)WebRequest.Create(dumpUrl);
-            request.Method = WebRequestMethods.Http.Get;
-            request.Timeout = 20000;
-            request.Proxy = null;
-            request.UserAgent = $"{VndbUtils.ClientName} (v{VndbUtils.Version})";
+	        var request = VndbUtils.GetRequest(dumpUrl);
+	        var response = await VndbUtils.GetResponseAsync(request).ConfigureAwait(false);
 
-            HttpWebResponse response = null;
-            Stream responseStream = null;
-            MemoryStream responseContent = null;
+	        if (response == null)
+				return null;
 
-            try
-            {
-                response = (HttpWebResponse)await request.GetResponseAsync().ConfigureAwait(false);
-                responseStream = response.GetResponseStream();
-                responseContent = new MemoryStream();
+			VndbUtils._lastTime = DateTime.Now;
+			return JsonConvert.DeserializeObject<T>(response);
+		}
 
-                if (responseStream == null)
-                    return null;
+	    private static WebRequest GetRequest(String url)
+		{
+			var request = (HttpWebRequest)WebRequest.Create(url);
+			request.Method = WebRequestMethods.Http.Get;
+			request.Timeout = 20000;
+			request.Proxy = null;
+			request.UserAgent = $"{VndbUtils.ClientName} (v{VndbUtils.Version})";
 
-                //				var headers = response.Headers; // Not used
-                var buffer = new Byte[VndbUtils.BufferSize];
-                var encoding = String.IsNullOrWhiteSpace(response.CharacterSet)
-                    ? Encoding.UTF8
-                    : Encoding.GetEncoding(response.CharacterSet);
+			return request;
+		}
+
+		private static async Task<String> GetResponseAsync(WebRequest request)
+		{
+			HttpWebResponse response = null;
+			Stream responseStream = null;
+			MemoryStream responseContent = null;
+
+			try
+			{
+				response = (HttpWebResponse) await request.GetResponseAsync().ConfigureAwait(false);
+				responseStream = response.GetResponseStream();
+				responseContent = new MemoryStream();
+
+				if (responseStream == null)
+					return null;
+
+//				var headers = response.Headers; // Not used
+				var buffer = new Byte[VndbUtils.BufferSize];
+				var encoding = String.IsNullOrWhiteSpace(response.CharacterSet)
+					? Encoding.UTF8
+					: Encoding.GetEncoding(response.CharacterSet);
 
 
-                Int32 bytesRead;
-                while ((bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
-                    await responseContent.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
+				Int32 bytesRead;
+				while ((bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
+					await responseContent.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
 
-                // Reset our position;
-                responseContent.Position = 0;
-                // Reset the buffer as well
-                buffer = new Byte[VndbUtils.BufferSize];
-                using (var gzipStream = new GZipStream(responseContent, CompressionMode.Decompress))
-                using (var finalStream = new MemoryStream())
-                {
-                    while ((bytesRead = await gzipStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
-                        await finalStream.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
-
-                    return JsonConvert.DeserializeObject<T>(encoding.GetString(finalStream.ToArray()));
-                }
-            }
-            catch (WebException) // Catch bad requests from vndb
-            {
-                return null;
-            }
-            finally
-            {
-                response?.Dispose();
-                responseStream?.Dispose();
-                responseContent?.Dispose();
-                VndbUtils._lastTime= DateTime.Now;
-            }
-        }
-    }
+				// Reset our position;
+				responseContent.Position = 0;
+				// Reset the buffer as well
+				buffer = new Byte[VndbUtils.BufferSize];
+				using (var gzipStream = new GZipStream(responseContent, CompressionMode.Decompress))
+				using (var finalStream = new MemoryStream())
+				{
+					while ((bytesRead = await gzipStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
+						await finalStream.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
+					return encoding.GetString(finalStream.ToArray());
+				}
+			}
+			catch (WebException)
+			{
+				return null;
+			}
+			finally
+			{
+				response?.Dispose();
+				responseStream?.Dispose();
+				responseContent?.Dispose();
+			}
+		}
+	}
 }
