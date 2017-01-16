@@ -12,8 +12,7 @@ namespace VndbSharp
 {
     public class VndbUtils
     {
-        protected DateTime LastTime = DateTime.Now;
-        protected static Boolean FirstRun = true;
+        protected DateTime? LastTime = null;
 
         public async Task<IEnumerable<Tag>> GetTagDumpAsync()
             => await this.GetDumpAsync<IEnumerable<Tag>>(Constants.TagsDump, null).ConfigureAwait(false);
@@ -24,9 +23,8 @@ namespace VndbSharp
         protected async Task<T> GetDumpAsync<T>(String dumpUrl, String userAgent) where T : class
         {
             //sets a delay of 1 minute between fetching each dump
-            if (!FirstRun && DateTime.Now - LastTime < TimeSpan.FromSeconds(60))
+            if (LastTime ==null && DateTime.Now - LastTime < TimeSpan.FromSeconds(60))
                 return null; //should we send a message of "too many requests" or similar here instead of null?
-            FirstRun = false;
             var request = (HttpWebRequest)WebRequest.Create(dumpUrl);
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
             request.Method = WebRequestMethods.Http.Get;
