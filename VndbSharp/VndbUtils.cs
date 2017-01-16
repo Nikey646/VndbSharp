@@ -10,20 +10,20 @@ using VndbSharp.Structs.Models.Dumps;
 
 namespace VndbSharp
 {
-    public class VndbUtils
+    public static class VndbUtils
     {
-        protected DateTime? LastTime = null;
+        private static DateTime? _lastTime = null;
 
-        public async Task<IEnumerable<Tag>> GetTagDumpAsync()
-            => await this.GetDumpAsync<IEnumerable<Tag>>(Constants.TagsDump, null).ConfigureAwait(false);
+        public static async Task<IEnumerable<Tag>> GetTagDumpAsync()
+            => await VndbUtils.GetDumpAsync<IEnumerable<Tag>>(Constants.TagsDump, null).ConfigureAwait(false);
 
-        public async Task<IEnumerable<Trait>> GetTraitDumpAsync()
-            => await this.GetDumpAsync<IEnumerable<Trait>>(Constants.TraitsDump, null).ConfigureAwait(false);
+        public static async Task<IEnumerable<Trait>> GetTraitDumpAsync()
+            => await VndbUtils.GetDumpAsync<IEnumerable<Trait>>(Constants.TraitsDump, null).ConfigureAwait(false);
 
-        protected async Task<T> GetDumpAsync<T>(String dumpUrl, String userAgent) where T : class
+        private static async Task<T> GetDumpAsync<T>(String dumpUrl, String userAgent) where T : class
         {
             //sets a delay of 1 minute between fetching each dump
-            if (LastTime ==null && DateTime.Now - LastTime < TimeSpan.FromSeconds(60))
+            if (VndbUtils._lastTime ==null && DateTime.Now - VndbUtils._lastTime < TimeSpan.FromSeconds(60))
                 return null; //should we send a message of "too many requests" or similar here instead of null?
             var request = (HttpWebRequest)WebRequest.Create(dumpUrl);
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
@@ -78,7 +78,7 @@ namespace VndbSharp
                 response?.Dispose();
                 responseStream?.Dispose();
                 responseContent?.Dispose();
-                LastTime= DateTime.Now;
+                VndbUtils._lastTime= DateTime.Now;
             }
         }
     }
