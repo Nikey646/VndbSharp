@@ -9,11 +9,11 @@ namespace VndbSharp.Structs.Models
 	internal class Login : IDisposable
 	{
 		[JsonProperty("client")]
-		public String ClientName = "VndbSharp";
+		public String ClientName;
 		[JsonProperty("protocol")]
 		public UInt32 ProtocolVersion = 1;
 		[JsonProperty("clientver"), JsonConverter(typeof(VersionConverter))]
-		public Version ClientVersion = new Version(0, 1);
+		public Version ClientVersion;
 		[JsonProperty("username")]
 		public String Username = null;
 		[JsonProperty("password")]
@@ -24,6 +24,8 @@ namespace VndbSharp.Structs.Models
 			if (String.IsNullOrWhiteSpace(username) || password == null)
 				return;
 
+			this.ClientName = VndbUtils.ClientName;
+			this.ClientVersion = VndbUtils.Version;
 			this.Username = username;
 			this.Password = this.MakeUnsecureString(password);
 		}

@@ -12,25 +12,29 @@ namespace VndbSharp
 {
     public static class VndbUtils
     {
-        private static DateTime? _lastTime = null;
+		internal static String ClientName = "VndbSharp";
+		internal static Version Version = new Version(0, 1);
+
+		private static DateTime? _lastTime = null;
 
         public static async Task<IEnumerable<Tag>> GetTagDumpAsync()
-            => await VndbUtils.GetDumpAsync<IEnumerable<Tag>>(Constants.TagsDump, null).ConfigureAwait(false);
+            => await VndbUtils.GetDumpAsync<IEnumerable<Tag>>(Constants.TagsDump).ConfigureAwait(false);
 
         public static async Task<IEnumerable<Trait>> GetTraitDumpAsync()
-            => await VndbUtils.GetDumpAsync<IEnumerable<Trait>>(Constants.TraitsDump, null).ConfigureAwait(false);
+            => await VndbUtils.GetDumpAsync<IEnumerable<Trait>>(Constants.TraitsDump).ConfigureAwait(false);
 
-        private static async Task<T> GetDumpAsync<T>(String dumpUrl, String userAgent) where T : class
+        private static async Task<T> GetDumpAsync<T>(String dumpUrl) where T : class
         {
             //sets a delay of 1 minute between fetching each dump
             if (VndbUtils._lastTime ==null && DateTime.Now - VndbUtils._lastTime < TimeSpan.FromSeconds(60))
                 return null; //should we send a message of "too many requests" or similar here instead of null?
+
             var request = (HttpWebRequest)WebRequest.Create(dumpUrl);
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
             request.Method = WebRequestMethods.Http.Get;
             request.Timeout = 5000;
             request.Proxy = null;
-            request.UserAgent = userAgent ?? "VndbSharp (v0.1)";
+            request.UserAgent = $"{VndbUtils.ClientName} (v{VndbUtils.Version})";
 
             HttpWebResponse response = null;
             Stream responseStream = null;

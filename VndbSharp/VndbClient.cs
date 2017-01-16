@@ -103,6 +103,13 @@ namespace VndbSharp
 			this.Password = password;
 		}
 
+		public VndbClient WithClientDetails(String name, Version version)
+		{
+			VndbUtils.ClientName = name;
+			VndbUtils.Version = version;
+			return this;
+		}
+
 		public async Task<DatabaseStats> GetDatabaseStatsAsync()
 			=> await this.SendRequestInternalAsync<DatabaseStats>(Constants.DbStatsCommand).ConfigureAwait(false);
 
