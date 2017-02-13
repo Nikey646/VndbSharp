@@ -61,7 +61,16 @@
     <Compile Include="Converters\VisualNovel\RelationsConverter.cs" />
     <Compile Include="Converters\VisualNovel\TagConverter.cs" />
     <Compile Include="Enums\Character\Role.cs" />
+    <Compile Include="Enums\Commands.cs" />
     <Compile Include="Enums\Dumps\TagCategory.cs" />
+    <Compile Include="Enums\ValidFlags\GetCharacterFlags.cs" />
+    <Compile Include="Enums\ValidFlags\GetProducerFlags.cs" />
+    <Compile Include="Enums\ValidFlags\GetReleaseFlags.cs" />
+    <Compile Include="Enums\ValidFlags\GetUserFlags.cs" />
+    <Compile Include="Enums\ValidFlags\GetVnFlags.cs" />
+    <Compile Include="Enums\ValidFlags\GetVnlistFlags.cs" />
+    <Compile Include="Enums\ValidFlags\GetVotelistFlags.cs" />
+    <Compile Include="Enums\ValidFlags\GetWishlistFlags.cs" />
     <Compile Include="Structs\Models\Dumps\Trait.cs" />
     <Compile Include="Enums\ErrorType.cs" />
     <Compile Include="Enums\ThrottledType.cs" />
@@ -139,5 +148,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
