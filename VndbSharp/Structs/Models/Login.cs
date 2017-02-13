@@ -21,11 +21,12 @@ namespace VndbSharp.Structs.Models
 
 		public Login(String username, SecureString password)
 		{
+			this.ClientName = VndbUtils.ClientName;
+			this.ClientVersion = VndbUtils.Version;
+
 			if (String.IsNullOrWhiteSpace(username) || password == null)
 				return;
 
-			this.ClientName = VndbUtils.ClientName;
-			this.ClientVersion = VndbUtils.Version;
 			this.Username = username;
 			this.Password = this.MakeUnsecureString(password);
 		}
