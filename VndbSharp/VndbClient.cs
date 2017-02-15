@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VndbSharp.Enums;
+using VndbSharp.Enums.ValidFlags;
 using VndbSharp.Enums.VnList;
 using VndbSharp.Interfaces;
 using VndbSharp.Structs.Models;
@@ -79,8 +81,6 @@ namespace VndbSharp
 				this.LoggedIn = false;
 			}
 		}
-
-        // TODO: Use HasMono property on TLS to warn about lack of encryption support
 	    internal static Boolean HasMono { get; } = Type.GetType("Mono.Runtime") != null;
 
 		public VndbClient()
@@ -91,14 +91,17 @@ namespace VndbSharp
 			this.UseTls = useTls;
 		}
 
-		/// <summary>
-		///		If using .Net Core or Mono, please read https://github.com/Nikey646/VndbSharp/wiki/Mono-and-.Net-Core#securestring--username--password-logins
-		/// 
-		/// 	This will also *force* a secure connection.
-		/// </summary>
-		public VndbClient(String username, SecureString password)
+        /// <summary>
+        ///		If using .Net Core or Mono, please read https://github.com/Nikey646/VndbSharp/wiki/Mono-and-.Net-Core#securestring--username--password-logins
+        ///     .Net Core seems to have implemented a fix for SecureString, though without encryption support: 
+        ///      https://github.com/dotnet/coreclr/blob/e74cdcb1ed6021eaf03eea5ee7f6ba3c6b403daf/src/mscorlib/corefx/System/Security/SecureString.Unix.cs
+        /// 	This will also *force* a secure connection.
+        /// </summary>
+        public VndbClient(String username, SecureString password)
 		{
-			this.UseTls = true;
+		    if (HasMono)
+		        Console.WriteLine("Mono's SecureString is not secure. Consider warning your users if they are using mono runtime");
+            this.UseTls = true;
 			this.Username = username;
 			this.Password = password;
 		}
@@ -263,9 +266,12 @@ namespace VndbSharp
 		protected async Task<T> SendRequestInternalAsync<T>(String method, VndbFlags flags, IFilter filters,
 			IRequestOptions options) where T : class
 		{
-			// Construct the request EG: "get vn basic,details (id=17) {"page":1}"
-			var requestData = this.FormatRequest($"{method} {String.Join(",", this.FlagsToString(flags))} ({filters})", options, false);
-			return await this.SendRequestInternalAsync<T>(requestData).ConfigureAwait(false);
+            //check for invalid flags
+		    List<String> invalidFlags = this.CheckFlags(method, flags);
+		    if (invalidFlags.Count >= 1) return null;
+            // Construct the request EG: "get vn basic,details (id=17) {"page":1}"
+            var requestData = this.FormatRequest($"{method} {String.Join(",", this.FlagsToString(flags))} ({filters})", options, false);
+		    return await this.SendRequestInternalAsync<T>(requestData).ConfigureAwait(false);
 		}
 
 		// generic get code
@@ -420,6 +426,56 @@ namespace VndbSharp
 
 		protected String GetString(Byte[] data)
 			=> Encoding.UTF8.GetString(data);
+
+	    protected List<String> CheckFlags(String method, Enum inputFlags)
+	    {
+	        var type = inputFlags.GetType();
+	        List<string> flags = (from Enum value in Enum.GetValues(type) let valueStr = value.ToString() where inputFlags.HasFlag(value) && valueStr != "None"
+            select type.GetField(valueStr) into fi select fi.Name).ToList();
+
+            string[] commands = new string[] { "get vn", "get release", "get producer", "get character", "get user", "get votelist", "get vnlist", "get wishlist" };
+
+            int? index = null;
+            for (int i = 0; i < commands.Length; i++)
+            {
+                if (method == commands[i])
+                    index = i;
+                break;
+            }
+
+	        if (index == null) return null;
+	        List<string> errorList;
+	        switch (index)
+	        {
+	            case 0:
+	                errorList = flags.Except(Enum.GetNames(typeof(GetVnFlags))).ToList();
+	                return errorList;
+	            case 1:
+	                errorList = flags.Except(Enum.GetNames(typeof(GetReleaseFlags))).ToList();
+	                return errorList;
+	            case 2:
+	                errorList = flags.Except(Enum.GetNames(typeof(GetProducerFlags))).ToList();
+	                return errorList;
+	            case 3:
+	                errorList = flags.Except(Enum.GetNames(typeof(GetCharacterFlags))).ToList();
+	                return errorList;
+	            case 4:
+	                errorList = flags.Except(Enum.GetNames(typeof(GetUserFlags))).ToList();
+	                return errorList;
+	            case 5:
+	                errorList = flags.Except(Enum.GetNames(typeof(GetVotelistFlags))).ToList();
+	                return errorList;
+	            case 6:
+	                errorList = flags.Except(Enum.GetNames(typeof(GetVnlistFlags))).ToList();
+	                return errorList;
+	            case 7:
+	                errorList = flags.Except(Enum.GetNames(typeof(GetWishlistFlags))).ToList();
+	                return errorList;
+	            default:
+	                break;
+	        }
+	        return null;
+	    }
 
 		protected IEnumerable<String> FlagsToString(Enum inputFlags)
 		{
