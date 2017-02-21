@@ -62,6 +62,7 @@
     <Compile Include="Converters\VisualNovel\TagConverter.cs" />
     <Compile Include="Enums\Character\Role.cs" />
     <Compile Include="Enums\Dumps\TagCategory.cs" />
+    <Compile Include="Enums\VotesDumpVersion.cs" />
     <Compile Include="Structs\Models\Dumps\Trait.cs" />
     <Compile Include="Enums\ErrorType.cs" />
     <Compile Include="Enums\ThrottledType.cs" />

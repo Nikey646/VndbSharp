@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using VndbSharp.Enums;
 using VndbSharp.Structs.Models.Dumps;
 
 namespace VndbSharp
@@ -25,8 +26,8 @@ namespace VndbSharp
         public static async Task<IEnumerable<Trait>> GetTraitDumpAsync()
             => await VndbUtils.GetDumpAsync<IEnumerable<Trait>>(Constants.TraitsDump).ConfigureAwait(false);
 
-	    public static async Task<IEnumerable<Vote>> GetVotesDumpAsync()
-		    => await VndbUtils.GetAndParseVotesAsync().ConfigureAwait(false);
+	    public static async Task<IEnumerable<Vote>> GetVotesDumpAsync(VotesDumpVersion version = VotesDumpVersion.Two)
+		    => await VndbUtils.GetAndParseVotesAsync(version).ConfigureAwait(false);
 
         private static async Task<T> GetDumpAsync<T>(String dumpUrl) where T : class
         {
@@ -44,9 +45,9 @@ namespace VndbSharp
 			return JsonConvert.DeserializeObject<T>(response);
 		}
 
-	    private static async Task<IEnumerable<Vote>> GetAndParseVotesAsync()
+	    private static async Task<IEnumerable<Vote>> GetAndParseVotesAsync(VotesDumpVersion version)
 	    {
-		    var request = VndbUtils.GetRequest(Constants.VotesDump);
+		    var request = VndbUtils.GetRequest(version == VotesDumpVersion.One ? Constants.VotesDump : Constants.VotesDump2);
 		    var response = await VndbUtils.GetResponseAsync(request).ConfigureAwait(false);
 
 		    if (response == null)
@@ -59,24 +60,38 @@ namespace VndbSharp
 
 		    foreach (var line in lines)
 		    {
-			    var values = line.Split(new[] {' '}, 3, StringSplitOptions.RemoveEmptyEntries);
-			    if (values.Length != 3)
+			    var values = line.Split(new[] {' '},
+					version == VotesDumpVersion.One ? 3 : 4,
+					StringSplitOptions.RemoveEmptyEntries);
+
+			    if ((version == VotesDumpVersion.One && values.Length != 3) || 
+					(version == VotesDumpVersion.Two && values.Length != 4))
 				    continue; // Invalid
 			    UInt32 vnId = 0;
 			    UInt32 uid = 0;
-			    Byte vote = 0;
+			    Byte votevValue = 0;
+			    var date = default(DateTime);
 
-				if (!UInt32.TryParse(values[0], out vnId) && 
-					!UInt32.TryParse(values[1], out uid) && 
-					!Byte.TryParse(values[2], out vote))
+				if (!UInt32.TryParse(values[0], out vnId) || 
+					!UInt32.TryParse(values[1], out uid) || 
+					!Byte.TryParse(values[2], out votevValue))
 					continue; // One of our numbers was... not numbers?
-			    
-				votes.Add(new Vote
-				{
-					VisualNovelId = vnId,
-					UserId = uid,
-					VoteValue = vote,
-				});
+
+			    if (version == VotesDumpVersion.Two && !DateTime.TryParse(values[3], out date))
+				    continue; // Invalid date?
+
+			    var vote = new Vote
+			    {
+				    Version = version,
+				    VisualNovelId = vnId,
+				    UserId = uid,
+				    VoteValue = votevValue,
+			    };
+
+			    if (version == VotesDumpVersion.Two)
+				    vote.AddedOn = date;
+
+				votes.Add(vote);
 		    }
 
 		    return votes;

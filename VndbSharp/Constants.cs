@@ -13,6 +13,7 @@ namespace VndbSharp
 		public const String TagsDump = "https://vndb.org/api/tags.json.gz";
 		public const String TraitsDump = "https://vndb.org/api/traits.json.gz";
 		public const String VotesDump = "https://vndb.org/api/votes.gz";
+		public const String VotesDump2 = "https://vndb.org/api/votes2.gz";
 
 		// Command End Character
 		public const Char EotChar = '\u0004';
