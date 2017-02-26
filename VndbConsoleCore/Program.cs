@@ -126,10 +126,9 @@ namespace VndbConsole
 			foreach (var visualNovel in visualNovels)
 			{
 				Console.WriteLine($"{visualNovel?.Name} is roughly " +
-								  $"{visualNovel?.Length.Description()} long," +
-								  Environment.NewLine +
+								  $"{visualNovel?.Length?.Description() ?? "Unknown"} long, " +
 								  $"has {visualNovel?.Tags.Length} tags " +
-								  $"and {visualNovel?.Screenshots.Length} screenshots.");
+								  $"and {visualNovel?.Screenshots.Length} screenshots");
 			}
 
 			if (visualNovels.HasMore)
@@ -427,7 +426,7 @@ namespace VndbConsole
 		{
 			Console.WriteLine("Get Filter Example");
 			// Lib = This Library (VndbSharp)
-			Console.WriteLine("Lib Usage: await await this._client.GetVisualNovelAsync(VndbFilters.Id.Equals(17, 18) " +
+			Console.WriteLine("Lib Usage: await this._client.GetVisualNovelAsync(VndbFilters.Id.Equals(17, 18) " +
 							  "| VndbFilters.Search.Fuzzy(\"aokana\"), VndbFlags.FullVisualNovel);");
 			// Api = Vndb Tcp Api
 			Console.WriteLine("Api Usage: get vn basic (id=[17,18] or search~\"aokana\")");
@@ -453,10 +452,9 @@ namespace VndbConsole
 			foreach (var visualNovel in vns)
 			{
 				Console.WriteLine($"{visualNovel?.Name} is roughly " +
-								  $"{visualNovel?.Length?.Description() ?? "Unknown"} long," +
-								  Environment.NewLine +
+								  $"{visualNovel?.Length?.Description() ?? "Unknown"} long, " +
 								  $"has {visualNovel?.Tags.Length} tags " +
-								  $"and {visualNovel?.Screenshots.Length} screenshots.");
+								  $"and {visualNovel?.Screenshots.Length} screenshots");
 			}
 
 			Console.WriteLine();

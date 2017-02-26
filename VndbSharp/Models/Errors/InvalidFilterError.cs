@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace VndbSharp.Models.Errors
 {
@@ -14,10 +15,11 @@ namespace VndbSharp.Models.Errors
 		/// <summary>
 		///		The operator given
 		/// </summary>
+		[JsonProperty("op")]
 		public String Operator { get; private set; }
 		/// <summary>
 		///		The value given
 		/// </summary>
-		public String Value { get; private set; }
+		public Object Value { get; private set; }
 	}
 }
