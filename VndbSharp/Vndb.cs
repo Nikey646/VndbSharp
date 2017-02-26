@@ -27,8 +27,14 @@ namespace VndbSharp
 		}
 
 #if UserAuth
+		[Obsolete("SecureString is not secure on non-Windows OSes when using .Net Core, or at all in Mono.\n" +
+				  "By Removing this attribute, you acknowledge the risks and will not make PRs or Issues " +
+				  "regarding this unless the situation in .Net Core / Mono changes.", true)]
 		public Vndb(String username, SecureString password)
 		{
+#warning SecureString is not secure on non-Windows OSes when using .Net Core, or at all in Mono. By removing the ObsoleteAttribute on this constructor, and/or this warning, you acknowledge the risks and will not make PRs or Issues regarding this unless the situation in .Net Core / Mono changes.
+			// To read more above the above messages, check out https://github.com/Nikey646/VndbSharp/wiki/Mono-and-.Net-Core#securestring--username--password-logins
+			// If that link is down, do some research on SecureString implementations in .Net Core, to see if they encrypt the data in memory on Unix.
 			this.UseTls = true;
 			this.Username = username;
 			this.Password = password;

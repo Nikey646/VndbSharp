@@ -7,12 +7,12 @@ VndbSharp is a C# library for the Visual Novel Database API
   - Easily Extensible
 
 ## Usage
-Check out the VndbConsole/Core projects for basic usage guidance.
+Check out the [VndbConsole projects](VndbConsoleCore/Program.cs) for basic usage guidance. The one `Program.cs` file is used for both the .Net Framework and .Net Core projects, but works in both. This shows that the library can be used from either the .Net Framework (4.6+) or .Net Core (.Net Standard 1.3+)
 
 ## TODO
-This list is currently ordered in the likely order that they will be completed. There is no guarantee that anything listed on this will be implemented, and it most certainly is the guaranteed order of implementation.
+There is no guarantee that anything listed on this will be implemented.
 
-  - [ ] Finish the Usage section of README.md
-  - [ ] Check the English of the README.md
+  - [ ] Work on the Read Me
+  - [ ] Provide a default RequestOptions class
   - [ ] ~~Wiki everything!~~ Document everything (public)!
   - [ ] Nuget package?
