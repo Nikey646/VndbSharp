@@ -15,8 +15,6 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="**\*.resx" />
-    <Compile Remove="Filters\Filter*.cs" />
-    <None Include="Filters\Filter*.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
