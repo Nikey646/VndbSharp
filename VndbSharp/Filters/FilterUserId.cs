@@ -1,12 +1,12 @@
 ﻿using System;
 using VndbSharp.Interfaces;
-using VndbSharp.Structs;
+using VndbSharp.Models;
 
 namespace VndbSharp.Filters
 {
 	public class FilterUserId : AbstractFilter<UInt32>
 	{
-		public FilterUserId(UInt32 value, FilterOperator filterOperator) : base(value, filterOperator)
+		private FilterUserId(UInt32 value, FilterOperator filterOperator) : base(value, filterOperator)
 		{ } 
 
 		protected override FilterOperator[] ValidOperators { get; } = {

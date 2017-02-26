@@ -1,18 +1,12 @@
 ﻿using System;
 using VndbSharp.Interfaces;
-using VndbSharp.Structs;
+using VndbSharp.Models;
 
 namespace VndbSharp.Filters
 {
 	public class FilterVisualNovel : AbstractFilter<Int32[]>
 	{
-		public FilterVisualNovel(Int32 value) : this(new[] {value}, FilterOperator.Equal)
-		{ }
-
-		public FilterVisualNovel(Int32[] value) : this(value, FilterOperator.Equal)
-		{ }
-
-		public FilterVisualNovel(Int32[] value, FilterOperator filterOperator) : base(value, filterOperator)
+		private FilterVisualNovel(Int32[] value, FilterOperator filterOperator) : base(value, filterOperator)
 		{ }
 
 		protected override FilterOperator[] ValidOperators { get; } = {FilterOperator.Equal};
@@ -20,7 +14,7 @@ namespace VndbSharp.Filters
 		protected override String FilterName { get; } = "vn";
 
 		public static IFilter FromEquals(Int32[] value) => new FilterVisualNovel(value, FilterOperator.Equal);
-		public static IFilter FromEquals(Int32 value) => new FilterVisualNovel(value);
+		public static IFilter FromEquals(Int32 value) => new FilterVisualNovel(new[] { value }, FilterOperator.Equal);
 
 		public override Boolean IsFilterValid() => this.Operator == FilterOperator.Equal;
 	}

@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Linq;
 using VndbSharp.Interfaces;
-using VndbSharp.Structs;
+using VndbSharp.Models;
 
 namespace VndbSharp.Filters
 {
 	public class FilterUsername : AbstractFilter<String[]>
 	{
-		public FilterUsername(String value, FilterOperator filterOperator) : base(new [] { value }, filterOperator)
-		{ }
-
-		public FilterUsername(String[] value, FilterOperator filterOperator) : base(value, filterOperator)
+		private FilterUsername(String[] value, FilterOperator filterOperator) : base(value, filterOperator)
 		{ }
 
 		protected override FilterOperator[] ValidOperators { get; } = {
@@ -20,8 +17,11 @@ namespace VndbSharp.Filters
 		protected override String FilterName { get; } = "username";
 
 		public static IFilter FromEquals(String[] value) => new FilterUsername(value, FilterOperator.Equal);
+		public static IFilter FromEquals(String value) => new FilterUsername(new[] { value }, FilterOperator.Equal);
 		public static IFilter FromNotEquals(String[] value) => new FilterUsername(value, FilterOperator.NotEqual);
+		public static IFilter FromNotEquals(String value) => new FilterUsername(new[] { value }, FilterOperator.NotEqual);
 		public static IFilter FromFuzzy(String[] value) => new FilterUsername(value, FilterOperator.Fuzzy);
+		public static IFilter FromFuzzy(String value) => new FilterUsername(new[] {value}, FilterOperator.Fuzzy);
 
 		public override Boolean IsFilterValid()
 		{

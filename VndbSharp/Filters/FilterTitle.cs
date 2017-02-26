@@ -1,12 +1,12 @@
 ﻿using System;
 using VndbSharp.Interfaces;
-using VndbSharp.Structs;
+using VndbSharp.Models;
 
 namespace VndbSharp.Filters
 {
 	public class FilterTitle : AbstractFilter<String>
 	{
-		public FilterTitle(String value, FilterOperator filterOperator) : base(value, filterOperator)
+		private FilterTitle(String value, FilterOperator filterOperator) : base(value, filterOperator)
 		{ }
 
 		protected override FilterOperator[] ValidOperators { get; } = {

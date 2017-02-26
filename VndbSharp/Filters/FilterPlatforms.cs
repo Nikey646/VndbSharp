@@ -1,15 +1,12 @@
 ﻿using System;
 using VndbSharp.Interfaces;
-using VndbSharp.Structs;
+using VndbSharp.Models;
 
 namespace VndbSharp.Filters
 {
 	public class FilterPlatforms : AbstractFilter<String[]>
 	{
-		public FilterPlatforms(String value, FilterOperator filterOperator) : this(new[] { value }, filterOperator)
-		{ }
-
-		public FilterPlatforms(String[] value, FilterOperator filterOperator) : base(value, filterOperator)
+		private FilterPlatforms(String[] value, FilterOperator filterOperator) : base(value, filterOperator)
 		{
 			this.CanBeNull = true;
 		}
@@ -19,7 +16,9 @@ namespace VndbSharp.Filters
 		protected override String FilterName { get; } = "platforms";
 
 		public static IFilter FromEquals(String[] value) => new FilterPlatforms(value, FilterOperator.Equal);
+		public static IFilter FromEquals(String value) => new FilterPlatforms(new[] { value }, FilterOperator.Equal);
 		public static IFilter FromNotEquals(String[] value) => new FilterPlatforms(value, FilterOperator.NotEqual);
+		public static IFilter FromNotEquals(String value) => new FilterPlatforms(new[] { value }, FilterOperator.NotEqual);
 
 		public override Boolean IsFilterValid()
 		{

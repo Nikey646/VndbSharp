@@ -1,12 +1,14 @@
 ﻿using System;
+using VndbSharp.Extensions;
 using VndbSharp.Interfaces;
-using VndbSharp.Structs;
+using VndbSharp.Models;
+using VndbSharp.Models.Common;
 
 namespace VndbSharp.Filters
 {
-	public class FilterReleased : AbstractFilter<Int32?>
+	public class FilterReleased : AbstractFilter<String>
 	{
-		public FilterReleased(DateTime? value, FilterOperator filterOperator) : base(value?.Year, filterOperator)
+		private FilterReleased(SimpleDate value, FilterOperator filterOperator) : base(value.ToString().Quote(), filterOperator)
 		{
 			this.CanBeNull = true;
 		}
@@ -18,9 +20,9 @@ namespace VndbSharp.Filters
 
 		protected override String FilterName { get; } = "released";
 
-		public static IFilter FromEquals(DateTime? value) => new FilterReleased(value, FilterOperator.Equal);
-		public static IFilter FromNotEquals(DateTime? value) => new FilterReleased(value, FilterOperator.NotEqual);
-		public static IFilter FromFuzzy(DateTime? value) => new FilterReleased(value, FilterOperator.Fuzzy);
+		public static IFilter FromEquals(SimpleDate value) => new FilterReleased(value, FilterOperator.Equal);
+		public static IFilter FromNotEquals(SimpleDate value) => new FilterReleased(value, FilterOperator.NotEqual);
+		public static IFilter FromFuzzy(SimpleDate value) => new FilterReleased(value, FilterOperator.Fuzzy);
 
 		public override Boolean IsFilterValid()
 		{

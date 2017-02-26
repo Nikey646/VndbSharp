@@ -1,13 +1,81 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
+using System.Reflection;
+using System.Text;
+using VndbSharp.Extensions;
 using VndbSharp.Interfaces;
-using VndbSharp.Structs;
+using VndbSharp.Models;
 
 namespace VndbSharp.Filters
 {
 	public abstract class AbstractFilter<T> : IFilter
 	{
+		protected AbstractFilter(T value, FilterOperator filterOperator)
+		{
+			this.Value = value;
+			this.Operator = filterOperator;
+
+			this.Type = typeof(T);
+
+			var isArray = this.Type.GetTypeInfo().BaseType == typeof(Array);
+
+			if (this.Type.GetTypeInfo().GenericTypeArguments.Length <= 0 && !isArray)
+				return;
+
+			this.Type = isArray ? this.Type.GetElementType() : this.Type.GetTypeInfo().GenericTypeArguments[0];
+			this.Count = (this.Value as IList)?.Count;
+		}
+
+		public override String ToString()
+		{
+//			if (!this.IsFilterValid()) // Cannot be in constructor if using abstract classes.
+//				throw new ArgumentOutOfRangeException("filterOperator", this.Operator, $"Provided filter is not valid. Valid filters are {String.Join(", ", this.ValidOperators.Select(o => o.Name))}");
+
+			var res = $"{this.FilterName} {this.Operator}";
+
+			if (this.CanBeNull && (this.Value == null))
+				return $"{res} null";
+
+			var valueList = this.Value as IList;
+			if (valueList == null)
+				return this.Type == typeof(String) ? $"{res} \"{this.Value}\"" : $"{res} {this.Value}";
+
+			if (valueList.Count == 1)
+				return this.Type == typeof(String) ? $"{res} \"{valueList[0]}\"" : $"{res} {valueList[0]}";
+
+			var values = new StringBuilder();
+			if (this.Type == typeof(String))
+			{
+				values.Append($"\"{String.Join("\",\"", valueList)}\"");
+			}
+			else
+			{
+				// TODO: Improve?
+				for (var i = 0; i < valueList.Count; i++)
+				{
+					values.Append(valueList[i]);
+					if (i+1 != valueList.Count)
+						values.Append(",");
+				}
+			}
+
+			return $"{res} [{values}]";
+		}
+
+		/// <summary>
+		///		Equivlant to IFilter.And(IFilter)
+		/// </summary>
+		public static IFilter operator &(AbstractFilter<T> filter1, IFilter filter2)
+			=> filter1.And(filter2);
+
+		/// <summary>
+		///		Equivlant to IFilter.Or(IFilter)
+		/// </summary>
+		public static IFilter operator |(AbstractFilter<T> filter1, IFilter filter2)
+			=> filter1.Or(filter2);
+
+		public abstract Boolean IsFilterValid();
+
 		protected abstract FilterOperator[] ValidOperators { get; }
 		protected abstract String FilterName { get; }
 		protected Boolean CanBeNull = false;
@@ -21,45 +89,5 @@ namespace VndbSharp.Filters
 		protected readonly Int32? Count;
 
 		private Type Type;
-
-		protected AbstractFilter(T value, FilterOperator filterOperator)
-		{
-			this.Value = value;
-			this.Operator = filterOperator;
-
-			this.Type = typeof(T);
-
-			var isArray = this.Type.BaseType == typeof(Array);
-
-			if (this.Type.GetGenericArguments().Length <= 0 && !isArray)
-				return;
-
-			this.Type = isArray ? this.Type.GetElementType() : this.Type.GetGenericArguments()[0];
-			this.Count = (this.Value as IList)?.Count;
-		}
-
-		public override String ToString()
-		{
-			if (!this.IsFilterValid()) // Cannot be in constructor if using abstract classes.
-				throw new ArgumentOutOfRangeException("filterOperator", this.Operator, $"Provided filter is not valid. Valid filters are {String.Join(", ", this.ValidOperators.Select(o => o.Name))}");
-
-			var res = $"{this.FilterName} {this.Operator}";
-
-			if (this.CanBeNull && (this.Value == null))
-				return $"{res} null";
-
-			var enumerableValue = this.Value as IList;
-			if (enumerableValue == null)
-				return this.Type == typeof(String) ? $"{res} \"{this.Value}\"" : $"{res} {this.Value}";
-
-			if (enumerableValue.Count == 1)
-				return this.Type == typeof(String) ? $"{res} \"{enumerableValue[0]}\"" : $"{res} {enumerableValue[0]}";
-
-			// TODO: Convert using Json.Net JArray object.
-			var values = this.Type == typeof(String) ? $"\"{String.Join("\",\"", enumerableValue)}\"" : String.Join(",", enumerableValue);
-			return $"{res} [{values}]";
-		}
-
-		public abstract Boolean IsFilterValid();
 	}
 }

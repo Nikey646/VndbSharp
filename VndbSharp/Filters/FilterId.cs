@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using VndbSharp.Interfaces;
-using VndbSharp.Structs;
+using VndbSharp.Models;
 
 namespace VndbSharp.Filters
 {
-	public class FilterId : AbstractFilter<Int32>
+	public class FilterId : AbstractFilter<UInt32[]>
 	{
-		public FilterId(Int32 value, FilterOperator filterOperator) : base(value, filterOperator)
+		internal FilterId(UInt32[] value, FilterOperator filterOperator) : base(value, filterOperator)
 		{ }
 
 		protected override FilterOperator[] ValidOperators { get; } = {
@@ -16,12 +18,19 @@ namespace VndbSharp.Filters
 
 		protected override String FilterName { get; } = "id";
 
-		public static IFilter FromEquals(Int32 value) => new FilterId(value, FilterOperator.Equal);
-		public static IFilter FromNotEquals(Int32 value) => new FilterId(value, FilterOperator.NotEqual);
-		public static IFilter FromGreaterThan(Int32 value) => new FilterId(value, FilterOperator.GreaterThan);
-		public static IFilter FromGreaterOrEqual(Int32 value) => new FilterId(value, FilterOperator.GreaterOrEqual);
-		public static IFilter FromLessThan(Int32 value) => new FilterId(value, FilterOperator.LessThan);
-		public static IFilter FromLessOrEqual(Int32 value) => new FilterId(value, FilterOperator.LessOrEqual);
+		public static IFilter FromEquals(UInt32 value) => new FilterId(new []{value}, FilterOperator.Equal);
+		public static IFilter FromNotEquals(UInt32 value) => new FilterId(new[] { value }, FilterOperator.NotEqual);
+		public static IFilter FromGreaterThan(UInt32 value) => new FilterId(new[] { value }, FilterOperator.GreaterThan);
+		public static IFilter FromGreaterOrEqual(UInt32 value) => new FilterId(new[] { value }, FilterOperator.GreaterOrEqual);
+		public static IFilter FromLessThan(UInt32 value) => new FilterId(new[] { value }, FilterOperator.LessThan);
+		public static IFilter FromLessOrEqual(UInt32 value) => new FilterId(new[] { value }, FilterOperator.LessOrEqual);
+
+		public static IFilter FromEquals(IEnumerable<UInt32> value) => new FilterId(value.ToArray(), FilterOperator.Equal);
+		public static IFilter FromNotEquals(IEnumerable<UInt32> value) => new FilterId(value.ToArray(), FilterOperator.NotEqual);
+		public static IFilter FromGreaterThan(IEnumerable<UInt32> value) => new FilterId(value.ToArray(), FilterOperator.GreaterThan);
+		public static IFilter FromGreaterOrEqual(IEnumerable<UInt32> value) => new FilterId(value.ToArray(), FilterOperator.GreaterOrEqual);
+		public static IFilter FromLessThan(IEnumerable<UInt32> value) => new FilterId(value.ToArray(), FilterOperator.LessThan);
+		public static IFilter FromLessOrEqual(IEnumerable<UInt32> value) => new FilterId(value.ToArray(), FilterOperator.LessOrEqual);
 
 		public override Boolean IsFilterValid()
 		{

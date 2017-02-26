@@ -1,161 +1,235 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Net;
+using System.Linq;
+using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using VndbSharp.Enums;
-using VndbSharp.Structs.Models.Dumps;
+using VndbSharp.Attributes;
+using VndbSharp.Json;
+using VndbSharp.Json.Converters;
+using VndbSharp.Models;
+using VndbSharp.Models.Common;
+using VndbSharp.Models.Dumps;
 
 namespace VndbSharp
 {
-    public static class VndbUtils
-    {
-		internal static String ClientName = "VndbSharp";
-		internal static Version Version = new Version(0, 1);
+	/// <summary>
+	///		Some misc utilities such as retrieving the Database Dumps
+	/// </summary>
+	public static class VndbUtils
+	{
 
-		private static DateTime? _lastTime = null;
+		public static Boolean ValidateFlagsByMethod(String method, VndbFlags flags, out VndbFlags invalidFlags)
+		{
+			VndbFlags fullFlags;
 
+			switch (method)
+			{
+				case Constants.GetVisualNovelCommand:
+					fullFlags = VndbFlags.FullVisualNovel;
+					break;
+				case Constants.GetReleaseCommand:
+					fullFlags = VndbFlags.FullRelease;
+					break;
+				case Constants.GetProducerCommand:
+					fullFlags = VndbFlags.FullProducer;
+					break;
+				case Constants.GetCharacterCommand:
+					fullFlags = VndbFlags.FullCharacter;
+					break;
+				case Constants.GetUserCommand:
+					fullFlags = VndbFlags.FullUser;
+					break;
+				case Constants.GetVotelistCommand:
+					fullFlags = VndbFlags.FullVotelist;
+					break;
+				case Constants.GetVisualNovelListCommand:
+					fullFlags = VndbFlags.FullVisualNovelList;
+					break;
+				case Constants.GetWishlistCommand:
+					fullFlags = VndbFlags.FullWishlist;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(method));
+			}
+
+			invalidFlags = flags & ~fullFlags;
+			return invalidFlags == 0;
+		}
+
+		/// <summary>
+		///		Downloads and Parses the Tag Dump from Vndb
+		/// </summary>
+		/// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Tag"/></returns>
+		/// <exception cref="HttpRequestException">Occurs when the tags.json.gz file returns a non-success status</exception>
+		public static async Task<IEnumerable<Tag>> GetTagsDumpAsync()
+			=> await VndbUtils.GetDumpAsync<IEnumerable<Tag>>(Constants.TagsDump).ConfigureAwait(false);
+
+		/// <summary>
+		///		Downloads and Parses the Traits Dump from Vndb
+		/// </summary>
+		/// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Trait"/></returns>
+		/// <exception cref="HttpRequestException">Occurs when the traits.json.gz file returns a non-success status</exception>
+		public static async Task<IEnumerable<Trait>> GetTraitsDumpAsync()
+			=> await VndbUtils.GetDumpAsync<IEnumerable<Trait>>(Constants.TraitsDump).ConfigureAwait(false);
+
+		/// <summary>
+		///		Downloads and PArses the Votes Dump from Vndb
+		/// </summary>
+		/// <param name="version">The version of the Votes Dump to grab</param>
+		/// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Vote"/></returns>
+		/// <exception cref="HttpRequestException">Occurs when the votes.gz file returns a non-success status</exception>
+		public static async Task<IEnumerable<Vote>> GetVotesDumpAsync(VoteDumpVersion version = VoteDumpVersion.Two)
+			=> await VndbUtils.GetAndParseVotesAsync(version).ConfigureAwait(false);
+
+		// This might be a bit expensive to call due to the excessive casts?
+		internal static IEnumerable<String> ConvertFlagsToString2(String method, VndbFlags flags)
+		{
+			Boolean IsDistinctValue(Enum value)
+			{
+				var valueInt = Convert.ToInt32(value);
+				var current = Convert.ToInt32(value) >> 1;
+
+				while (current > 0)
+				{
+					if ((valueInt & current) != 0)
+						return false;
+					current >>= 1;
+				}
+
+				return true;
+			}
+
+			var type = typeof(VndbFlags);
+			var setFlags = Enum.GetValues(type).Cast<Enum>().Where(c => flags.HasFlag(c) && IsDistinctValue(c));
+
+			var typeInfo = type.GetTypeInfo();
+			return setFlags.Where(f => Convert.ToInt32(f) != 0)
+				.Select(f => f.ToString())
+				.Select(f => typeInfo.GetDeclaredField(f)?.GetCustomAttribute<FlagIdentityAttribute>()?.Identity)
+				.Where(f => f != null);
+		}
+
+		internal static IEnumerable<String> ConvertFlagsToString(String method, VndbFlags flags)
+		{
+			var type = typeof(VndbFlags);
+			var typeInfo = type.GetTypeInfo();
+			foreach (Enum value in Enum.GetValues(type))
+			{
+				if (!flags.HasFlag(value))
+					continue;
+
+				var fi = typeInfo.GetDeclaredField(value.ToString());
+				var identity = fi.GetCustomAttribute<FlagIdentityAttribute>();
+
+				if (identity == null)
+					continue;
+
+				if (!(method == Constants.GetCharacterCommand && (VndbFlags) value == VndbFlags.VisualNovels))
+					yield return identity.Identity;
+				else yield return $"{identity.Identity}s"; // Ugly hack to work around *two* vn(s) flags
+			}
+		}
+
+		internal static async Task<T> GetDumpAsync<T>(String url)
+			where T : class
+		{
+			// .Net Core removed WebClient and Http/WebRequests, so we need to use HttpClient.
+			var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
+			// Manually add the headers every request rather then using the default headers,
+			// incase the client was rebuilt with a new name / version mid-application session
+			request.Headers.Add("User-Agent", $"{VndbUtils.ClientName} (v{VndbUtils.ClientVersion})");
+
+			var response = await VndbUtils.HttpClient.SendAsync(request);
+			response.EnsureSuccessStatusCode(); // Ensure we got data
+
+			var gzipStream = await response.Content.ReadAsStreamAsync();
+			var rawContents = await VndbUtils.UnGzip(gzipStream);
+
+			return JsonConvert.DeserializeObject<T>(rawContents, new JsonSerializerSettings
+			{
+				ContractResolver = VndbContractResolver.Instance,
+			});
+		}
+
+		internal static async Task<IEnumerable<Vote>> GetAndParseVotesAsync(VoteDumpVersion version)
+		{
+			var url = version == VoteDumpVersion.One ? Constants.VotesDump : Constants.VotesDump2;
+			Debug.WriteLine($"Requesting Votes Dump via {url}");
+			// .Net Core removed WebClient and Http/WebRequests, so we need to use HttpClient.
+			var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
+			// Manually add the headers every request rather then using the default headers,
+			// incase the client was rebuilt with a new name / version mid-application session
+			request.Headers.Add("User-Agent", $"{VndbUtils.ClientName} (v{VndbUtils.ClientVersion})");
+
+			var response = await VndbUtils.HttpClient.SendAsync(request);
+			response.EnsureSuccessStatusCode(); // Ensure we got data
+
+			var gzipStream = await response.Content.ReadAsStreamAsync();
+			var rawContents = await VndbUtils.UnGzip(gzipStream);
+
+			response.Dispose();
+			request.Dispose();
+
+			var results = new List<Vote>();
+
+			var votes = rawContents.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
+			var expectedValues = version == VoteDumpVersion.One ? 3 : 4;
+
+			// Resharper "Loop can be converted to LINQ-expression won't work due to inline "out var" declaration
+			foreach (var vote in votes)
+			{
+				var values = vote.Split(new [] {' '}, expectedValues, StringSplitOptions.RemoveEmptyEntries);
+
+				if (values.Length != expectedValues)
+					continue;
+
+				SimpleDate date = null;
+
+				if (!UInt32.TryParse(values[0], out var vnId) || 
+					!UInt32.TryParse(values[1], out var uid) || 
+					!Byte.TryParse(values[2], out var value))
+					continue;
+
+				if (version == VoteDumpVersion.Two && 
+					(date = (SimpleDate) SimpleDateConverter.ParseString(values[3])) == null)
+					continue;
+
+				results.Add(new Vote(version, vnId, uid, value, date));
+			}
+
+			return results;
+		}
+
+		internal static async Task<String> UnGzip(Stream data, Boolean leaveOpen = false)
+		{
+			var buffer = new Byte[VndbUtils.BufferSize];
+			using (var gzipStream = new GZipStream(data, CompressionMode.Decompress, leaveOpen))
+			using (var rawStream = new MemoryStream())
+			{
+				var bytesRead = 0;
+				while ((bytesRead = await gzipStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
+					await rawStream.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
+				return Encoding.UTF8.GetString(rawStream.ToArray());
+			}
+		}
+
+		/// <summary>
+		///		The Size of the Buffer to use when Downloading the Dumps
+		/// </summary>
 		public static Int32 BufferSize { get; set; } = 4096;
 
-        public static async Task<IEnumerable<Tag>> GetTagDumpAsync()
-            => await VndbUtils.GetDumpAsync<IEnumerable<Tag>>(Constants.TagsDump).ConfigureAwait(false);
+		internal static String ClientName { get; set; } = "VndbSharp";
+		internal static String ClientVersion { get; set; } = "0.2";
 
-        public static async Task<IEnumerable<Trait>> GetTraitDumpAsync()
-            => await VndbUtils.GetDumpAsync<IEnumerable<Trait>>(Constants.TraitsDump).ConfigureAwait(false);
+		internal static HttpClient HttpClient
+			=> VndbUtils._httpClientInstance ?? (VndbUtils._httpClientInstance = new HttpClient());
 
-	    public static async Task<IEnumerable<Vote>> GetVotesDumpAsync(VotesDumpVersion version = VotesDumpVersion.Two)
-		    => await VndbUtils.GetAndParseVotesAsync(version).ConfigureAwait(false);
-
-        private static async Task<T> GetDumpAsync<T>(String dumpUrl) where T : class
-        {
-            //sets a delay of 1 minute between fetching each dump
-            if (VndbUtils._lastTime ==null && DateTime.Now - VndbUtils._lastTime < TimeSpan.FromSeconds(60))
-                return null; //should we send a message of "too many requests" or similar here instead of null?
-
-	        var request = VndbUtils.GetRequest(dumpUrl);
-	        var response = await VndbUtils.GetResponseAsync(request).ConfigureAwait(false);
-
-	        if (response == null)
-				return null;
-
-			VndbUtils._lastTime = DateTime.Now;
-			return JsonConvert.DeserializeObject<T>(response);
-		}
-
-	    private static async Task<IEnumerable<Vote>> GetAndParseVotesAsync(VotesDumpVersion version)
-	    {
-		    var request = VndbUtils.GetRequest(version == VotesDumpVersion.One ? Constants.VotesDump : Constants.VotesDump2);
-		    var response = await VndbUtils.GetResponseAsync(request).ConfigureAwait(false);
-
-		    if (response == null)
-			    return null;
-
-		    var votes = new List<Vote>();
-
-			// Why this isn't just a json array of arrays is beyond me >:(
-		    var lines = response.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
-
-		    foreach (var line in lines)
-		    {
-			    var values = line.Split(new[] {' '},
-					version == VotesDumpVersion.One ? 3 : 4,
-					StringSplitOptions.RemoveEmptyEntries);
-
-			    if ((version == VotesDumpVersion.One && values.Length != 3) || 
-					(version == VotesDumpVersion.Two && values.Length != 4))
-				    continue; // Invalid
-			    UInt32 vnId = 0;
-			    UInt32 uid = 0;
-			    Byte votevValue = 0;
-			    var date = default(DateTime);
-
-				if (!UInt32.TryParse(values[0], out vnId) || 
-					!UInt32.TryParse(values[1], out uid) || 
-					!Byte.TryParse(values[2], out votevValue))
-					continue; // One of our numbers was... not numbers?
-
-			    if (version == VotesDumpVersion.Two && !DateTime.TryParse(values[3], out date))
-				    continue; // Invalid date?
-
-			    var vote = new Vote
-			    {
-				    Version = version,
-				    VisualNovelId = vnId,
-				    UserId = uid,
-				    VoteValue = votevValue,
-			    };
-
-			    if (version == VotesDumpVersion.Two)
-				    vote.AddedOn = date;
-
-				votes.Add(vote);
-		    }
-
-		    return votes;
-	    }
-
-	    private static WebRequest GetRequest(String url)
-		{
-			var request = (HttpWebRequest)WebRequest.Create(url);
-			request.Method = WebRequestMethods.Http.Get;
-			request.Timeout = 20000;
-			request.Proxy = null;
-			request.UserAgent = $"{VndbUtils.ClientName} (v{VndbUtils.Version})";
-
-			return request;
-		}
-
-		private static async Task<String> GetResponseAsync(WebRequest request)
-		{
-			HttpWebResponse response = null;
-			Stream responseStream = null;
-			MemoryStream responseContent = null;
-
-			try
-			{
-				response = (HttpWebResponse) await request.GetResponseAsync().ConfigureAwait(false);
-				responseStream = response.GetResponseStream();
-				responseContent = new MemoryStream();
-
-				if (responseStream == null)
-					return null;
-
-//				var headers = response.Headers; // Not used
-				var buffer = new Byte[VndbUtils.BufferSize];
-				var encoding = String.IsNullOrWhiteSpace(response.CharacterSet)
-					? Encoding.UTF8
-					: Encoding.GetEncoding(response.CharacterSet);
-
-
-				Int32 bytesRead;
-				while ((bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
-					await responseContent.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
-
-				// Reset our position;
-				responseContent.Position = 0;
-				// Reset the buffer as well
-				buffer = new Byte[VndbUtils.BufferSize];
-				using (var gzipStream = new GZipStream(responseContent, CompressionMode.Decompress))
-				using (var finalStream = new MemoryStream())
-				{
-					while ((bytesRead = await gzipStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
-						await finalStream.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
-					return encoding.GetString(finalStream.ToArray());
-				}
-			}
-			catch (WebException)
-			{
-				return null;
-			}
-			finally
-			{
-				response?.Dispose();
-				responseStream?.Dispose();
-				responseContent?.Dispose();
-			}
-		}
+		internal static HttpClient _httpClientInstance;
 	}
 }

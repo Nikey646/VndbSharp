@@ -1,15 +1,12 @@
 ﻿using System;
 using VndbSharp.Interfaces;
-using VndbSharp.Structs;
+using VndbSharp.Models;
 
 namespace VndbSharp.Filters
 {
 	public class FilterSearch : AbstractFilter<String>
 	{
-		public FilterSearch(String value) : this(value, FilterOperator.Fuzzy)
-		{ }
-
-		public FilterSearch(String value, FilterOperator filterOperator) : base(value, filterOperator)
+		private FilterSearch(String value, FilterOperator filterOperator) : base(value, filterOperator)
 		{ }
 
 		protected override FilterOperator[] ValidOperators { get; } = {FilterOperator.Fuzzy};
