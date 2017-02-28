@@ -39,7 +39,7 @@ namespace VndbConsole
 //			await this.GetVisualNovelListAsync();
 //			await this.GetWishlistAsync();
 
-			await this.GetFilterExampleAsync();
+//			await this.GetFilterExampleAsync();
 //			await this.GetInvalidFlagsExampleAsync();
 //			await this.GetErrorExampleAsync();
 
@@ -164,7 +164,8 @@ namespace VndbConsole
 			var englishRelease = releases.FirstOrDefault(r => r.Languages[0] == "en" && r.Type == ReleaseType.Complete);
 
 			// Yeah i dunno. Here's a primitive example!
-			Console.WriteLine($"Ever17 had a {englishRelease.MinimumAge}+ English Release on {englishRelease.Released}, on {englishRelease.Platforms[0]}.");
+			Console.WriteLine($"Ever17 had a {englishRelease.MinimumAge}+ English Release on {englishRelease.Released} " +
+							  $"that was {englishRelease.Type}, on {englishRelease.Platforms[0]}.");
 
 			if (releases.HasMore) // This doesn't really work since we only show 1
 				Console.WriteLine("And other more releases!");
