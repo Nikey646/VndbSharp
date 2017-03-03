@@ -63,6 +63,7 @@
     <Compile Include="Enums\Character\Role.cs" />
     <Compile Include="Enums\Dumps\TagCategory.cs" />
     <Compile Include="Enums\VotesDumpVersion.cs" />
+    <Compile Include="Filters\FilterTraits.cs" />
     <Compile Include="Structs\Models\Dumps\Trait.cs" />
     <Compile Include="Enums\ErrorType.cs" />
     <Compile Include="Enums\ThrottledType.cs" />
