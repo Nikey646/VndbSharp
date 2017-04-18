@@ -8,7 +8,7 @@ using VndbSharp.Models.Common;
 namespace VndbSharp
 {
 	// Not public yet
-	internal class VndbFilters
+	public class VndbFilters
 	{
 		public class Id : AbstractFilter<UInt32[]>
 		{
