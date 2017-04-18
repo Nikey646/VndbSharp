@@ -18,7 +18,7 @@ namespace VndbSharp.Models.VisualNovel
 		public SimpleDate Released { get; private set; } // Release or Released?
 		public ReadOnlyCollection<String> Languages { get; private set; }
 		[JsonProperty("orig_lang")]
-		public ReadOnlyCollection<String> OriginalLanauges { get; private set; }
+		public ReadOnlyCollection<String> OriginalLanguages { get; private set; }
 		public ReadOnlyCollection<String> Platforms { get; private set; }
 		[IsCsv]
 		public ReadOnlyCollection<String> Aliases { get; private set; }
