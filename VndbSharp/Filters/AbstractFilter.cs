@@ -1,13 +1,79 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
+using System.Reflection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using VndbSharp.Extensions;
+using VndbSharp.Filters.Conditionals;
 using VndbSharp.Interfaces;
-using VndbSharp.Structs;
+using VndbSharp.Models;
 
 namespace VndbSharp.Filters
 {
 	public abstract class AbstractFilter<T> : IFilter
 	{
+		protected AbstractFilter(T value, FilterOperator filterOperator)
+		{
+			this.Value = value;
+			this.Operator = filterOperator;
+
+			this.Type = typeof(T);
+
+			this.IsArray = this.Type.GetTypeInfo().BaseType == typeof(Array);
+
+			// This should be OrElse woops
+			if (this.Type.GetTypeInfo().GenericTypeArguments.Length <= 0 && !this.IsArray)
+				return;
+
+			this.Type = this.IsArray 
+				? this.Type.GetElementType() 
+				: this.Type.GetTypeInfo().GenericTypeArguments[0];
+			this.Count = (this.Value as IList)?.Count ?? (this.Value == null ? 0 : 1);
+		}
+
+		public override String ToString()
+		{
+			var res = $"{this.FilterName}{this.Operator}";
+
+			if (this.CanBeNull && (this.Value == null))
+				return $"{res}null";
+
+			if (!this.IsArray)
+				return this.Type == typeof(String) 
+					? $"{res}\"{this.Value}\"" 
+					: $"{res}{this.Value}";
+
+			if (this.Count == 1 && this.IsArray)
+			{
+				var valueList = this.Value as IList;
+				return this.Type == typeof(String)
+					? $"{res}\"{valueList[0]}\""  // Allow the Null Reference to throw
+					: $"{res}{valueList[0]}";  // Allow the Null Reference to throw
+			}
+			
+			// Doesn't use the Contract Resolver, Some things *may* be funky,
+			// but should be fine for value types like Int32 / String
+			return $"{res}{new JArray(this.Value).ToString(Formatting.None)}";
+		}
+
+		/// <summary>
+		///		Equivlant to IFilter.And(IFilter)
+		/// </summary>
+		public static FilterAnd operator &(AbstractFilter<T> leftFilter, IFilter rightFilter)
+			=> leftFilter.And(rightFilter);
+
+		/// <summary>
+		///		Equivlant to IFilter.Or(IFilter)
+		/// </summary>
+		public static FilterOr operator |(AbstractFilter<T> leftFilter, IFilter rightFilter)
+			=> leftFilter.Or(rightFilter);
+
+		/// <summary>
+		///		Called when constructing the filter of a request, to check that the Operator can be performed with the provided Value(s)
+		/// </summary>
+		/// <returns>True the current Operator can be used with the current Value(s)</returns>
+		public abstract Boolean IsFilterValid();
+
 		protected abstract FilterOperator[] ValidOperators { get; }
 		protected abstract String FilterName { get; }
 		protected Boolean CanBeNull = false;
@@ -19,47 +85,8 @@ namespace VndbSharp.Filters
 		///		If an array is passed, the number of items.
 		/// </summary>
 		protected readonly Int32? Count;
+		protected readonly Boolean IsArray;
 
 		private Type Type;
-
-		protected AbstractFilter(T value, FilterOperator filterOperator)
-		{
-			this.Value = value;
-			this.Operator = filterOperator;
-
-			this.Type = typeof(T);
-
-			var isArray = this.Type.BaseType == typeof(Array);
-
-			if (this.Type.GetGenericArguments().Length <= 0 && !isArray)
-				return;
-
-			this.Type = isArray ? this.Type.GetElementType() : this.Type.GetGenericArguments()[0];
-			this.Count = (this.Value as IList)?.Count;
-		}
-
-		public override String ToString()
-		{
-			if (!this.IsFilterValid()) // Cannot be in constructor if using abstract classes.
-				throw new ArgumentOutOfRangeException("filterOperator", this.Operator, $"Provided filter is not valid. Valid filters are {String.Join(", ", this.ValidOperators.Select(o => o.Name))}");
-
-			var res = $"{this.FilterName} {this.Operator}";
-
-			if (this.CanBeNull && (this.Value == null))
-				return $"{res} null";
-
-			var enumerableValue = this.Value as IList;
-			if (enumerableValue == null)
-				return this.Type == typeof(String) ? $"{res} \"{this.Value}\"" : $"{res} {this.Value}";
-
-			if (enumerableValue.Count == 1)
-				return this.Type == typeof(String) ? $"{res} \"{enumerableValue[0]}\"" : $"{res} {enumerableValue[0]}";
-
-			// TODO: Convert using Json.Net JArray object.
-			var values = this.Type == typeof(String) ? $"\"{String.Join("\",\"", enumerableValue)}\"" : String.Join(",", enumerableValue);
-			return $"{res} [{values}]";
-		}
-
-		public abstract Boolean IsFilterValid();
 	}
 }
