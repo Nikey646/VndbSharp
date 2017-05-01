@@ -59,6 +59,23 @@ namespace VndbSharp
 			}
 		}
 
+		public class UserId : AbstractFilter<UInt32>
+		{
+			private UserId(UInt32 value, FilterOperator filterOperator) : base(value, filterOperator)
+			{ }
+
+			protected override FilterOperator[] ValidOperators { get; } = {
+				FilterOperator.Equal
+			};
+
+			protected override String FilterName { get; } = "uid";
+
+			public static UserId Equals(UInt32 value) => new UserId(value, FilterOperator.Equal);
+
+			public override Boolean IsFilterValid()
+				=> this.Operator == FilterOperator.Equal;
+		}
+
 		public class FirstChar : AbstractFilter<Char?>
 		{
 			private FirstChar(Char? value, FilterOperator filterOperator)
@@ -287,23 +304,6 @@ namespace VndbSharp
 
 			public override Boolean IsFilterValid()
 				=> this.ValidOperators.Contains(this.Operator);
-		}
-
-		public class UserId : AbstractFilter<UInt32>
-		{
-			private UserId(UInt32 value, FilterOperator filterOperator) : base(value, filterOperator)
-			{ }
-
-			protected override FilterOperator[] ValidOperators { get; } = {
-				FilterOperator.Equal
-			};
-
-			protected override String FilterName { get; } = "uid";
-
-			public static UserId Equals(UInt32 value) => new UserId(value, FilterOperator.Equal);
-
-			public override Boolean IsFilterValid()
-				=> this.Operator == FilterOperator.Equal;
 		}
 
 		public class Username : AbstractFilter<String[]>
