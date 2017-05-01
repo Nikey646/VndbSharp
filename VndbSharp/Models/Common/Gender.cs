@@ -1,6 +1,6 @@
 ﻿using VndbSharp.Attributes;
 
-namespace VndbSharp.Models.Character
+namespace VndbSharp.Models.Common
 {
 	public enum Gender
 	{

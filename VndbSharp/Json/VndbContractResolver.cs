@@ -7,6 +7,7 @@ using VndbSharp.Attributes;
 using VndbSharp.Extensions;
 using VndbSharp.Json.Converters;
 using VndbSharp.Models.Character;
+using VndbSharp.Models.Common;
 using VndbSharp.Models.Dumps;
 using VndbSharp.Models.Errors;
 using VndbSharp.Models.VisualNovel;
