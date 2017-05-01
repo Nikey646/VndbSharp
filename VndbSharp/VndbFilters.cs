@@ -39,6 +39,26 @@ namespace VndbSharp
 			}
 		}
 
+		public class AliasId : AbstractFilter<UInt32[]>
+		{
+			internal AliasId(UInt32[] value, FilterOperator filterOperator)
+				: base(value, filterOperator)
+			{ }
+
+			protected override FilterOperator[] ValidOperators { get; } = {
+				FilterOperator.Equal
+			};
+
+			protected override String FilterName { get; } = "id";
+
+			public static AliasId Equals(params UInt32[] value) => new AliasId(value, FilterOperator.Equal);
+
+			public override Boolean IsFilterValid()
+			{;
+				return this.ValidOperators.Contains(this.Operator);
+			}
+		}
+
 		public class FirstChar : AbstractFilter<Char?>
 		{
 			private FirstChar(Char? value, FilterOperator filterOperator)
