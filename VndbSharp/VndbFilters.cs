@@ -231,6 +231,25 @@ namespace VndbSharp
 				=> this.ValidOperators.Contains(this.Operator);
 		}
 
+		public class Title : AbstractFilter<String>
+		{
+			private Title(String value, FilterOperator filterOperator) : base(value, filterOperator)
+			{ }
+
+			protected override FilterOperator[] ValidOperators { get; } = {
+				FilterOperator.Equal, FilterOperator.NotEqual, FilterOperator.Fuzzy
+			};
+
+			protected override String FilterName { get; } = "title";
+
+			public static Title Equals(String value) => new Title(value, FilterOperator.Equal);
+			public static Title NotEquals(String value) => new Title(value, FilterOperator.NotEqual);
+			public static Title Fuzzy(String value) => new Title(value, FilterOperator.Fuzzy);
+
+			public override Boolean IsFilterValid()
+				=> this.ValidOperators.Contains(this.Operator);
+		}
+
 		public class Name : AbstractFilter<String>
 		{
 			private Name(String value, FilterOperator filterOperator) : base(value, filterOperator)
@@ -240,7 +259,7 @@ namespace VndbSharp
 				FilterOperator.Equal, FilterOperator.NotEqual, FilterOperator.Fuzzy
 			};
 
-			protected override String FilterName { get; } = "title";
+			protected override String FilterName { get; } = "name";
 
 			public static Name Equals(String value) => new Name(value, FilterOperator.Equal);
 			public static Name NotEquals(String value) => new Name(value, FilterOperator.NotEqual);
