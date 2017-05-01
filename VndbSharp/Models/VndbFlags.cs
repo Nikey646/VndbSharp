@@ -87,9 +87,16 @@ namespace VndbSharp.Models
 		Traits = 1 << 10,
 
 		/// <summary>
-		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Anime"/> | <see cref="Relations"/> | <see cref="Tags"/> | <see cref="Stats"/> | <see cref="Screenshots"/>
+		///		<para>Provides the staff who worked on the VN</para>
+		///		<para>Valid on: Vn</para>
 		/// </summary>
-		FullVisualNovel = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Anime | VndbFlags.Relations | VndbFlags.Tags | VndbFlags.Stats | VndbFlags.Screenshots,
+		[FlagIdentity("staff")]
+		Staff = 1 << 11,
+
+		/// <summary>
+		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Anime"/> | <see cref="Relations"/> | <see cref="Tags"/> | <see cref="Stats"/> | <see cref="Screenshots"/> | <see cref="Staff"/>
+		/// </summary>
+		FullVisualNovel = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Anime | VndbFlags.Relations | VndbFlags.Tags | VndbFlags.Stats | VndbFlags.Screenshots | VndbFlags.Staff,
 
 		/// <summary>
 		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="VisualNovels"/> | <see cref="Producers"/>
