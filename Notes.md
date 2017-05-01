@@ -14,6 +14,7 @@ Should the `VndbFilters` class be moved into another folder, away from the root 
 ## TODO
 Change all instances of Int32 where the number cannot go below 0 to UInt64
 Change all instances of Int32 where the number can go below 0 to Int64
+Update to `IReadOnlyCollection<T>` instead of `T[]`
 
 ## Progress
 The rough estimate of progress on the .Net Core port is
