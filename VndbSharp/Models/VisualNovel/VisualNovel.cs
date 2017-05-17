@@ -24,6 +24,7 @@ namespace VndbSharp.Models.VisualNovel
 		public ReadOnlyCollection<String> Aliases { get; private set; }
 		public VisualNovelLength? Length { get; private set; }
 		public String Description { get; private set; }
+		[JsonProperty("links")]
 		public VisualNovelLinks VisualNovelLinks { get; private set; }
 		public String Image { get; private set; }
 		[JsonProperty("image_nsfw")]
