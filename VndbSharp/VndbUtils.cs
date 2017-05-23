@@ -54,6 +54,9 @@ namespace VndbSharp
 				case Constants.GetWishlistCommand:
 					fullFlags = VndbFlags.FullWishlist;
 					break;
+				case Constants.GetStaffCommand:
+				    fullFlags = VndbFlags.FullStaff;
+					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(method));
 			}

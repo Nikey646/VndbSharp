@@ -63,7 +63,7 @@ namespace VndbSharp.Models
 		///		<para>Valid on: Release, Character</para>
 		/// </summary>
 		[FlagIdentity("vn")]
-		VisualNovels = 1 << 7,
+		VisualNovel = 1 << 7,
 
 		/// <summary>
 		///		<para>Provides producers metadata</para>
@@ -93,15 +93,36 @@ namespace VndbSharp.Models
 		[FlagIdentity("staff")]
 		Staff = 1 << 11,
 
+	    /// <summary>
+	    ///		<para>Provides the list of voice actresses who worked on the VN</para>
+	    ///		<para>Valid on: Character, Staff</para>
+	    /// </summary>
+		[FlagIdentity("voiced")]
+		Voiced = 1 << 12,
+
+	    /// <summary>
+	    ///		<para>Provides a list of VNs this staff has worked on</para>
+	    ///		<para>Valid on: Staff</para>
+	    /// </summary>
+	    [FlagIdentity("vns")]
+	    VisualNovels = 1 << 13,
+
+		/// <summary>
+		///		<para>Provides the aliases of the staff who worked on the VN</para>
+		///		<para>Valid on: Staff</para>
+		/// </summary>
+		//[FlagIdentity("aliases")]
+		//Aliases = 1 << 14,	    
+
 		/// <summary>
 		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Anime"/> | <see cref="Relations"/> | <see cref="Tags"/> | <see cref="Stats"/> | <see cref="Screenshots"/> | <see cref="Staff"/>
 		/// </summary>
 		FullVisualNovel = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Anime | VndbFlags.Relations | VndbFlags.Tags | VndbFlags.Stats | VndbFlags.Screenshots | VndbFlags.Staff,
 
 		/// <summary>
-		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="VisualNovels"/> | <see cref="Producers"/>
+		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="VisualNovel"/> | <see cref="Producers"/>
 		/// </summary>
-		FullRelease = VndbFlags.Basic | VndbFlags.Details | VndbFlags.VisualNovels | VndbFlags.Producers,
+		FullRelease = VndbFlags.Basic | VndbFlags.Details | VndbFlags.VisualNovel | VndbFlags.Producers,
 
 		/// <summary>
 		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Relations"/>
@@ -109,9 +130,15 @@ namespace VndbSharp.Models
 		FullProducer = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Relations,
 		
 		/// <summary>
-		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Measurements"/> | <see cref="Traits"/> | <see cref="VisualNovels"/>
+		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Measurements"/> | <see cref="Traits"/> | <see cref="VisualNovels" /> | <see cref="Voiced"/>
 		/// </summary>
-		FullCharacter = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Measurements | VndbFlags.Traits | VndbFlags.VisualNovels,
+		FullCharacter = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Measurements | VndbFlags.Traits | VndbFlags.VisualNovels | VndbFlags.Voiced,
+
+	    /// <summary>
+	    ///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="VisualNovels"/> | <see cref="Voiced" />
+	    /// </summary>
+	    //TODO: Add VndbFlags.Aliases once I get it to stop crashing
+		FullStaff = VndbFlags.Basic | VndbFlags.Details | VndbFlags.VisualNovels | VndbFlags.Voiced,
 
 		/// <summary>
 		///		Equivlant to <see cref="Basic"/>
