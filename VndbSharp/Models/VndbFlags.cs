@@ -93,13 +93,28 @@ namespace VndbSharp.Models
 		[FlagIdentity("staff")]
 		Staff = 1 << 11,
 
+	    /// <summary>
+	    ///		<para>Provides the list of voice actresses who worked on the VN</para>
+	    ///		<para>Valid on: Character, Staff</para>
+	    /// </summary>
+		[FlagIdentity("voiced")]
+		Voiced = 1 << 12,
+
+
+		/// <summary>
+		///		<para>Provides the aliases of the staff who worked on the VN</para>
+		///		<para>Valid on: Staff</para>
+		/// </summary>
+		[FlagIdentity("aliases")]
+		Aliases = 1 << 14,
+
 		/// <summary>
 		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Anime"/> | <see cref="Relations"/> | <see cref="Tags"/> | <see cref="Stats"/> | <see cref="Screenshots"/> | <see cref="Staff"/>
 		/// </summary>
 		FullVisualNovel = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Anime | VndbFlags.Relations | VndbFlags.Tags | VndbFlags.Stats | VndbFlags.Screenshots | VndbFlags.Staff,
 
 		/// <summary>
-		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="VisualNovels"/> | <see cref="Producers"/>
+		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="VisualNovel"/> | <see cref="Producers"/>
 		/// </summary>
 		FullRelease = VndbFlags.Basic | VndbFlags.Details | VndbFlags.VisualNovels | VndbFlags.Producers,
 
@@ -109,9 +124,14 @@ namespace VndbSharp.Models
 		FullProducer = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Relations,
 		
 		/// <summary>
-		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Measurements"/> | <see cref="Traits"/> | <see cref="VisualNovels"/>
+		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Measurements"/> | <see cref="Traits"/> | <see cref="VisualNovels" /> | <see cref="Voiced"/>
 		/// </summary>
-		FullCharacter = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Measurements | VndbFlags.Traits | VndbFlags.VisualNovels,
+		FullCharacter = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Measurements | VndbFlags.Traits | VndbFlags.VisualNovels | VndbFlags.Voiced,
+
+	    /// <summary>
+	    ///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="VisualNovels"/> | <see cref="Voiced" />
+	    /// </summary>
+		FullStaff = VndbFlags.Basic | VndbFlags.Details | VndbFlags.VisualNovels | VndbFlags.Voiced | VndbFlags.Aliases,
 
 		/// <summary>
 		///		Equivlant to <see cref="Basic"/>

@@ -7,6 +7,7 @@ using VndbSharp.Models.Character;
 using VndbSharp.Models.Errors;
 using VndbSharp.Models.Producer;
 using VndbSharp.Models.Release;
+using VndbSharp.Models.Staff;
 using VndbSharp.Models.User;
 using VndbSharp.Models.VisualNovel;
 
@@ -37,6 +38,11 @@ namespace VndbSharp
 			IRequestOptions options = null)
 			=> await this.GetInternalAsync<VndbResponse<Character>>(Constants.GetCharacterCommand, filters, flags, options)
 				.ConfigureAwait(false);
+
+	    public async Task<VndbResponse<Staff>> GetStaffAsync(IFilter filters, VndbFlags flags = VndbFlags.Basic,
+	        IRequestOptions options = null)
+	        => await this.GetInternalAsync<VndbResponse<Staff>>(Constants.GetStaffCommand, filters, flags, options)
+	            .ConfigureAwait(false);
 
 		public async Task<VndbResponse<User>> GetUserAsync(IFilter filters, VndbFlags flags = VndbFlags.Basic,
 			IRequestOptions options = null)
