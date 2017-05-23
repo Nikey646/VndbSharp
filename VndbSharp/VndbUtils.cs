@@ -133,11 +133,26 @@ namespace VndbSharp
 				if (identity == null)
 					continue;
 
-				if (!(method == Constants.GetCharacterCommand && (VndbFlags) value == VndbFlags.VisualNovels))
-					yield return identity.Identity;
-				else if(!(method == Constants.GetStaffCommand && (VndbFlags)value == VndbFlags.VisualNovels))
-				    yield return identity.Identity;
-				else yield return $"{identity.Identity}s"; // Ugly hack to work around *two* vn(s) flags
+			    // Ugly hack to work around *two* vn(s) flags
+				if ((VndbFlags)value == VndbFlags.VisualNovels)
+			    {
+			        switch (method)
+			        {
+			            case Constants.GetCharacterCommand:
+			                yield return $"{identity.Identity}s";
+			                break;
+			            case Constants.GetStaffCommand:
+			                yield return $"{identity.Identity}s";
+			                break;
+			            default:
+			                yield return identity.Identity;
+			                break;
+			        }
+			    }
+			    else
+			    {
+			        yield return identity.Identity;
+			    }
 			}
 		}
 
