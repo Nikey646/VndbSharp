@@ -63,7 +63,7 @@ namespace VndbSharp.Models
 		///		<para>Valid on: Release, Character</para>
 		/// </summary>
 		[FlagIdentity("vn")]
-		VisualNovel = 1 << 7,
+		VisualNovels = 1 << 7,
 
 		/// <summary>
 		///		<para>Provides producers metadata</para>
@@ -100,19 +100,13 @@ namespace VndbSharp.Models
 		[FlagIdentity("voiced")]
 		Voiced = 1 << 12,
 
-	    /// <summary>
-	    ///		<para>Provides a list of VNs this staff has worked on</para>
-	    ///		<para>Valid on: Staff</para>
-	    /// </summary>
-	    [FlagIdentity("vns")]
-	    VisualNovels = 1 << 13,
 
 		/// <summary>
 		///		<para>Provides the aliases of the staff who worked on the VN</para>
 		///		<para>Valid on: Staff</para>
 		/// </summary>
-		//[FlagIdentity("aliases")]
-		//Aliases = 1 << 14,	    
+		[FlagIdentity("aliases")]
+		Aliases = 1 << 14,
 
 		/// <summary>
 		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Anime"/> | <see cref="Relations"/> | <see cref="Tags"/> | <see cref="Stats"/> | <see cref="Screenshots"/> | <see cref="Staff"/>
@@ -122,7 +116,7 @@ namespace VndbSharp.Models
 		/// <summary>
 		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="VisualNovel"/> | <see cref="Producers"/>
 		/// </summary>
-		FullRelease = VndbFlags.Basic | VndbFlags.Details | VndbFlags.VisualNovel | VndbFlags.Producers,
+		FullRelease = VndbFlags.Basic | VndbFlags.Details | VndbFlags.VisualNovels | VndbFlags.Producers,
 
 		/// <summary>
 		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Relations"/>
@@ -137,8 +131,7 @@ namespace VndbSharp.Models
 	    /// <summary>
 	    ///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="VisualNovels"/> | <see cref="Voiced" />
 	    /// </summary>
-	    //TODO: Add VndbFlags.Aliases once I get it to stop crashing
-		FullStaff = VndbFlags.Basic | VndbFlags.Details | VndbFlags.VisualNovels | VndbFlags.Voiced,
+		FullStaff = VndbFlags.Basic | VndbFlags.Details | VndbFlags.VisualNovels | VndbFlags.Voiced | VndbFlags.Aliases,
 
 		/// <summary>
 		///		Equivlant to <see cref="Basic"/>

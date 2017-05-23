@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using Newtonsoft.Json;
 using VndbSharp.Attributes;
+using VndbSharp.Json.Converters;
 using VndbSharp.Models.Common;
 
 namespace VndbSharp.Models.Staff
@@ -19,7 +20,6 @@ namespace VndbSharp.Models.Staff
         [JsonProperty("links")]
 		public StaffLinks StaffLinks { get; private set; }
         public String Description { get; private set; }
-		//TODO: Need to fix staff aliases from breaking
         public ReadOnlyCollection<StaffAliases> Aliases { get; private set; }
 		[JsonProperty("main_alias")]
         public String MainAlias { get; private set; }

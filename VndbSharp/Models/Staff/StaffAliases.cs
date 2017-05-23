@@ -8,12 +8,6 @@ namespace VndbSharp.Models.Staff
 {
     public class StaffAliases
     {
-        internal StaffAliases(UInt32 Id, String Name, String OriginalName)
-        {
-            this.Id = Id;
-            this.Name = Name;
-            this.OriginalName = OriginalName;
-        }
 		internal StaffAliases(JArray array)
 		{
 			this.Id = array[0].Value<UInt32>();
