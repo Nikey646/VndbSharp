@@ -29,6 +29,7 @@ namespace VndbSharp.Json
 				new ArrayOfArraysConverter<TraitMetadata>(),
 				new ArrayOfArraysConverter<TagMetadata>(),
 				new GenericNullableEnumConverter<Gender, Gender?>(), // Ugly hack to return null when not present
+				new GenericEnumConverter<RelationType>(), 
 				new GenericEnumConverter<TagCategory>(),
 				new GenericEnumConverter<ErrorType>(),
 				new GenericEnumConverter<ThrottledType>(), 
