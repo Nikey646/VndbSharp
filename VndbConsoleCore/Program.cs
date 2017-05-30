@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 #if UserAuth
 using System.Security;
 #endif
@@ -24,6 +25,9 @@ namespace VndbConsole
 		public async Task MainAsync(String[] args)
 		{
 			Console.OutputEncoding = Encoding.UTF8;
+
+			// Redundant, but it's an example!
+			VndbUtils.WithHttpMessageHandler(() => Task.FromResult((HttpMessageHandler) new HttpClientHandler()));
 
 			this._client = new Vndb(true)
 				.WithClientDetails("VndbSharpExamples", "0.1")

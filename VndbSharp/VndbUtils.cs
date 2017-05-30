@@ -23,6 +23,38 @@ namespace VndbSharp
 	/// </summary>
 	public static class VndbUtils
 	{
+		internal static HttpClient _httpClientInstance;
+		internal static Func<Task<HttpMessageHandler>> _httpClientHandlerCallback;
+
+		internal static String ClientName { get; set; } = "VndbSharp";
+		internal static String ClientVersion { get; set; } = "0.2";
+
+		internal static HttpClient HttpClient
+			=> VndbUtils._httpClientInstance ?? (VndbUtils._httpClientInstance = VndbUtils.CreateClient());
+
+		/// <summary>
+		///		The Size of the Buffer to use when Downloading the Dumps
+		/// </summary>
+		public static Int32 BufferSize { get; set; } = 4096;
+
+		static VndbUtils()
+		{
+			VndbUtils._httpClientHandlerCallback = () => Task.FromResult((HttpMessageHandler) new HttpClientHandler());
+		}
+
+		/// <summary>
+		/// Sets the callback to create a HttpMessageHandler instance for the HttpClient
+		/// </summary>
+		public static void WithHttpMessageHandler(Func<Task<HttpMessageHandler>> callback)
+		{
+			if (VndbUtils._httpClientInstance != null)
+			{
+				VndbUtils._httpClientInstance.Dispose();
+				VndbUtils._httpClientInstance = null;
+			}
+
+			VndbUtils._httpClientHandlerCallback = callback;
+		}
 
 		public static Boolean ValidateFlagsByMethod(String method, VndbFlags flags, out VndbFlags invalidFlags)
 		{
@@ -86,35 +118,7 @@ namespace VndbSharp
 		/// <exception cref="HttpRequestException">Occurs when the votes.gz file returns a non-success status</exception>
 		public static async Task<IEnumerable<Vote>> GetVotesDumpAsync(VoteDumpVersion version = VoteDumpVersion.Two)
 			=> await VndbUtils.GetAndParseVotesAsync(version).ConfigureAwait(false);
-
-		// This might be a bit expensive to call due to the excessive casts?
-		internal static IEnumerable<String> ConvertFlagsToString2(String method, VndbFlags flags)
-		{
-			Boolean IsDistinctValue(Enum value)
-			{
-				var valueInt = Convert.ToInt32(value);
-				var current = Convert.ToInt32(value) >> 1;
-
-				while (current > 0)
-				{
-					if ((valueInt & current) != 0)
-						return false;
-					current >>= 1;
-				}
-
-				return true;
-			}
-
-			var type = typeof(VndbFlags);
-			var setFlags = Enum.GetValues(type).Cast<Enum>().Where(c => flags.HasFlag(c) && IsDistinctValue(c));
-
-			var typeInfo = type.GetTypeInfo();
-			return setFlags.Where(f => Convert.ToInt32(f) != 0)
-				.Select(f => f.ToString())
-				.Select(f => typeInfo.GetDeclaredField(f)?.GetCustomAttribute<FlagIdentityAttribute>()?.Identity)
-				.Where(f => f != null);
-		}
-
+		
 		internal static IEnumerable<String> ConvertFlagsToString(String method, VndbFlags flags)
 		{
 			var type = typeof(VndbFlags);
@@ -219,17 +223,13 @@ namespace VndbSharp
 			}
 		}
 
-		/// <summary>
-		///		The Size of the Buffer to use when Downloading the Dumps
-		/// </summary>
-		public static Int32 BufferSize { get; set; } = 4096;
-
-		internal static String ClientName { get; set; } = "VndbSharp";
-		internal static String ClientVersion { get; set; } = "0.2";
-
-		internal static HttpClient HttpClient
-			=> VndbUtils._httpClientInstance ?? (VndbUtils._httpClientInstance = new HttpClient());
-
-		internal static HttpClient _httpClientInstance;
+		internal static HttpClient CreateClient()
+		{
+			var handler = VndbUtils._httpClientHandlerCallback.Invoke()
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+			return new HttpClient(handler);
+		}
 	}
 }
