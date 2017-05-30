@@ -127,8 +127,8 @@ namespace VndbConsole
 			{
 				Console.WriteLine($"{visualNovel?.Name} is roughly " +
 								  $"{visualNovel?.Length?.Description() ?? "Unknown"} long, " +
-								  $"has {visualNovel?.Tags.Length} tags " +
-								  $"and {visualNovel?.Screenshots.Length} screenshots");
+								  $"has {visualNovel?.Tags.Count} tags " +
+								  $"and {visualNovel?.Screenshots.Count} screenshots");
 			}
 
 			if (visualNovels.HasMore)
@@ -454,8 +454,8 @@ namespace VndbConsole
 			{
 				Console.WriteLine($"{visualNovel?.Name} is roughly " +
 								  $"{visualNovel?.Length?.Description() ?? "Unknown"} long, " +
-								  $"has {visualNovel?.Tags.Length} tags " +
-								  $"and {visualNovel?.Screenshots.Length} screenshots");
+								  $"has {visualNovel?.Tags.Count} tags " +
+								  $"and {visualNovel?.Screenshots.Count} screenshots");
 			}
 
 			Console.WriteLine();
