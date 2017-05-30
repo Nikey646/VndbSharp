@@ -12,6 +12,24 @@ Check out the [VndbConsole projects](VndbConsoleCore/Program.cs) for basic usage
 ## Building
 To build the project you need to use Visual Studio 2017 RC3 or newer.
 
+## Supported Filters
+ - Id
+ - Alias Id
+ - User Id
+ - First Character (Letter)
+ - Released
+ - Language(s)
+ - Original Name
+ - Original Language(s)
+ - Platform(s)
+ - Search
+ - Tag(s)
+ - Trait(s)
+ - Title
+ - Name 
+ - Username
+ - Visual Novel
+
 ## TODO
 There is no guarantee that anything listed on this will be implemented.
 
