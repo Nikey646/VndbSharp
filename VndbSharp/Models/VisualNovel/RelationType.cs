@@ -18,7 +18,7 @@ namespace VndbSharp.Models.VisualNovel
 		SideStory,
 		[RealValue("par"), Description("Parent Story")]
 		ParentStory,
-		[RealValue("set"), Description("Same Series")]
+		[RealValue("ser"), Description("Same Series")]
 		SameSeries,
 		[RealValue("fan")]
 		Fandisc,
