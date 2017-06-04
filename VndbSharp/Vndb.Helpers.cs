@@ -355,7 +355,9 @@ namespace VndbSharp
 			if (!disposing)
 				return;
 
+#if netstandard1_3
 			this.Client?.Dispose();
+#endif
 			this.Client = null;
 
 			this.Stream?.Dispose();
