@@ -7,9 +7,9 @@ namespace VndbSharp.Models.VisualNovel
 	public class AnimeMetadata
 	{
 		[JsonProperty("id")]
-		public Int32 AniDbId { get; private set; }
+		public Int32? AniDbId { get; private set; }
 		[JsonProperty("ann_id")]
-		public Int32 AnimeNewsNetworkId { get; private set; }
+		public Int32? AnimeNewsNetworkId { get; private set; }
 		[JsonProperty("nfo_id")]
 		public String AnimeNfoId { get; private set; }
 		[JsonProperty("title_romaji")]
