@@ -345,5 +345,23 @@ namespace VndbSharp
 			public override Boolean IsFilterValid()
 				=> this.Operator == FilterOperator.Equal;
 		}
+
+		public class Platform : AbstractFilter<String>
+		{
+			private Platform(String[] value, FilterOperator filterOperator) : base(value, filterOperator)
+			{ }
+
+			protected override FilterOperator[] ValidOperators { get; } = {
+				FilterOperator.Equal, FilterOperator.NotEqual
+			};
+
+			protected override String FilterName { get; } = "platforms";
+
+			public static Platform Equals(params String[] value) => new Platform(value, FilterOperator.Equal);
+			public static Platform NotEquals(params String[] value) => new Platform(value, FilterOperator.NotEqual);
+
+			public override Boolean IsFilterValid()
+				=> this.ValidOperators.Contains(this.Operator);
+		}
 	}
 }
