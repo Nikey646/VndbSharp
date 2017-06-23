@@ -346,7 +346,7 @@ namespace VndbSharp
 				=> this.Operator == FilterOperator.Equal;
 		}
 
-		public class Platform : AbstractFilter<String>
+		public class Platform : AbstractFilter<String[]>
 		{
 			private Platform(String[] value, FilterOperator filterOperator) : base(value, filterOperator)
 			{ }
