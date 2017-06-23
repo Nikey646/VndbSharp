@@ -10,6 +10,7 @@ using VndbSharp.Models.Character;
 using VndbSharp.Models.Common;
 using VndbSharp.Models.Dumps;
 using VndbSharp.Models.Errors;
+using VndbSharp.Models.Release;
 using VndbSharp.Models.Staff;
 using VndbSharp.Models.VisualNovel;
 using CharacterVisualNovelMetadata = VndbSharp.Models.Character.VisualNovelMetadata;
@@ -35,6 +36,8 @@ namespace VndbSharp.Json
 				new GenericEnumConverter<TagCategory>(),
 				new GenericEnumConverter<ErrorType>(),
 				new GenericEnumConverter<ThrottledType>(), 
+				new GenericEnumConverter<Voiced>(), 
+				new GenericEnumConverter<Animated>(), 
 			};
 		}
 
