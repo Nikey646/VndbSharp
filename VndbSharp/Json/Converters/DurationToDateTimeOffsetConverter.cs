@@ -17,7 +17,7 @@ namespace VndbSharp.Json.Converters
 				return default(DateTimeOffset);
 
 			var seconds = (Double) reader.Value;
-			return new DateTimeOffset(DateTime.Now).ToOffset(TimeSpan.FromSeconds(seconds));
+			return new DateTimeOffset(DateTime.Now).AddSeconds(seconds);
 		}
 
 		public override Boolean CanConvert(Type objectType)
