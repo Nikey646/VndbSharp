@@ -30,6 +30,12 @@ namespace VndbSharp.Models.Release
 		/// </summary>
 		public String Gtin { get; private set; }
 		public String Catalog { get; private set; }
+		public String Resolution { get; private set; }
+		public Voiced Voiced { get; private set; }
+		/// <summary>
+		///		The array has two integer members, the first one indicating the story animations, the second the ero scene animations. Both members can be null if unknown or not applicable.
+		/// </summary>
+		public ReadOnlyCollection<Animated> Animation { get; set; }
 		public ReadOnlyCollection<String> Platforms { get; private set; }
 		public ReadOnlyCollection<Media> Media { get; private set; }
 		[JsonProperty("vn")]

@@ -38,6 +38,7 @@ namespace VndbConsole
 //			await this.GetReleaseAsync();
 //			await this.GetProducerAsync();
 //			await this.GetCharacterAsync();
+//		    await this.GetStaffAsync();
 //			await this.GetUserAsync();
 //			await this.GetVoteListAsync();
 //			await this.GetVisualNovelListAsync();
@@ -249,6 +250,44 @@ namespace VndbConsole
 				Console.WriteLine("And more!");
 
 			Console.WriteLine();
+		}
+
+	    public async Task GetStaffAsync()
+	    {
+			Console.WriteLine("Get Staff Command");
+	        // Lib = This Library (VndbSharp)
+	        Console.WriteLine("Lib Usage: await this._client.GetStaffAsync(VndbFilters.Id.Equals(2), VndbFlags.FullStaff);");
+	        // Api = Vndb Tcp Api
+	        Console.WriteLine("Api Usage: get staff basic,details,aliases,vns,voiced (id=2)");
+	        Console.WriteLine();
+
+	        var staff = await this._client.GetStaffAsync(VndbFilters.Id.Equals(2), VndbFlags.FullStaff);
+
+	        if (staff == null)
+	        {
+	            this.HandleError(this._client.GetLastError());
+	            return; // End method
+	        }
+
+	        // Check to see if we got any results
+	        if (staff.Count == 0)
+	        {
+	            Console.WriteLine("No Staff Found!");
+	            return; // End method
+	        }
+
+	        // Yeah i dunno. Here's a primitive example!
+	        Console.WriteLine($"There are {staff.Count} staff members.");
+	        foreach (var member in staff)
+	        {
+	            Console.WriteLine($"A {member.Gender} named {member.Name} (" +
+	                              $"{member.OriginalName}), with Language {member.Language}.");
+	        }
+
+	        if (staff.HasMore)
+	            Console.WriteLine("And more!");
+
+	        Console.WriteLine();
 		}
 
 		public async Task GetUserAsync()

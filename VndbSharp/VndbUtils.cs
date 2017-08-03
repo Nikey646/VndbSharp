@@ -86,6 +86,9 @@ namespace VndbSharp
 				case Constants.GetWishlistCommand:
 					fullFlags = VndbFlags.FullWishlist;
 					break;
+				case Constants.GetStaffCommand:
+				    fullFlags = VndbFlags.FullStaff;
+					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(method));
 			}
@@ -134,9 +137,10 @@ namespace VndbSharp
 				if (identity == null)
 					continue;
 
-				if (!(method == Constants.GetCharacterCommand && (VndbFlags) value == VndbFlags.VisualNovels))
-					yield return identity.Identity;
-				else yield return $"{identity.Identity}s"; // Ugly hack to work around *two* vn(s) flags
+				if ((method == Constants.GetStaffCommand || method == Constants.GetCharacterCommand) && 
+					(VndbFlags) value == VndbFlags.VisualNovels)
+					yield return $"{identity.Identity}s"; // Ugly hack to work around *two* vn(s) flags
+				else yield return identity.Identity;
 			}
 		}
 

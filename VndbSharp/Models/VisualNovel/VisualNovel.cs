@@ -36,5 +36,6 @@ namespace VndbSharp.Models.VisualNovel
 		public UInt32 Rating { get; private set; }
 		[JsonProperty("screens")]
 		public ReadOnlyCollection<ScreenshotMetadata> Screenshots { get; private set; }
+		public ReadOnlyCollection<StaffMetadata> Staff { get; private set; }
 	}
 }

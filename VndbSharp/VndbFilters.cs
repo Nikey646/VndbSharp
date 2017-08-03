@@ -39,6 +39,43 @@ namespace VndbSharp
 			}
 		}
 
+		public class AliasId : AbstractFilter<UInt32[]>
+		{
+			internal AliasId(UInt32[] value, FilterOperator filterOperator)
+				: base(value, filterOperator)
+			{ }
+
+			protected override FilterOperator[] ValidOperators { get; } = {
+				FilterOperator.Equal
+			};
+
+			protected override String FilterName { get; } = "id";
+
+			public static AliasId Equals(params UInt32[] value) => new AliasId(value, FilterOperator.Equal);
+
+			public override Boolean IsFilterValid()
+			{;
+				return this.ValidOperators.Contains(this.Operator);
+			}
+		}
+
+		public class UserId : AbstractFilter<UInt32>
+		{
+			private UserId(UInt32 value, FilterOperator filterOperator) : base(value, filterOperator)
+			{ }
+
+			protected override FilterOperator[] ValidOperators { get; } = {
+				FilterOperator.Equal
+			};
+
+			protected override String FilterName { get; } = "uid";
+
+			public static UserId Equals(UInt32 value) => new UserId(value, FilterOperator.Equal);
+
+			public override Boolean IsFilterValid()
+				=> this.Operator == FilterOperator.Equal;
+		}
+
 		public class FirstChar : AbstractFilter<Char?>
 		{
 			private FirstChar(Char? value, FilterOperator filterOperator)
@@ -231,6 +268,25 @@ namespace VndbSharp
 				=> this.ValidOperators.Contains(this.Operator);
 		}
 
+		public class Title : AbstractFilter<String>
+		{
+			private Title(String value, FilterOperator filterOperator) : base(value, filterOperator)
+			{ }
+
+			protected override FilterOperator[] ValidOperators { get; } = {
+				FilterOperator.Equal, FilterOperator.NotEqual, FilterOperator.Fuzzy
+			};
+
+			protected override String FilterName { get; } = "title";
+
+			public static Title Equals(String value) => new Title(value, FilterOperator.Equal);
+			public static Title NotEquals(String value) => new Title(value, FilterOperator.NotEqual);
+			public static Title Fuzzy(String value) => new Title(value, FilterOperator.Fuzzy);
+
+			public override Boolean IsFilterValid()
+				=> this.ValidOperators.Contains(this.Operator);
+		}
+
 		public class Name : AbstractFilter<String>
 		{
 			private Name(String value, FilterOperator filterOperator) : base(value, filterOperator)
@@ -240,7 +296,7 @@ namespace VndbSharp
 				FilterOperator.Equal, FilterOperator.NotEqual, FilterOperator.Fuzzy
 			};
 
-			protected override String FilterName { get; } = "title";
+			protected override String FilterName { get; } = "name";
 
 			public static Name Equals(String value) => new Name(value, FilterOperator.Equal);
 			public static Name NotEquals(String value) => new Name(value, FilterOperator.NotEqual);
@@ -248,23 +304,6 @@ namespace VndbSharp
 
 			public override Boolean IsFilterValid()
 				=> this.ValidOperators.Contains(this.Operator);
-		}
-
-		public class UserId : AbstractFilter<UInt32>
-		{
-			private UserId(UInt32 value, FilterOperator filterOperator) : base(value, filterOperator)
-			{ }
-
-			protected override FilterOperator[] ValidOperators { get; } = {
-				FilterOperator.Equal
-			};
-
-			protected override String FilterName { get; } = "uid";
-
-			public static UserId Equals(UInt32 value) => new UserId(value, FilterOperator.Equal);
-
-			public override Boolean IsFilterValid()
-				=> this.Operator == FilterOperator.Equal;
 		}
 
 		public class Username : AbstractFilter<String[]>
@@ -305,6 +344,24 @@ namespace VndbSharp
 
 			public override Boolean IsFilterValid()
 				=> this.Operator == FilterOperator.Equal;
+		}
+
+		public class Platform : AbstractFilter<String[]>
+		{
+			private Platform(String[] value, FilterOperator filterOperator) : base(value, filterOperator)
+			{ }
+
+			protected override FilterOperator[] ValidOperators { get; } = {
+				FilterOperator.Equal, FilterOperator.NotEqual
+			};
+
+			protected override String FilterName { get; } = "platforms";
+
+			public static Platform Equals(params String[] value) => new Platform(value, FilterOperator.Equal);
+			public static Platform NotEquals(params String[] value) => new Platform(value, FilterOperator.NotEqual);
+
+			public override Boolean IsFilterValid()
+				=> this.ValidOperators.Contains(this.Operator);
 		}
 	}
 }

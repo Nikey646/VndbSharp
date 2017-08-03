@@ -7,8 +7,11 @@ using VndbSharp.Attributes;
 using VndbSharp.Extensions;
 using VndbSharp.Json.Converters;
 using VndbSharp.Models.Character;
+using VndbSharp.Models.Common;
 using VndbSharp.Models.Dumps;
 using VndbSharp.Models.Errors;
+using VndbSharp.Models.Release;
+using VndbSharp.Models.Staff;
 using VndbSharp.Models.VisualNovel;
 using CharacterVisualNovelMetadata = VndbSharp.Models.Character.VisualNovelMetadata;
 
@@ -28,11 +31,14 @@ namespace VndbSharp.Json
 				new ArrayOfArraysConverter<CharacterVisualNovelMetadata>(),
 				new ArrayOfArraysConverter<TraitMetadata>(),
 				new ArrayOfArraysConverter<TagMetadata>(),
+				new ArrayOfArraysConverter<StaffAliases>(), 
 				new GenericNullableEnumConverter<Gender, Gender?>(), // Ugly hack to return null when not present
 				new GenericEnumConverter<RelationType>(), 
 				new GenericEnumConverter<TagCategory>(),
 				new GenericEnumConverter<ErrorType>(),
 				new GenericEnumConverter<ThrottledType>(), 
+				new GenericEnumConverter<Voiced>(), 
+				new GenericEnumConverter<Animated>(), 
 			};
 		}
 
