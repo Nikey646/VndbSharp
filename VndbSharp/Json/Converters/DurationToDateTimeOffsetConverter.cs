@@ -13,10 +13,10 @@ namespace VndbSharp.Json.Converters
 
 		public override Object ReadJson(JsonReader reader, Type objectType, Object existingValue, JsonSerializer serializer)
 		{
-			if (reader.TokenType != JsonToken.Float) // Is float the type we want here :?
+			if (reader.TokenType != JsonToken.Float && reader.TokenType != JsonToken.Integer) // Is float the type we want here :?
 				return default(DateTimeOffset);
-
-			var seconds = (Double) reader.Value;
+			
+			var seconds = Double.Parse(reader.Value.ToString());
 			return new DateTimeOffset(DateTime.Now).AddSeconds(seconds);
 		}
 
