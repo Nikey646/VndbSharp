@@ -702,8 +702,8 @@ namespace VndbConsole
 			}
 			else if (error is ThrottledError throttled)
 			{
-				var minSeconds = (DateTime.Now - throttled.MinimumWait).TotalSeconds; // Not sure if this is correct
-				var fullSeconds = (DateTime.Now - throttled.FullWait).TotalSeconds; // Not sure if this is correct
+				var minSeconds = (throttled.MinimumWait - DateTime.Now).TotalSeconds; // Not sure if this is correct
+				var fullSeconds = (throttled.FullWait - DateTime.Now).TotalSeconds; // Not sure if this is correct
 				Console.WriteLine(
 					$"A Throttled Error occured, you need to wait at minimum \"{minSeconds}\" seconds, " +
 					$"and preferably \"{fullSeconds}\" before issuing commands.");
