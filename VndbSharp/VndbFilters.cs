@@ -346,6 +346,32 @@ namespace VndbSharp
 				=> this.Operator == FilterOperator.Equal;
 		}
 
+		public class VisualNovelId : AbstractFilter<UInt32[]>
+		{
+			private VisualNovelId(UInt32[] value, FilterOperator filterOperator) : base(value, filterOperator)
+			{ }
+
+			protected override FilterOperator[] ValidOperators { get; } = {
+				FilterOperator.Equal, FilterOperator.NotEqual, FilterOperator.LessOrEqual, FilterOperator.LessThan,
+				FilterOperator.GreaterOrEqual, FilterOperator.GreaterThan
+			};
+
+			protected override String FilterName { get; } = "vid";
+
+			public static VisualNovelId Equals(params UInt32[] value) => new VisualNovelId(value, FilterOperator.Equal);
+			public static VisualNovelId NotEquals(params UInt32[] value) => new VisualNovelId(value, FilterOperator.NotEqual);
+
+			public static VisualNovelId GreaterThan(UInt32 value) => new VisualNovelId(new[] { value }, FilterOperator.GreaterThan);
+			public static VisualNovelId GreaterOrEqual(UInt32 value) => new VisualNovelId(new[] { value }, FilterOperator.GreaterOrEqual);
+			public static VisualNovelId LessThan(UInt32 value) => new VisualNovelId(new[] { value }, FilterOperator.LessThan);
+			public static VisualNovelId LessOrEqual(UInt32 value) => new VisualNovelId(new[] { value }, FilterOperator.LessOrEqual);
+
+			public override Boolean IsFilterValid()
+				=> this.Count > 1
+					? this.Operator == FilterOperator.Equal || this.Operator == FilterOperator.NotEqual
+					: this.ValidOperators.Contains(this.Operator);
+		}
+
 		public class Platform : AbstractFilter<String[]>
 		{
 			private Platform(String[] value, FilterOperator filterOperator) : base(value, filterOperator)
