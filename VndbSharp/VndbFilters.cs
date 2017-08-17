@@ -356,7 +356,7 @@ namespace VndbSharp
 				FilterOperator.GreaterOrEqual, FilterOperator.GreaterThan
 			};
 
-			protected override String FilterName { get; } = "vid";
+			protected override String FilterName { get; } = "vn";
 
 			public static VisualNovelId Equals(params UInt32[] value) => new VisualNovelId(value, FilterOperator.Equal);
 			public static VisualNovelId NotEquals(params UInt32[] value) => new VisualNovelId(value, FilterOperator.NotEqual);
