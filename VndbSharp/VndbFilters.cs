@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using VndbSharp.Extensions;
 using VndbSharp.Filters;
@@ -7,7 +7,6 @@ using VndbSharp.Models.Common;
 
 namespace VndbSharp
 {
-	// Not public yet
 	public class VndbFilters
 	{
 		public class Id : AbstractFilter<UInt32[]>
@@ -54,9 +53,7 @@ namespace VndbSharp
 			public static AliasId Equals(params UInt32[] value) => new AliasId(value, FilterOperator.Equal);
 
 			public override Boolean IsFilterValid()
-			{;
-				return this.ValidOperators.Contains(this.Operator);
-			}
+				=> this.ValidOperators.Contains(this.Operator);
 		}
 
 		public class UserId : AbstractFilter<UInt32>
@@ -78,6 +75,7 @@ namespace VndbSharp
 
 		public class FirstChar : AbstractFilter<Char?>
 		{
+			// TODO: Figure out a better solution, current will cause a null reference if null is passed
 			private FirstChar(Char? value, FilterOperator filterOperator)
 				: base(value ?? Char.ToLower(value.Value), filterOperator) // May cause problems?
 			{
@@ -100,11 +98,19 @@ namespace VndbSharp
 
 		public class Released : AbstractFilter<String>
 		{
-			private Released(SimpleDate value, FilterOperator filterOperator)
-				: base(value.ToString().Quote(), filterOperator)
+			// This is what the value represents internally, should it instead use "TBA" directly?
+			// Refer to https://vndb.org/t3599.189
+			public const String TBA = "99999999";
+
+			private Released(String date, FilterOperator filterOperator)
+				: base(date, filterOperator)
 			{
 				this.CanBeNull = true;
 			}
+
+			private Released(SimpleDate value, FilterOperator filterOperator)
+				: base(value == null ? null : value.ToString().Quote(), filterOperator)
+			{ }
 
 			protected override FilterOperator[] ValidOperators { get; } = {
 				FilterOperator.Equal, FilterOperator.NotEqual, FilterOperator.Fuzzy
@@ -115,6 +121,11 @@ namespace VndbSharp
 			public static Released Equals(SimpleDate value) => new Released(value, FilterOperator.Equal);
 			public static Released NotEquals(SimpleDate value) => new Released(value, FilterOperator.NotEqual);
 			public static Released Fuzzy(SimpleDate value) => new Released(value, FilterOperator.Fuzzy);
+
+			// Supports "TBA" (Aka: VndbFilters.Released.TBA, Aka: 99999999) and null
+			public static Released Equals(String value) => new Released(value, FilterOperator.Equal);
+			public static Released NotEquals(String value) => new Released(value, FilterOperator.NotEqual);
+			public static Released Fuzzy(String value) => new Released(value, FilterOperator.Fuzzy);
 
 			public override Boolean IsFilterValid()
 			{
