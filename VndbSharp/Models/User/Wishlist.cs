@@ -8,7 +8,9 @@ namespace VndbSharp.Models.User
 	public class Wishlist
 	{
 		[JsonProperty("vn")]
-		public UInt32 Id { get; private set; }
+		public UInt32 VisualNovelId { get; private set; }
+		[JsonProperty("uid")]
+		public UInt32 UserId { get; private set; }
 		public Priority Priority { get; private set; }
 		[JsonProperty("added"), IsUnixTimestamp]
 		public DateTime AddedOn { get; private set; }

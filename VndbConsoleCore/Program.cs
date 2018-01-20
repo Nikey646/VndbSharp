@@ -346,7 +346,7 @@ namespace VndbConsole
 				return; // End method
 			}
 
-			var ids = votes.Select(vl => vl.Id);
+			var ids = votes.Select(vl => vl.VisualNovelId);
 			var vns = await this._client.GetVisualNovelAsync(VndbFilters.Id.Equals(ids.ToArray()));
 
 			if (vns == null)
@@ -358,7 +358,7 @@ namespace VndbConsole
 			Console.WriteLine("Yorhel has voted on...");
 			foreach (var vote in votes)
 			{
-				var vn = vns.FirstOrDefault(v => v.Id == vote.Id);
+				var vn = vns.FirstOrDefault(v => v.Id == vote.VisualNovelId);
 				var vnName = vn == default(VisualNovel) ? "A Deleted VN" : vn.Name;
 				Console.WriteLine($"{vnName} with a score of {vote.Vote / 10}/10, since {vote.AddedOn}");
 			}
@@ -393,7 +393,7 @@ namespace VndbConsole
 				return; // End method
 			}
 
-			var ids = vnList.Select(vnl => vnl.Id);
+			var ids = vnList.Select(vnl => vnl.VisualNovelId);
 			var vns = await this._client.GetVisualNovelAsync(VndbFilters.Id.Equals(ids.ToArray()));
 
 			if (vns == null)
@@ -406,7 +406,7 @@ namespace VndbConsole
 			Console.WriteLine("Yorhel has played...");
 			foreach (var vn in vnList)
 			{
-				var vnInfo = vns.FirstOrDefault(v => v.Id == vn.Id);
+				var vnInfo = vns.FirstOrDefault(v => v.Id == vn.VisualNovelId);
 				var vnName = vnInfo == default(VisualNovel) ? "A Deleted VN" : vnInfo.Name;
 				Console.WriteLine($"{vnName} and currently has it set to {vn.Status}, since {vn.AddedOn}");
 			}
@@ -441,7 +441,7 @@ namespace VndbConsole
 				return; // End method
 			}
 
-			var ids = wishlist.Select(wl => wl.Id);
+			var ids = wishlist.Select(wl => wl.VisualNovelId);
 			var vns = await this._client.GetVisualNovelAsync(VndbFilters.Id.Equals(ids.ToArray()));
 
 			if (vns == null)
@@ -454,7 +454,7 @@ namespace VndbConsole
 			Console.WriteLine("Yorhel wants to play...");
 			foreach (var vn in wishlist)
 			{
-				var vnInfo = vns.FirstOrDefault(v => v.Id == vn.Id);
+				var vnInfo = vns.FirstOrDefault(v => v.Id == vn.VisualNovelId);
 				var vnName = vnInfo == default(VisualNovel) ? "A Deleted VN" : vnInfo.Name;
 				Console.WriteLine($"{vnName} and currently has it set to {vn.Priority} priority, since {vn.AddedOn}");
 			}

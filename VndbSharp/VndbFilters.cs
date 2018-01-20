@@ -329,21 +329,31 @@ namespace VndbSharp
 			}
 		}
 
-		public class VisualNovel : AbstractFilter<Int32[]>
+		public class VisualNovel : AbstractFilter<UInt32[]>
 		{
-			private VisualNovel(Int32[] value, FilterOperator filterOperator) : base(value, filterOperator)
+			private VisualNovel(UInt32[] value, FilterOperator filterOperator) : base(value, filterOperator)
 			{ }
 
 			protected override FilterOperator[] ValidOperators { get; } = {
-				FilterOperator.Equal
+				FilterOperator.Equal, FilterOperator.NotEqual, FilterOperator.LessOrEqual, FilterOperator.LessThan,
+				FilterOperator.GreaterOrEqual, FilterOperator.GreaterThan
 			};
 
 			protected override String FilterName { get; } = "vn";
 
-			public static VisualNovel Equals(params Int32[] value) => new VisualNovel(value, FilterOperator.Equal);
+			public static VisualNovel Equals(params UInt32[] value) => new VisualNovel(value, FilterOperator.Equal);
+			public static VisualNovel NotEquals(params UInt32[] value) => new VisualNovel(value, FilterOperator.NotEqual);
 
+			public static VisualNovel GreaterThan(UInt32 value) => new VisualNovel(new[] { value }, FilterOperator.GreaterThan);
+			public static VisualNovel GreaterOrEqual(UInt32 value) => new VisualNovel(new[] { value }, FilterOperator.GreaterOrEqual);
+			public static VisualNovel LessThan(UInt32 value) => new VisualNovel(new[] { value }, FilterOperator.LessThan);
+			public static VisualNovel LessOrEqual(UInt32 value) => new VisualNovel(new[] { value }, FilterOperator.LessOrEqual);
+
+			// This may fail on filters where vn is only =...
 			public override Boolean IsFilterValid()
-				=> this.Operator == FilterOperator.Equal;
+				=> this.Count > 1
+					? this.Operator == FilterOperator.Equal || this.Operator == FilterOperator.NotEqual
+					: this.ValidOperators.Contains(this.Operator);
 		}
 
 		public class Platform : AbstractFilter<String[]>
