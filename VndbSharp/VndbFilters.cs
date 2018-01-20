@@ -373,5 +373,31 @@ namespace VndbSharp
 			public override Boolean IsFilterValid()
 				=> this.ValidOperators.Contains(this.Operator);
 		}
+
+		public class Raw : AbstractFilter<String>
+		{
+			private Raw(String value, FilterOperator filterOperator)
+				: base(value, filterOperator)
+			{
+				CanBeNull = true;
+			}
+
+			// This being blank should be fine, since we won't be using it.
+			protected override FilterOperator[] ValidOperators { get; } = { };
+
+			protected override String FilterName { get; } = "null";
+
+			public static Raw Create(String name, String value, FilterOperator filterOperator)
+			{
+				return new Raw(value, filterOperator)
+				{
+					FilterName = name,
+				};
+			}
+
+			// This is a filter we will rely on vndb yelling at us about.
+			public override Boolean IsFilterValid() 
+				=> true;
+		}
 	}
 }
