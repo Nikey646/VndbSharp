@@ -101,20 +101,24 @@ namespace VndbSharp
 		public class Released : AbstractFilter<String>
 		{
 			private Released(SimpleDate value, FilterOperator filterOperator)
-				: base(value.ToString().Quote(), filterOperator)
+				: base(value.ToString(), filterOperator)
 			{
 				this.CanBeNull = true;
 			}
 
 			protected override FilterOperator[] ValidOperators { get; } = {
-				FilterOperator.Equal, FilterOperator.NotEqual, FilterOperator.Fuzzy
+				FilterOperator.Equal, FilterOperator.NotEqual, FilterOperator.LessOrEqual, FilterOperator.LessThan,
+				FilterOperator.GreaterOrEqual, FilterOperator.GreaterThan
 			};
 
 			protected override String FilterName { get; } = "released";
 
 			public static Released Equals(SimpleDate value) => new Released(value, FilterOperator.Equal);
 			public static Released NotEquals(SimpleDate value) => new Released(value, FilterOperator.NotEqual);
-			public static Released Fuzzy(SimpleDate value) => new Released(value, FilterOperator.Fuzzy);
+			public static Released GreaterThan(SimpleDate value) => new Released(value, FilterOperator.LessOrEqual);
+			public static Released GreaterOrEqual(SimpleDate value) => new Released(value, FilterOperator.LessOrEqual);
+			public static Released LessThan(SimpleDate value) => new Released(value, FilterOperator.LessOrEqual);
+			public static Released LessOrEqual(SimpleDate value) => new Released(value, FilterOperator.LessOrEqual);
 
 			public override Boolean IsFilterValid()
 			{
