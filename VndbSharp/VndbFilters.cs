@@ -376,24 +376,20 @@ namespace VndbSharp
 
 		public class Raw : AbstractFilter<String>
 		{
-			private Raw(String value, FilterOperator filterOperator)
+			private Raw(String name, String value, FilterOperator filterOperator)
 				: base(value, filterOperator)
 			{
-				CanBeNull = true;
+				this.FilterName = name;
+				this.CanBeNull = true;
 			}
 
 			// This being blank should be fine, since we won't be using it.
 			protected override FilterOperator[] ValidOperators { get; } = { };
 
-			protected override String FilterName { get; } = "null";
+			protected override String FilterName { get; }
 
-			public static Raw Create(String name, String value, FilterOperator filterOperator)
-			{
-				return new Raw(value, filterOperator)
-				{
-					FilterName = name,
-				};
-			}
+			public static Raw Create(String name, String value, FilterOperator filterOperator) 
+				=> new Raw(name, value, filterOperator);
 
 			// This is a filter we will rely on vndb yelling at us about.
 			public override Boolean IsFilterValid() 
