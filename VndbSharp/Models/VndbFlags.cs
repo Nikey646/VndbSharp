@@ -100,6 +100,12 @@ namespace VndbSharp.Models
 		[FlagIdentity("voiced")]
 		Voiced = 1 << 12,
 
+		/// <summary>
+		///		<para>Provides a list of instances, of the character (excluding the current instance)</para>
+		///		<para>Valid on: Character</para>
+		/// </summary>
+		Instances = 1 << 13,
+
 
 		/// <summary>
 		///		<para>Provides the aliases of the staff who worked on the VN</para>
@@ -124,9 +130,9 @@ namespace VndbSharp.Models
 		FullProducer = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Relations,
 		
 		/// <summary>
-		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Measurements"/> | <see cref="Traits"/> | <see cref="VisualNovels" /> | <see cref="Voiced"/>
+		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Measurements"/> | <see cref="Traits"/> | <see cref="VisualNovels" /> | <see cref="Voiced"/> | <see cref="Instances"/>
 		/// </summary>
-		FullCharacter = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Measurements | VndbFlags.Traits | VndbFlags.VisualNovels | VndbFlags.Voiced,
+		FullCharacter = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Measurements | VndbFlags.Traits | VndbFlags.VisualNovels | VndbFlags.Voiced | VndbFlags.Instances,
 
 	    /// <summary>
 	    ///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="VisualNovels"/> | <see cref="Voiced" />
