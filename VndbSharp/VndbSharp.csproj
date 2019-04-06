@@ -11,7 +11,7 @@
 		<PackageLicenseUrl>https://github.com/Nikey646/VndbSharp/blob/master/LICENSE</PackageLicenseUrl>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DefineConstants>TRACE;DEBUG;UserAuth</DefineConstants>
+		<DefineConstants>TRACE;DEBUG</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="**\*.resx" />
