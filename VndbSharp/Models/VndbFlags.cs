@@ -104,6 +104,7 @@ namespace VndbSharp.Models
 		///		<para>Provides a list of instances, of the character (excluding the current instance)</para>
 		///		<para>Valid on: Character</para>
 		/// </summary>
+		[FlagIdentity("instances")]
 		Instances = 1 << 13,
 
 
