@@ -62,14 +62,14 @@ namespace VndbSharp.Models.Common
 			if (this.Month == null && this.Day == null && this.Year == null)
 				return "tba";
 			if (this.Month == null)
-				return this.Year.ToString();
+				return $"{this.Year:0000}";
 			if (this.Day == null)
-				return $"{this.Year}-{this.Month}";
+				return $"{this.Year:0000}-{this.Month:00}";
 
 			if (this.Year == null && (this.Month != null && this.Day != null))
-				return $"{this.Month}-{this.Day}"; // This is unintiutive
+				return $"{this.Month:00}-{this.Day:00}"; // This is unintiutive
 
-			return $"{this.Year}-{this.Month}-{this.Day}";
+			return $"{this.Year:0000}-{this.Month:00}-{this.Day:00}";
 		}
 
 		public UInt32? Year { get; set; }
