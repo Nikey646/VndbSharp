@@ -42,9 +42,8 @@ namespace VndbSharp.Models.Character
 		/// </summary>
 	    public Int64? Weight { get; private set; }
 	    public ReadOnlyCollection<TraitMetadata> Traits { get; private set; }
-		[JsonProperty("vns")]
+	    [JsonProperty("vns")]
 	    public ReadOnlyCollection<VisualNovelMetadata> VisualNovels { get; private set; }
-		[JsonProperty("voiced")]
-		public ReadOnlyCollection<VoiceActorMetadata> VoiceActorMetadata { get; private set; }
-    }
+	    [JsonProperty("voiced")]
+	    public ReadOnlyCollection<VoiceActorMetadata> VoiceActorMetadata { get; private set; }
 }
