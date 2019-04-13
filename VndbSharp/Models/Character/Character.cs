@@ -46,4 +46,5 @@ namespace VndbSharp.Models.Character
 	    public ReadOnlyCollection<VisualNovelMetadata> VisualNovels { get; private set; }
 	    [JsonProperty("voiced")]
 	    public ReadOnlyCollection<VoiceActorMetadata> VoiceActorMetadata { get; private set; }
+	}
 }
