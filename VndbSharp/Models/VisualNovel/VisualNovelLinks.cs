@@ -10,5 +10,7 @@ namespace VndbSharp.Models.VisualNovel
 		public String Encubed { get; private set; }
 		[JsonProperty("renai")]
 		public String Renai { get; private set; }
+		[JsonProperty("wikidata")]
+		public String Wikidata { get; private set; }
 	}
 }
