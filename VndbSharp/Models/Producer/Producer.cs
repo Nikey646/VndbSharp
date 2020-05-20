@@ -8,6 +8,7 @@ namespace VndbSharp.Models.Producer
 	{
 		public String Language { get; private set; }
 		public ProducerLinks Links { get; private set; }
+		[IsCsv]
 		public ReadOnlyCollection<String> Aliases { get; private set; }
 		public String Description { get; private set; }
 		public ReadOnlyCollection<Relationship> Relations { get; private set; }
