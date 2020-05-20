@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using VndbSharp.Models.Common;
+using VndbSharp.Attributes;
 
 namespace VndbSharp.Models.Producer
 {
