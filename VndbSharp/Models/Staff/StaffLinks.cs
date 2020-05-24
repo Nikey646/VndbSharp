@@ -11,5 +11,7 @@ namespace VndbSharp.Models.Staff
 		public String Homepage { get; private set; }
         public String Twitter { get; private set; }
         public String AniDb { get; private set; }
+        public Int32 Pixiv { get; private set; }
+        public String WikiData { get; private set; }
 	}
 }
