@@ -22,6 +22,19 @@ namespace VndbSharp.Models.Dumps
 		/// </summary>
 		public String Description { get; private set; }
 		/// <summary>
+		///		Whether this is a meta tag or not. This field only exists for backwards compatibility and is currently the inverse of "searchable".
+		/// </summary>
+		[JsonProperty("meta")]
+		public Boolean IsMeta { get; private set; }
+		/// <summary>
+		/// Whether it's possible to filter VNs by this tag.
+		/// </summary>
+		public Boolean Searchable { get; set; }
+		/// <summary>
+		/// Whether this tag can be applied to VN entries.
+		/// </summary>
+		public Boolean Applicable { get; set; }
+		/// <summary>
 		///		The number of Visual Novels with this tag
 		/// </summary>
 		[JsonProperty("vns")]
@@ -39,10 +52,6 @@ namespace VndbSharp.Models.Dumps
 		///		List of parent Tags (Empty if Root Tag)
 		/// </summary>
 		public ReadOnlyCollection<UInt32> Parents { get; private set; }
-		/// <summary>
-		///		Undescribed Field
-		/// </summary>
-		[JsonProperty("meta")]
-		public Boolean IsMeta { get; private set; }
+		
 	}
 }
