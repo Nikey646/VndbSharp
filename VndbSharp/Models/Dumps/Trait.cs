@@ -35,9 +35,17 @@ namespace VndbSharp.Models.Dumps
 		/// </summary>
 		public ReadOnlyCollection<UInt32> Parents { get; private set; }
 		/// <summary>
-		///		Undescribed Field
+		///		Whether this is a meta trait or not.
 		/// </summary>
 		[JsonProperty("meta")]
 		public Boolean IsMeta { get; private set; }
+		/// <summary>
+		/// Whether it's possible to filter characters by this trait.
+		/// </summary>
+		public Boolean IsSearchable { get; private set; }
+		/// <summary>
+		///  	Whether this trait can be applied to character entries.
+		/// </summary>
+		public Boolean IsApplicable { get; private set; }
 	}
 }
