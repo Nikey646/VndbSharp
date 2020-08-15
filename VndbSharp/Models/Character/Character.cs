@@ -21,10 +21,12 @@ namespace VndbSharp.Models.Character
 		public ReadOnlyCollection<String> Aliases { get; private set; }
 		public String Description { get; private set; }
 	    public String Image { get; private set; }
+	    [JsonProperty("image_flagging")]
+	    public ImageFlagging ImageFlagging { get; private set; }
 		/// <summary>
 		///		Size in Centimeters
 		/// </summary>
-	    public Int64? Bust { get; private set; }
+		public Int64? Bust { get; private set; }
 		/// <summary>
 		///		Size in Centimeters
 		/// </summary>
