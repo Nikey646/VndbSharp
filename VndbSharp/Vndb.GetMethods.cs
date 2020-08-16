@@ -64,7 +64,12 @@ namespace VndbSharp
 			=> await this.GetInternalAsync<VndbResponse<Wishlist>>(Constants.GetWishlistCommand, filters, flags, options)
 				.ConfigureAwait(false);
 
-			// todo: Move this to Vndb.Helper.cs
+		public async Task<VndbResponse<UserList>> GetUserListAsync(IFilter filters, VndbFlags flags = VndbFlags.Basic,
+			IRequestOptions options = null)
+			=> await this.GetInternalAsync<VndbResponse<UserList>>(Constants.GetUserListCommand, filters, flags, options)
+				.ConfigureAwait(false);
+
+		// todo: Move this to Vndb.Helper.cs
 		protected async Task<T> GetInternalAsync<T>(String method, IFilter filter, VndbFlags flags, IRequestOptions options = null)
 			where T : class
 		{

@@ -116,6 +116,12 @@ namespace VndbSharp.Models
 		Aliases = 1 << 14,
 
 		/// <summary>
+		///		<para>Provides the labels assigned to a user or VN entry</para>
+		///		<para>Valid on: UserList, UserListLabels</para>
+		/// </summary>
+		[FlagIdentity("labels")]
+		Labels = 1 << 15,
+		/// <summary>
 		///		Equivlant to <see cref="Basic"/> | <see cref="Details"/> | <see cref="Anime"/> | <see cref="Relations"/> | <see cref="Tags"/> | <see cref="Stats"/> | <see cref="Screenshots"/> | <see cref="Staff"/>
 		/// </summary>
 		FullVisualNovel = VndbFlags.Basic | VndbFlags.Details | VndbFlags.Anime | VndbFlags.Relations | VndbFlags.Tags | VndbFlags.Stats | VndbFlags.Screenshots | VndbFlags.Staff,
@@ -163,5 +169,10 @@ namespace VndbSharp.Models
 		/// </summary>
 		[FlagIdentity("basic")]
 		FullWishlist = VndbFlags.Basic,
+
+		/// <summary>
+		///		Equivlant to <see cref="Basic"/> | <see cref="Labels" />
+		/// </summary>
+		FullUserList = VndbFlags.Basic | VndbFlags.Labels
 	}
 }
