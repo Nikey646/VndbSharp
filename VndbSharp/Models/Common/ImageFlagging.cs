@@ -12,8 +12,8 @@ namespace VndbSharp.Models.Common
 		[JsonProperty("votecount")]
 		public int VoteCount { get; private set; }
 		[JsonProperty("sexual_avg")]
-		public double SexualAvg { get; private set; }
+		public double? SexualAvg { get; private set; }
 		[JsonProperty("violence_avg")]
-		public double ViolenceAvg { get; private set; }
+		public double? ViolenceAvg { get; private set; }
 	}
 }
