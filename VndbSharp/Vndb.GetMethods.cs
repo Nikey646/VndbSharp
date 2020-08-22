@@ -49,22 +49,35 @@ namespace VndbSharp
 			=> await this.GetInternalAsync<VndbResponse<User>>(Constants.GetUserCommand, filters, flags, options)
 				.ConfigureAwait(false);
 //
+		[Obsolete("Use GetUserListAsync instead")]
 		public async Task<VndbResponse<VoteList>> GetVoteListAsync(IFilter filters, VndbFlags flags = VndbFlags.Basic,
 			IRequestOptions options = null)
 			=> await this.GetInternalAsync<VndbResponse<VoteList>>(Constants.GetVotelistCommand, filters, flags, options)
 				.ConfigureAwait(false);
-//
+		//
+		[Obsolete("Use GetUserListAsync instead")]
 		public async Task<VndbResponse<VisualNovelList>> GetVisualNovelListAsync(IFilter filters, VndbFlags flags = VndbFlags.Basic,
 			IRequestOptions options = null)
 			=> await this.GetInternalAsync<VndbResponse<VisualNovelList>>(Constants.GetVisualNovelListCommand, filters, flags, options)
 				.ConfigureAwait(false);
-//
+		//
+		[Obsolete("Use GetUserListAsync instead")]
 		public async Task<VndbResponse<Wishlist>> GetWishlistAsync(IFilter filters, VndbFlags flags = VndbFlags.Basic,
 			IRequestOptions options = null)
 			=> await this.GetInternalAsync<VndbResponse<Wishlist>>(Constants.GetWishlistCommand, filters, flags, options)
 				.ConfigureAwait(false);
 
-			// todo: Move this to Vndb.Helper.cs
+		public async Task<VndbResponse<UserList>> GetUserListAsync(IFilter filters, VndbFlags flags = VndbFlags.Basic,
+			IRequestOptions options = null)
+			=> await this.GetInternalAsync<VndbResponse<UserList>>(Constants.GetUserListCommand, filters, flags, options)
+				.ConfigureAwait(false);
+
+		public async Task<VndbResponse<UserLabels>> GetUserListLabelsAsync(IFilter filters, VndbFlags flags = VndbFlags.Basic,
+			IRequestOptions options = null)
+			=> await this.GetInternalAsync<VndbResponse<UserLabels>>(Constants.GetUserListLabelsCommand, filters, flags, options)
+				.ConfigureAwait(false);
+
+		// todo: Move this to Vndb.Helper.cs
 		protected async Task<T> GetInternalAsync<T>(String method, IFilter filter, VndbFlags flags, IRequestOptions options = null)
 			where T : class
 		{

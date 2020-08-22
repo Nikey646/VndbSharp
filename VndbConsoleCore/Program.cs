@@ -43,6 +43,7 @@ namespace VndbConsole
 //			await this.GetVoteListAsync();
 //			await this.GetVisualNovelListAsync();
 //			await this.GetWishlistAsync();
+//			await this.GetUserListAsync();
 
 //			await this.GetFilterExampleAsync();
 //			await this.GetInvalidFlagsExampleAsync();
@@ -463,6 +464,17 @@ namespace VndbConsole
 				Console.WriteLine("And more!");
 
 			Console.WriteLine();
+		}
+
+		public async Task GetUserListAsync()
+		{
+			var userList = await this._client.GetUserListAsync(VndbFilters.UserId.Equals(0), VndbFlags.FullUserList);
+
+			if (userList == null)
+			{
+				this.HandleError(this._client.GetLastError());
+				return; // End method
+			}
 		}
 
 		// TODO: WIP

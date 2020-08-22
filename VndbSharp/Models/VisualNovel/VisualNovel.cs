@@ -27,8 +27,11 @@ namespace VndbSharp.Models.VisualNovel
 		[JsonProperty("links")]
 		public VisualNovelLinks VisualNovelLinks { get; private set; }
 		public String Image { get; private set; }
+		[Obsolete("NSFW Flag is no longer being updated. Use ImageRating instead")]
 		[JsonProperty("image_nsfw")]
 		public Boolean IsImageNsfw { get; private set; }
+		[JsonProperty("image_flagging")]
+		public ImageRating ImageRating { get; private set; }
 		public ReadOnlyCollection<AnimeMetadata> Anime { get; private set; }
 		public ReadOnlyCollection<VisualNovelRelation> Relations { get; private set; }
 		public ReadOnlyCollection<TagMetadata> Tags { get; private set; }

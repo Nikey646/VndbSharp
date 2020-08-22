@@ -89,6 +89,12 @@ namespace VndbSharp
 				case Constants.GetStaffCommand:
 				    fullFlags = VndbFlags.FullStaff;
 					break;
+				case Constants.GetUserListCommand:
+					fullFlags = VndbFlags.FullUserList;
+					break;
+				case Constants.GetUserListLabelsCommand:
+					fullFlags = VndbFlags.FullUserListLabels;
+					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(method));
 			}

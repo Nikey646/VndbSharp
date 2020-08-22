@@ -6,6 +6,10 @@ using Newtonsoft.Json;
 
 namespace VndbSharp.Models
 {
+	/// <summary>
+	/// Default Response from the API
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	[JsonObject]
 	public class VndbResponse<T> : IEnumerable<T>
 	{
@@ -25,10 +29,19 @@ namespace VndbSharp.Models
 					yield return iterator.Current;
 		}
 
+		/// <summary>
+		/// If there are more items available
+		/// </summary>
 		[JsonProperty("more")]
 		public Boolean HasMore { get; private set; }
+		/// <summary>
+		/// Amount of items received
+		/// </summary>
 		[JsonProperty("num")]
 		public Int32 Count { get; private set; }
+		/// <summary>
+		/// Collection of entries. This is what holds the main data
+		/// </summary>
 		public ReadOnlyCollection<T> Items { get; private set; }
 	}
 }
