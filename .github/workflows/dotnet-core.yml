@@ -4,13 +4,9 @@ on:
   push:
     branches: 
         - master 
-        - dev
-        - Api-Update
   pull_request:
     branches:
         - master 
-        - dev
-        - Api-Update
 
 jobs:
   build:
@@ -29,8 +25,6 @@ jobs:
       run: |
         mkdir ${{ github.workspace }}/build
         dotnet build VndbSharp/VndbSharp.csproj -c Release -o --output "${{ github.workspace }}/build"
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
     - name: Upload Artifact
       uses: actions/upload-artifact@v1
       with:

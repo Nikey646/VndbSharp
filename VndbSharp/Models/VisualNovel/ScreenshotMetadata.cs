@@ -11,11 +11,11 @@ namespace VndbSharp.Models.VisualNovel
 		public String Url { get; private set; }
 		[JsonProperty("rid")]
 		public String ReleaseId { get; private set; }
-		[Obsolete]
+		[Obsolete("NSFW Flag is no longer being updated. Use ImageRating instead")]
 		[JsonProperty("nsfw")]
 		public Boolean IsNsfw { get; private set; }
 		[JsonProperty("flagging")]
-		public ImageFlagging ImageFlagging { get; private set; }
+		public ImageRating ImageRating { get; private set; }
 		public Int32 Height { get; private set; }
 		public Int32 Width { get; private set; }
 	}

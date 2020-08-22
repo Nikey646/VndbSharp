@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace VndbSharp.Models.Common
 {
-	public class ImageFlagging
+	public class ImageRating
 	{
 		[JsonProperty("votecount")]
 		public int VoteCount { get; private set; }

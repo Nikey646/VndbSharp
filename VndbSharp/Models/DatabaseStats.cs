@@ -9,14 +9,14 @@ namespace VndbSharp.Models
 	public class DatabaseStats
 	{
 		/// <summary>
-		/// This no longer is used (Returns 0)
+		/// AMount of Users in the DB
 		/// </summary>
-		[Obsolete]
+		[Obsolete("This no longer is used (Returns 0)")]
 		public UInt32 Users { get; private set; }
 		/// <summary>
-		/// This no longer is used (Returns 0)
+		/// Amount of Threads in the DB
 		/// </summary>
-		[Obsolete]
+		[Obsolete("This no longer is used (Returns 0)")]
 		public UInt32 Threads { get; private set; }
 		/// <summary>
 		/// Amount of Tags in the DB
@@ -36,9 +36,9 @@ namespace VndbSharp.Models
 		[JsonProperty("chars")]
 		public UInt32 Characters { get; private set; }
 		/// <summary>
-		/// This no longer is used (Returns 0)
+		/// Amount of Posts in the DB
 		/// </summary>
-		[Obsolete]
+		[Obsolete("This no longer is used (Returns 0)")]
 		public UInt32 Posts{ get; private set; }
 		/// <summary>
 		/// Amount of VNs in the DB

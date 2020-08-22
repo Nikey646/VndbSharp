@@ -43,7 +43,7 @@ namespace VndbConsole
 //			await this.GetVoteListAsync();
 //			await this.GetVisualNovelListAsync();
 //			await this.GetWishlistAsync();
-			await this.GetUserListAsync();
+//			await this.GetUserListAsync();
 
 //			await this.GetFilterExampleAsync();
 //			await this.GetInvalidFlagsExampleAsync();

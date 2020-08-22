@@ -54,7 +54,7 @@ namespace VndbSharp.Models.Character
 	    /// Properties of the character's image. This determines how violent/sexual it is
 	    /// </summary>
 	    [JsonProperty("image_flagging")]
-	    public ImageFlagging ImageFlagging { get; private set; }
+	    public ImageRating ImageRating { get; private set; }
 		/// <summary>
 		///		Size in Centimeters
 		/// </summary>
