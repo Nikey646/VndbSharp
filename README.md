@@ -3,7 +3,7 @@ A C# [Vndb](https://vndb.org/) API Library. #OriginalNamingScheme
 
 VndbSharp is a C# library for the Visual Novel Database API
   - Supports TLS (Secure Connections)
-  - Support for most filters and flags at this time (Jan 2017, Api version 2.27)
+  - Support for most filters and flags at this time
   - Easily Extensible
 
 ## Usage
@@ -39,5 +39,5 @@ There is no guarantee that anything listed on this will be implemented.
   - [ ] Nuget package (Github actions now builds a version of VndbSharp)
 
 ## API Version
-Updated to Vndb 2020-07-09 API version
-"set ulist" has not been added, because it is experimental
+Updated to Vndb 2020-07-09 API version  
+The command "set ulist" has not been added, because it is experimental
