@@ -1,0 +1,38 @@
+name: .NET Core
+
+on:
+  push:
+    branches: 
+        - master 
+        - dev
+        - Api-Update04-09
+  pull_request:
+    branches:
+        - master 
+        - dev
+        - Api-Update04-09
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Install dependencies
+      run: dotnet restore    
+    - name: Build VndbSharp
+      run: |
+        mkdir ${{ github.workspace }}/build
+        dotnet build VndbSharp/VndbSharp.csproj -c Release -o --output "${{ github.workspace }}/build"
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: VndbSharp
+        path:  "${{ github.workspace }}/build/"

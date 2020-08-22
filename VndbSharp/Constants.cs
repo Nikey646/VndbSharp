@@ -33,6 +33,8 @@ namespace VndbSharp
 		public const String GetVotelistCommand = "get votelist";
 		public const String GetVisualNovelListCommand = "get vnlist";
 		public const String GetWishlistCommand = "get wishlist";
+		public const String GetUserListCommand = "get ulist";
+		public const String GetUserListLabelsCommand = "get ulist-labels";
 	    public const String GetStaffCommand = "get staff";
 		#endregion
 
@@ -40,6 +42,7 @@ namespace VndbSharp
 		public const String SetVotelistCommand = "set votelist";
 		public const String SetVisualNovelListCommand = "set vnlist";
 		public const String SetWishlistCommand = "set wishlist";
+		public const String SetUserListCommand = "set ulist";
 		#endregion
 
 		#region .  Result values  .

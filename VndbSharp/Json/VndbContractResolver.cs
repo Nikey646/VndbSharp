@@ -59,7 +59,7 @@ namespace VndbSharp.Json
 #endif
 
 			// Need to use JsonProperty.MemberConverter here, not JsonProperty.Converter. Not entirely sure why :s
-			if (property.HasAttribute<IsUnixTimestampAttribute>() && prop.PropertyType == typeof(DateTime))
+			if (property.HasAttribute<IsUnixTimestampAttribute>() && (prop.PropertyType == typeof(DateTime)) || (prop.PropertyType == typeof(DateTime?)))
 				prop.MemberConverter = VndbContractResolver.UnixConverter;
 
 			if (property.HasAttribute<IsCsvAttribute>())
