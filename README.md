@@ -34,6 +34,10 @@ To build the project you need to use Visual Studio 2017 RC3 or newer.
 There is no guarantee that anything listed on this will be implemented.
 
   - [ ] Work on the Read Me
-  - [ ] Provide a default RequestOptions class
+  - [X] Provide a default RequestOptions class
   - [ ] ~~Wiki everything!~~ Document everything (public)!
-  - [ ] Nuget package?
+  - [ ] Nuget package (Github actions now builds a version of VndbSharp)
+
+## API Version
+Updated to Vndb 2020-07-09 API version
+"set ulist" has not been added, because it is experimental

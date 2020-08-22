@@ -5,12 +5,12 @@ on:
     branches: 
         - master 
         - dev
-        - Api-Update04-09
+        - Api-Update
   pull_request:
     branches:
         - master 
         - dev
-        - Api-Update04-09
+        - Api-Update
 
 jobs:
   build:
