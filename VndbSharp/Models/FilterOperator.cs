@@ -2,6 +2,9 @@
 
 namespace VndbSharp.Models
 {
+	/// <summary>
+	/// Available filter operators
+	/// </summary>
 	public class FilterOperator : IEquatable<FilterOperator>
 	{
 		internal readonly String Operator;
@@ -49,10 +52,27 @@ namespace VndbSharp.Models
 			this.Name = name;
 		}
 
+		/// <summary>
+		/// Checks if the first filter equals the second filter
+		/// </summary>
+		/// <param name="filter1"></param>
+		/// <param name="filter2"></param>
+		/// <returns></returns>
 		public static Boolean operator ==(FilterOperator filter1, FilterOperator filter2) => filter1?.Operator == filter2?.Operator;
+		/// <summary>
+		/// Checks if the first filter is NOT equal to the second filter
+		/// </summary>
+		/// <param name="filter1"></param>
+		/// <param name="filter2"></param>
+		/// <returns></returns>
 		public static Boolean operator !=(FilterOperator filter1, FilterOperator filter2) => !(filter1 == filter2);
 		Boolean IEquatable<FilterOperator>.Equals(FilterOperator other) => this.Operator == other?.Operator;
 
+		/// <summary>
+		/// Checks if the 2 objects are equal
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns></returns>
 		public override Boolean Equals(Object obj)
 		{
 			if (Object.ReferenceEquals(null, obj))
@@ -62,7 +82,15 @@ namespace VndbSharp.Models
 			return obj.GetType() == this.GetType() && this == (FilterOperator) obj;
 		}
 
+		/// <summary>
+		/// Converts filter to string
+		/// </summary>
+		/// <returns></returns>
 		public override String ToString() => this.Operator;
+		/// <summary>
+		/// Gets hash code of Filter
+		/// </summary>
+		/// <returns></returns>
 		public override Int32 GetHashCode() => this.Operator.GetHashCode();
 	}
 }

@@ -4,8 +4,16 @@ using VndbSharp.Interfaces;
 
 namespace VndbSharp.Filters.Conditionals
 {
+	/// <summary>
+	/// And Filter
+	/// </summary>
 	public class FilterAnd : IFilter
 	{
+		/// <summary>
+		/// Default constructor for AND Filter
+		/// </summary>
+		/// <param name="leftFilter"></param>
+		/// <param name="rightFilter"></param>
 		public FilterAnd(IFilter leftFilter, IFilter rightFilter)
 		{
 			leftFilter.ThrowIfNull();
@@ -14,6 +22,11 @@ namespace VndbSharp.Filters.Conditionals
 			this.RightFilter = rightFilter;
 		}
 
+		/// <summary>
+		/// Converts Left and Right Filter to String
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		public override String ToString()
 		{
 			if (!this.IsFilterValid())
