@@ -17,7 +17,7 @@ namespace VndbSharp.Models.Common
 		/// </summary>
 		public String Name { get; private set; }
 		/// <summary>
-		/// Producer's Original Name
+		/// Producer's Original/Official Name
 		/// </summary>
 		[JsonProperty("original")]
 		public String OriginalName { get; private set; }

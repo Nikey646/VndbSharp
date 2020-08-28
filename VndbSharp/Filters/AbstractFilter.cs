@@ -11,16 +11,16 @@ using VndbSharp.Models;
 namespace VndbSharp.Filters
 {
 	/// <summary>
-	/// Abstract Filter
+	/// Generic class that implements majority of the IFilter interface
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	public abstract class AbstractFilter<T> : IFilter
 	{
 		/// <summary>
-		/// Default constructor abstract filter
+		/// The value of the filter
 		/// </summary>
 		/// <param name="value"></param>
-		/// <param name="filterOperator"></param>
+		/// <param name="filterOperator">Which operator the filter is for</param>
 		protected AbstractFilter(T value, FilterOperator filterOperator)
 		{
 			this.Value = value;
@@ -41,9 +41,9 @@ namespace VndbSharp.Filters
 		}
 
 		/// <summary>
-		/// Converts AbstractFilter to a String
+		/// Serializes the Filter to the format
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The serialized filter as a String</returns>
 		public override String ToString()
 		{
 			var res = $"{this.FilterName}{this.Operator}";
@@ -88,11 +88,11 @@ namespace VndbSharp.Filters
 		public abstract Boolean IsFilterValid();
 
 		/// <summary>
-		/// Filter Operator Array
+		/// The operators that are allowed for the Filter
 		/// </summary>
 		protected abstract FilterOperator[] ValidOperators { get; }
 		/// <summary>
-		/// Filter Name
+		/// The name of the Filter
 		/// </summary>
 		protected abstract String FilterName { get; }
 		/// <summary>
@@ -101,7 +101,7 @@ namespace VndbSharp.Filters
 		protected Boolean CanBeNull = false;
 
 		/// <summary>
-		/// Filter Operator
+		/// The selected FilterOperator
 		/// </summary>
 		protected readonly FilterOperator Operator;
 		/// <summary>
