@@ -33,17 +33,17 @@ namespace VndbSharp.Models.Release
 		/// </summary>
 		public ReleaseType Type { get; private set; }
 		/// <summary>
-		/// Is Release a patch
+		/// Is the Release a patch
 		/// </summary>
 		[JsonProperty("patch")]
 		public Boolean IsPatch { get; private set; }
 		/// <summary>
-		/// Is Release freeware
+		/// Is the Release freeware
 		/// </summary>
 		[JsonProperty("freeware")]
 		public Boolean IsFreeware { get; private set; }
 		/// <summary>
-		/// Is Release a doujin
+		/// Is the Release a doujin
 		/// </summary>
 		[JsonProperty("doujin")]
 		public Boolean IsDoujin { get; private set; }

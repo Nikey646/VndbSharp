@@ -8,7 +8,7 @@ namespace VndbSharp.Models.User
 	public class User
 	{
 		/// <summary>
-		/// UserId
+		/// User Id
 		/// </summary>
 		public UInt32 Id { get; private set; }
 		/// <summary>

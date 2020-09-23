@@ -5,10 +5,10 @@ using Newtonsoft.Json;
 
 namespace VndbSharp.Models.Staff
 {
-    /// <summary>
-    /// Vns that the Staff worked on
-    /// </summary>
-    public class StaffVns
+	/// <summary>
+	/// Visual Novels that the Staff worked on
+	/// </summary>
+	public class StaffVns
     {
         /// <summary>
         /// Staff Id

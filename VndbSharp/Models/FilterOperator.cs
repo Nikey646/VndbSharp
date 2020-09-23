@@ -55,15 +55,15 @@ namespace VndbSharp.Models
 		/// <summary>
 		/// Checks if the first filter equals the second filter
 		/// </summary>
-		/// <param name="filter1"></param>
-		/// <param name="filter2"></param>
+		/// <param name="filter1">The left IFilter</param>
+		/// <param name="filter2">The right IFilter</param>
 		/// <returns></returns>
 		public static Boolean operator ==(FilterOperator filter1, FilterOperator filter2) => filter1?.Operator == filter2?.Operator;
 		/// <summary>
 		/// Checks if the first filter is NOT equal to the second filter
 		/// </summary>
-		/// <param name="filter1"></param>
-		/// <param name="filter2"></param>
+		/// <param name="filter1">The left IFilter</param>
+		/// <param name="filter2">The right IFilter</param>
 		/// <returns></returns>
 		public static Boolean operator !=(FilterOperator filter1, FilterOperator filter2) => !(filter1 == filter2);
 		Boolean IEquatable<FilterOperator>.Equals(FilterOperator other) => this.Operator == other?.Operator;

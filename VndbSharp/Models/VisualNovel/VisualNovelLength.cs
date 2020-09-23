@@ -8,7 +8,7 @@ namespace VndbSharp.Models.VisualNovel
 	public enum VisualNovelLength
 	{
 		/// <summary>
-		/// Unkown Length
+		/// Unknown Length
 		/// </summary>
 		Unknown = 0,
 		/// <summary>

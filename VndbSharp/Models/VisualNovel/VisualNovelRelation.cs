@@ -9,7 +9,7 @@ namespace VndbSharp.Models.VisualNovel
 	public class VisualNovelRelation
 	{
 		/// <summary>
-		/// Vn ID
+		/// Visual Novel Id
 		/// </summary>
 		public Int32 Id { get; private set; }
 		/// <summary>

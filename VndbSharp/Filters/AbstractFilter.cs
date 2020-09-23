@@ -114,7 +114,7 @@ namespace VndbSharp.Filters
 		/// </summary>
 		protected readonly Int32? Count;
 		/// <summary>
-		/// Is Array
+		/// If the filter is an array
 		/// </summary>
 		protected readonly Boolean IsArray;
 

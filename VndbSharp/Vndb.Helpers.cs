@@ -67,7 +67,7 @@ namespace VndbSharp
 		/// <summary>
 		/// With Timeout
 		/// </summary>
-		/// <param name="both"></param>
+		/// <param name="both">The receiving and sending timeout value</param>
 		/// <returns></returns>
 		public Vndb WithTimeout(UInt32 both)
 			=> this.WithTimeout(TimeSpan.FromMilliseconds(both));
@@ -75,8 +75,8 @@ namespace VndbSharp
 		/// <summary>
 		/// With Timeout
 		/// </summary>
-		/// <param name="receive"></param>
-		/// <param name="send"></param>
+		/// <param name="receive">The receiving timeout</param>
+		/// <param name="send">The sending timeout</param>
 		/// <returns></returns>
 		public Vndb WithTimeout(UInt32 receive, UInt32 send)
 			=> this.WithTimeout(TimeSpan.FromMilliseconds(receive), TimeSpan.FromMilliseconds(send));
@@ -84,7 +84,7 @@ namespace VndbSharp
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="both"></param>
+		/// <param name="both">The receiving and sending timeout value</param>
 		/// <returns></returns>
 		public Vndb WithTimeout(TimeSpan both)
 			=> this.WithTimeout(both, both);
@@ -92,8 +92,8 @@ namespace VndbSharp
 		/// <summary>
 		/// With Timeout
 		/// </summary>
-		/// <param name="receive"></param>
-		/// <param name="send"></param>
+		/// <param name="receive">The receiving timeout</param>
+		/// <param name="send">The sending timeout</param>
 		/// <returns></returns>
 		public Vndb WithTimeout(TimeSpan receive, TimeSpan send)
 		{
@@ -105,7 +105,7 @@ namespace VndbSharp
 		/// <summary>
 		/// With BufferSize
 		/// </summary>
-		/// <param name="both"></param>
+		/// <param name="both">The buffer size for both receiving and sending</param>
 		/// <returns></returns>
 		public Vndb WithBufferSize(Int32 both)
 			=> this.WithBufferSize(both, both);
@@ -113,8 +113,8 @@ namespace VndbSharp
 		/// <summary>
 		/// With BufferSize
 		/// </summary>
-		/// <param name="receive"></param>
-		/// <param name="send"></param>
+		/// <param name="receive">The buffer size for receiving responses</param>
+		/// <param name="send">The buffer size for sending requests</param>
 		/// <returns></returns>
 		public Vndb WithBufferSize(Int32 receive, Int32 send)
 		{

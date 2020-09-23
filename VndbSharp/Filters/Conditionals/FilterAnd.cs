@@ -5,15 +5,15 @@ using VndbSharp.Interfaces;
 namespace VndbSharp.Filters.Conditionals
 {
 	/// <summary>
-	/// And Filter
+	/// Combines two filters with the And pattern
 	/// </summary>
 	public class FilterAnd : IFilter
 	{
 		/// <summary>
 		/// Default constructor for AND Filter
 		/// </summary>
-		/// <param name="leftFilter"></param>
-		/// <param name="rightFilter"></param>
+		/// <param name="leftFilter">The left IFilter</param>
+		/// <param name="rightFilter">The right IFilter</param>
 		public FilterAnd(IFilter leftFilter, IFilter rightFilter)
 		{
 			leftFilter.ThrowIfNull();
@@ -25,7 +25,7 @@ namespace VndbSharp.Filters.Conditionals
 		/// <summary>
 		/// Converts Left and Right Filter to String
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The IFilter represented as a String</returns>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		public override String ToString()
 		{

@@ -10,10 +10,10 @@ namespace VndbSharp.Filters.Conditionals
 	public class FilterOr : IFilter
 	{
 		/// <summary>
-		/// Default constructor for OR Filter
+		/// Combines two filters with the Or pattern
 		/// </summary>
-		/// <param name="leftFilter"></param>
-		/// <param name="rightFilter"></param>
+		/// <param name="leftFilter">The left IFilter</param>
+		/// <param name="rightFilter">The right IFilter</param>
 		public FilterOr(IFilter leftFilter, IFilter rightFilter)
 		{
 			leftFilter.ThrowIfNull();
@@ -25,7 +25,7 @@ namespace VndbSharp.Filters.Conditionals
 		/// <summary>
 		/// Converts Left and Right Filter to String
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The IFilter represented as a String</returns>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		public override String ToString()
 		{
