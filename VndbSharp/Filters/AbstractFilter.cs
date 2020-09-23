@@ -19,7 +19,7 @@ namespace VndbSharp.Filters
 		/// <summary>
 		/// The value of the filter
 		/// </summary>
-		/// <param name="value"></param>
+		/// <param name="value">The value of the filter</param>
 		/// <param name="filterOperator">Which operator the filter is for</param>
 		protected AbstractFilter(T value, FilterOperator filterOperator)
 		{
