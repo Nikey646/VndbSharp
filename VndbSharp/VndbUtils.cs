@@ -56,6 +56,14 @@ namespace VndbSharp
 			VndbUtils._httpClientHandlerCallback = callback;
 		}
 
+		/// <summary>
+		/// Validate Flags by Method
+		/// </summary>
+		/// <param name="method">The method to check the flags for</param>
+		/// <param name="flags">The flags being checked</param>
+		/// <param name="invalidFlags">Any invalid flags found within the flags provided</param>
+		/// <returns>True if there are no invalid flags, otherwise false</returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		public static Boolean ValidateFlagsByMethod(String method, VndbFlags flags, out VndbFlags invalidFlags)
 		{
 			VndbFlags fullFlags;

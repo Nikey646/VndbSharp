@@ -15,18 +15,18 @@ namespace VndbSharp.Models
 		/// <summary>
 		/// What Page to get
 		/// </summary>
-		public int? Page { get; set; }
+		public Int32? Page { get; set; }
 		/// <summary>
 		/// How many entries to get. Most commands are limited at 25, except for votelist/vnlist/wishlist/ulist, which returns at most 100 results.
 		/// </summary>
-		public int? Count { get; set; }
+		public Int32? Count { get; set; }
 		/// <summary>
 		/// The field to order the results by
 		/// </summary>
-		public string Sort { get; set; }
+		public String Sort { get; set; }
 		/// <summary>
 		/// Reverses the order of the entries
 		/// </summary>
-		public bool? Reverse { get; set; }
+		public Boolean? Reverse { get; set; }
 	}
 }

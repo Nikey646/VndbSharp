@@ -5,6 +5,9 @@ using VndbSharp.Models.Common;
 
 namespace VndbSharp.Models.VisualNovel
 {
+	/// <summary>
+	/// Tag Metadata
+	/// </summary>
 	public class TagMetadata
 	{
 		internal TagMetadata(JArray array)
@@ -14,8 +17,17 @@ namespace VndbSharp.Models.VisualNovel
 			this.SpoilerLevel = (SpoilerLevel) array[2].Value<Int32>();
 		}
 
+		/// <summary>
+		/// Tag Id
+		/// </summary>
 		public UInt32 Id { get; private set; }
+		/// <summary>
+		/// Tag Score
+		/// </summary>
 		public Single Score { get; private set; }
+		/// <summary>
+		/// Tag Spoiler Level
+		/// </summary>
 		[JsonProperty("spoiler")]
 		public SpoilerLevel SpoilerLevel { get; private set; }
 	}

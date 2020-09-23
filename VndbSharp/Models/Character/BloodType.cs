@@ -1,5 +1,8 @@
 ﻿namespace VndbSharp.Models.Character
 {
+	/// <summary>
+	/// Blood Type
+	/// </summary>
 	public enum BloodType
 	{
 		/// <summary>

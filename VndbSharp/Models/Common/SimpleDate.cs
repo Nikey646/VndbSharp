@@ -57,6 +57,10 @@ namespace VndbSharp.Models.Common
 			this.Day = day;
 		}
 
+		/// <summary>
+		/// Converts the SimpleDate to a String
+		/// </summary>
+		/// <returns></returns>
 		public override String ToString()
 		{
 			if (this.Month == null && this.Day == null && this.Year == null)
@@ -72,8 +76,17 @@ namespace VndbSharp.Models.Common
 			return $"{this.Year:0000}-{this.Month:00}-{this.Day:00}";
 		}
 
+		/// <summary>
+		/// Year in the Date
+		/// </summary>
 		public UInt32? Year { get; set; }
+		/// <summary>
+		/// Month in the Date
+		/// </summary>
 		public Byte? Month { get; set; }
+		/// <summary>
+		/// Day in the Date
+		/// </summary>
 		public Byte? Day { get; set; }
 	}
 }

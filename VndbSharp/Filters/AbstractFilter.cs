@@ -10,8 +10,17 @@ using VndbSharp.Models;
 
 namespace VndbSharp.Filters
 {
+	/// <summary>
+	/// Generic class that implements majority of the IFilter interface
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public abstract class AbstractFilter<T> : IFilter
 	{
+		/// <summary>
+		/// The value of the filter
+		/// </summary>
+		/// <param name="value">The value of the filter</param>
+		/// <param name="filterOperator">Which operator the filter is for</param>
 		protected AbstractFilter(T value, FilterOperator filterOperator)
 		{
 			this.Value = value;
@@ -31,6 +40,10 @@ namespace VndbSharp.Filters
 			this.Count = (this.Value as IList)?.Count ?? (this.Value == null ? 0 : 1);
 		}
 
+		/// <summary>
+		/// Serializes the Filter to the format
+		/// </summary>
+		/// <returns>The serialized filter as a String</returns>
 		public override String ToString()
 		{
 			var res = $"{this.FilterName}{this.Operator}";
@@ -74,17 +87,35 @@ namespace VndbSharp.Filters
 		/// <returns>True the current Operator can be used with the current Value(s)</returns>
 		public abstract Boolean IsFilterValid();
 
+		/// <summary>
+		/// The operators that are allowed for the Filter
+		/// </summary>
 		protected abstract FilterOperator[] ValidOperators { get; }
+		/// <summary>
+		/// The name of the Filter
+		/// </summary>
 		protected abstract String FilterName { get; }
+		/// <summary>
+		/// Can Be Null
+		/// </summary>
 		protected Boolean CanBeNull = false;
 
+		/// <summary>
+		/// The selected FilterOperator
+		/// </summary>
 		protected readonly FilterOperator Operator;
+		/// <summary>
+		/// Value
+		/// </summary>
 		protected readonly T Value;
 
 		/// <summary>
 		///		If an array is passed, the number of items.
 		/// </summary>
 		protected readonly Int32? Count;
+		/// <summary>
+		/// If the filter is an array
+		/// </summary>
 		protected readonly Boolean IsArray;
 
 		private Type Type;
