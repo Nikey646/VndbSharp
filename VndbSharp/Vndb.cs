@@ -67,6 +67,16 @@ namespace VndbSharp
 				return crap.ToString();
 			}
 		}
+		/// <summary>
+		/// Returns the latest version of the Vndb API that VndbSharp supports.
+		/// This is returned in the following format: "Api Version: {API_DATE}, Completion: {COMPLETION_STATUS}"
+		/// If the completion status is incomplete, there may be features from the Vndb API that have not been implemented yet.
+		/// </summary>
+		/// <returns></returns>
+		public static String GetApiVersion()
+		{
+			return Constants.ApiVer;
+		}
 
 		#region .  Public Properties  .
 

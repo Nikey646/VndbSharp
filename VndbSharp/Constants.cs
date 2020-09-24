@@ -5,6 +5,7 @@ namespace VndbSharp
 	internal static class Constants
 	{
 		public const Char EotChar = '\u0004';
+		public const String ApiVer = "Api Version: 2020-07-09, Completion: incomplete";
 
 		#region .  Connection Info  .
 		public const String ApiDomain = "api.vndb.org";
