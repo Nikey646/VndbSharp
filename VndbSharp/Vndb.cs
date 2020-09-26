@@ -87,7 +87,7 @@ namespace VndbSharp
 		/// </summary>
 		/// <param name="ver"></param>
 		/// <returns></returns>
-		public static Boolean IsVndbVersionValid(Version ver)
+		public static Boolean IsVndbVersionSupported(Version ver)
 		{
 			return ver > ApiVer || ver == ApiVer && ApiStatus == VersionStatus.Complete;
 		}
