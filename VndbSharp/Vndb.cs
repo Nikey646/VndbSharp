@@ -75,9 +75,9 @@ namespace VndbSharp
 		/// If the completion status is incomplete, there may be features from the Vndb API that have not been implemented yet.
 		/// </summary>
 		/// <returns></returns>
-		public static Models.Version GetApiVersion()
+		public static Models.ApiVersion GetApiVersion()
 		{
-			var version = new Models.Version(){ApiDate = ApiVersionDate, ApiStatus = ApiStatus};
+			var version = new ApiVersion(){ApiDate = ApiVersionDate.Date, ApiStatus = ApiStatus};
 			return version;
 		}
 

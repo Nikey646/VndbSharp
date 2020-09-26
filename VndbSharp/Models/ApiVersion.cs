@@ -9,7 +9,7 @@ namespace VndbSharp.Models
 	/// <summary>
 	/// Class for defining the version of the API
 	/// </summary>
-	public class Version
+	public class ApiVersion
 	{
 		/// <summary>
 		/// Date of the API Version

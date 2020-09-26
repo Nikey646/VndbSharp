@@ -35,7 +35,7 @@ namespace VndbSharp
 		/// <param name="clientName">The name of your client</param>
 		/// <param name="clientVersion">The version of your client. Valid values: a-z 0-9 _ . / -</param>
 		/// <returns>The <see cref="Vndb"/> instance</returns>
-		/// <exception cref="ArgumentOutOfRangeException">When <paramref name="clientVersion"/> is not a valid <see cref="Version"/></exception>
+		/// <exception cref="ArgumentOutOfRangeException">When <paramref name="clientVersion"/> is not a valid <see cref="ApiVersion"/></exception>
 		public Vndb WithClientDetails(String clientName, String clientVersion)
 		{
 			VndbUtils.ClientName = clientName;
