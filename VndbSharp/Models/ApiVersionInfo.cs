@@ -9,12 +9,12 @@ namespace VndbSharp.Models
 	/// <summary>
 	/// Class for defining the version of the API
 	/// </summary>
-	public class ApiVersion
+	public class ApiVersionInfo
 	{
 		/// <summary>
 		/// Date of the API Version
 		/// </summary>
-		public DateTime ApiDate { get; set; }
+		public Version ApiVersion { get; set; }
 		/// <summary>
 		/// Completion status of VndbSharp's implementation of the Vndb API
 		/// </summary>

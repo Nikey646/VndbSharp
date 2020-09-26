@@ -17,7 +17,8 @@ namespace VndbSharp
 	/// </summary>
 	public partial class Vndb
 	{
-		private static readonly DateTime ApiVersionDate = Convert.ToDateTime("2020-07-09");
+		//Version in Year.Month.Day
+		private static readonly Version ApiVer = new Version(2020,07,09);
 		private static VersionStatus ApiStatus = VersionStatus.Incomplete;
 		/// <summary>
 		///		Creates a new instance of the Vndb class, to issue commands to the API
@@ -75,10 +76,20 @@ namespace VndbSharp
 		/// If the completion status is incomplete, there may be features from the Vndb API that have not been implemented yet.
 		/// </summary>
 		/// <returns></returns>
-		public static Models.ApiVersion GetApiVersion()
+		public static Models.ApiVersionInfo GetApiVersion()
 		{
-			var version = new ApiVersion(){ApiDate = ApiVersionDate.Date, ApiStatus = ApiStatus};
+			var version = new ApiVersionInfo(){ApiVersion = ApiVer, ApiStatus = ApiStatus};
 			return version;
+		}
+
+		/// <summary>
+		/// Checks if VndbSharp supports a specified version
+		/// </summary>
+		/// <param name="ver"></param>
+		/// <returns></returns>
+		public static Boolean IsVndbVersionValid(Version ver)
+		{
+			return ver > ApiVer || ver == ApiVer && ApiStatus == VersionStatus.Complete;
 		}
 
 		#region .  Public Properties  .
