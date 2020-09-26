@@ -5,6 +5,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net46;netstandard1.3</TargetFrameworks>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Version>1.1.0</Version>
 		<Description>A .Net Library to communicate with the Vndb API</Description>
 		<RepositoryUrl>https://github.com/Nikey646/VndbSharp</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/Nikey646/VndbSharp</PackageProjectUrl>
