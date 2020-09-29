@@ -1,0 +1,46 @@
+name: Publish VndbSharp Packages
+
+on:
+  push:
+    tags:
+      - '*'
+  create:
+    tags:
+      - '*'
+
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+
+    - uses: actions/checkout@v1
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    
+    - name: dotnet build
+      run: |
+        mkdir ${{ github.workspace }}/build
+        dotnet build VndbSharp/VndbSharp.csproj -c Release -o --output ${{ github.workspace }}/build
+    
+    - name: Create Archive
+      run: |
+        Compress-Archive -Path ${{ github.workspace }}/build -DestinationPath ${{ github.workspace }}/build/release.zip
+      shell: powershell
+    
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: ${{ github.workspace }}\build\release.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+           
+    - name: Install NuGet client
+      uses: warrenbuckley/Setup-Nuget@v1
+
+    - name: Push with dotnet
+      run: dotnet nuget push ${{ github.workspace }}\build\*.nupkg --skip-duplicate --api-key ${{ secrets.NUGETAPIKEY }} --source https://api.nuget.org/v3/index.json
