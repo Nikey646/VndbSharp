@@ -2,9 +2,7 @@ name: Current Integration
 
 on:
   push:
-    branches: [ gha ]
   pull_request:
-    branches: [ gha ]
     
 jobs:
   build:
