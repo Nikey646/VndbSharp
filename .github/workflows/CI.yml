@@ -1,0 +1,35 @@
+name: Current Integration
+
+on:
+  push:
+    branches: [ gha ]
+  pull_request:
+    branches: [ gha ]
+    
+jobs:
+  build:
+    name: Build VndbSharp
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - uses: actions/cache@v2
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+            ${{ runner.os }}-nuget-  
+    - name: Install dependencies
+      run: dotnet restore    
+    - name: Build VndbSharp
+      run: |
+        mkdir ${{ github.workspace }}/build
+        dotnet build VndbSharp/VndbSharp.csproj -c Release -o --output "${{ github.workspace }}/build"
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: VndbSharp
+        path:  "${{ github.workspace }}/build/"
