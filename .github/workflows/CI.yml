@@ -1,27 +1,29 @@
-name: Current Integration
+name: Continuous Integration
 
 on:
   push:
+    branches: 
+        - master
+    tags:
+      - '*'
+  create:
+    tags:
+      - '*' 
   pull_request:
-    
+    branches:
+        - master 
+
 jobs:
   build:
-    name: Build VndbSharp
+
     runs-on: windows-latest
+
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.301
-    - uses: actions/cache@v2
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-        restore-keys: |
-            ${{ runner.os }}-nuget-  
-    - name: Install dependencies
-      run: dotnet restore    
+        dotnet-version: 3.1.301    
     - name: Build VndbSharp
       run: |
         mkdir ${{ github.workspace }}/build
@@ -31,3 +33,34 @@ jobs:
       with:
         name: VndbSharp
         path:  "${{ github.workspace }}/build/"
+  deploy:
+    needs: [build]
+    runs-on: windows-latest
+    steps:
+      - name: Should Create Release
+        if: startsWith(github.ref, 'refs/tags/') != true
+        run: |
+          echo "No new tags found. No Release/Nuget package will be created"
+              
+      - name: Grab Vndb Build
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/download-artifact@master
+        with:
+          name: VndbSharp
+          path: "${{ github.workspace }}/build/"      
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: ${{ github.workspace }}\build\VndbSharp.dll
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+     
+      - name: Install NuGet client
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: warrenbuckley/Setup-Nuget@v1
+
+      - name: Push with dotnet
+        if: startsWith(github.ref, 'refs/tags/')
+        run: dotnet nuget push ${{ github.workspace }}\build\*.nupkg --skip-duplicate --api-key ${{ secrets.NUGETAPIKEY }} --source https://api.nuget.org/v3/index.json
