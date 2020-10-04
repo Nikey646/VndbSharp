@@ -24,10 +24,7 @@ namespace VndbSharp.Json
 			this.CustomConverters = new JsonConverter[]
 			{
 				new SimpleDateConverter(),
-				new DurationToDateTimeOffsetConverter(), 
-#if UserAuth 
-				new SecureStringConverter(),
-#endif
+				new DurationToDateTimeOffsetConverter(),
 				new ArrayOfArraysConverter<CharacterVisualNovelMetadata>(),
 				new ArrayOfArraysConverter<TraitMetadata>(),
 				new ArrayOfArraysConverter<TagMetadata>(),
@@ -40,6 +37,11 @@ namespace VndbSharp.Json
 				new GenericEnumConverter<Voiced>(), 
 				new GenericEnumConverter<Animated>(), 
 			};
+			if (Vndb.AllowInsecure())
+			{
+				this.CustomConverters = this.CustomConverters.Concat(new JsonConverter[] {new SecureStringConverter()})
+					.ToArray();
+			}
 		}
 
 		protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)

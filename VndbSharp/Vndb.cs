@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
-#if UserAuth
+
 using System.Security;
-#endif
+
 using System.Threading;
 using System.Threading.Tasks;
 using VndbSharp.Extensions;
@@ -29,21 +29,20 @@ namespace VndbSharp
 			this.UseTls = useTls;
 		}
 
-#if UserAuth
-		[Obsolete("SecureString is not secure on non-Windows OSes when using .Net Core, or at all in Mono.\n" +
-				  "By Removing this attribute, you acknowledge the risks and will not make PRs or Issues " +
-				  "regarding this unless the situation in .Net Core / Mono changes.", true)]
+
+
 		public Vndb(String username, SecureString password)
 		{
-#warning SecureString is not secure on non-Windows OSes when using .Net Core, or at all in Mono. By removing the ObsoleteAttribute on this constructor, and/or this warning, you acknowledge the risks and will not make PRs or Issues regarding this unless the situation in .Net Core / Mono changes.
-			// To read more above the above messages, check out https://github.com/Nikey646/VndbSharp/wiki/Mono-and-.Net-Core#securestring--username--password-logins
-			// If that link is down, do some research on SecureString implementations in .Net Core, to see if they encrypt the data in memory on Unix.
-			this.UseTls = true;
-			this.Username = username;
-			this.Password = password;
-			this.Password.MakeReadOnly();
+			if (AllowInsecure())
+			{
+				this.UseTls = true;
+				this.Username = username;
+				this.Password = password;
+				this.Password.MakeReadOnly();
+			}
+			
 		}
-#endif
+
 
 		/// <summary>
 		///		Issues the provided command to the Vndb API
@@ -90,6 +89,30 @@ namespace VndbSharp
 		public static Boolean IsVndbVersionSupported(Version ver)
 		{
 			return ver > ApiVer || ver == ApiVer && ApiStatus == VersionStatus.Complete;
+		}
+
+		/// <summary>
+		/// Checks for the environment variable 'ALLOW_UNSECURE_SECURESTRING'
+		/// If it is found, allows using the insecure SecureString
+		/// </summary>
+		/// <returns></returns>
+		public static bool AllowInsecure()
+		{
+			var value = Environment.GetEnvironmentVariable("ALLOW_UNSECURE_SECURESTRING");
+			if (!String.IsNullOrEmpty(value))
+			{
+#warning VndbSharp Unsecure SecureStrings are allowed. Make sure that you are aware of the risks of setting this ENV. https://git.io/JU5mt
+				return true;
+			}
+			else
+			{
+				string notice =
+					"SecureString is not secure on non-Windows OSes when using .Net Core, or at all in Mono." +
+					"By setting the 'ALLOW_UNSECURE_SECURESTRING' environment variable, and/or this warning, you acknowledge the risks and will not make PRs or Issues regarding this unless the situation in .Net Core / Mono changes. \n" +
+					"To read more above the above messages, check out https://github.com/Nikey646/VndbSharp/wiki/Mono-and-.Net-Core#securestring--username--password-logins \n" +
+					"If that link is down, do some research on SecureString implementations in .Net Core, to see if they encrypt the data in memory on Unix.";
+				throw new NotSupportedException(notice);
+			}
 		}
 
 		#region .  Public Properties  .
@@ -164,12 +187,25 @@ namespace VndbSharp
 		/// </summary>
 		public Boolean CheckFlags { get; set; } = true;
 
-#if UserAuth
+
 		/// <summary>
 		///		Indicates if a User is Logged in or not
 		/// </summary>
-		public Boolean IsUserAuthenticated => this.Password != null && this.Stream != null;
-#endif
+		public Boolean IsUserAuthenticated
+		{
+			get
+			{
+				if (AllowInsecure())
+				{
+					return this.Password != null && this.Stream != null;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
 
 		#endregion
 
@@ -205,7 +241,6 @@ namespace VndbSharp
 		/// </summary>
 		protected String LastErrorJson;
 
-		#if UserAuth
 		/// <summary>
 		///		The users username, if provided
 		/// </summary>
@@ -215,7 +250,6 @@ namespace VndbSharp
 		///		The users password, as a secure string
 		/// </summary>
 		protected SecureString Password;
-		#endif
 
 		/// <summary>
 		///		The Connections Client

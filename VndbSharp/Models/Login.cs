@@ -1,7 +1,7 @@
 ﻿using System;
-#if UserAuth
+
 using System.Security;
-#endif
+
 using Newtonsoft.Json;
 
 namespace VndbSharp.Models
@@ -14,12 +14,13 @@ namespace VndbSharp.Models
 			this.ClientVersion = VndbUtils.ClientVersion;
 		}
 
-#if UserAuth
-		public Login(String username, SecureString password)
-			: this()
+		public Login(String username, SecureString password) : this()
 		{
-			this.Username = username;
-			this.Password = password;
+			if (Vndb.AllowInsecure())
+			{
+				this.Username = username;
+				this.Password = password;
+			}
 		}
 
 		[JsonProperty("password")]
@@ -27,7 +28,7 @@ namespace VndbSharp.Models
 
 		[JsonProperty("username")]
 		public String Username { get; set; }
-#endif
+
 
 		[JsonProperty("protocol")]
 		public UInt32 ProtocolVersion = 1;

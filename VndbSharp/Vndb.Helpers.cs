@@ -251,6 +251,7 @@ namespace VndbSharp
 		{
 			// Ensure we're logged in and authenticated
 #if UserAuth
+			
 			if (!await this.LoginAsync().ConfigureAwait(false) && this.IsUserAuthenticated)
 #else
 			if (!await this.LoginAsync().ConfigureAwait(false))
@@ -407,9 +408,10 @@ namespace VndbSharp
 		/// </summary>
 		public void Logout()
 		{
-#if UserAuth
-			this.Password?.Dispose();
-#endif
+			if (Vndb.AllowInsecure())
+			{
+				this.Password?.Dispose();
+			}
 			this.Dispose();
 		}
 
@@ -444,13 +446,18 @@ namespace VndbSharp
 			this.RenewCts();
 
 
-#if UserAuth
+
 			// Create a login class that can have an optional Username / Password
-			var login = new Login(this.Username, this.Password);
-#else
-			// Create a login that doesn't allow usernames / passwords
-			var login = new Login();
-#endif
+			Login login;
+			if (Vndb.AllowInsecure())
+			{
+				login = new Login(this.Username, this.Password);
+			}
+			else
+			{
+				login = new Login();
+			}
+
 			await this.SendDataAsync(this.FormatRequest(Constants.LoginCommand, login, false), this.CancellationTokenSource.Token)
 				.TimeoutAfter(this.SendTimeout)
 				.ConfigureAwait(false);
