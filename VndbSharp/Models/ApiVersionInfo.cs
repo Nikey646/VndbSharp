@@ -26,7 +26,13 @@ namespace VndbSharp.Models
 	/// </summary>
 	public enum VersionStatus
 	{
+		/// <summary>
+		/// API implementation is currently incomplete, or missing some parts
+		/// </summary>
 		Incomplete,
+		/// <summary>
+		/// API implementation has been completed
+		/// </summary>
 		Complete
 	}
 }
