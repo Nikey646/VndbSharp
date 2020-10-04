@@ -16,7 +16,7 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -25,14 +25,12 @@ jobs:
       with:
         dotnet-version: 3.1.301    
     - name: Build VndbSharp
-      run: |
-        mkdir ${{ github.workspace }}/build
-        dotnet build VndbSharp/VndbSharp.csproj -c Release -o --output "${{ github.workspace }}/build"
+      run: dotnet build VndbSharp/VndbSharp.csproj --configuration Release --no-restore
     - name: Upload Artifact
       uses: actions/upload-artifact@v1
       with:
         name: VndbSharp
-        path:  "${{ github.workspace }}/build/"
+        path:  "${{ github.workspace }}/VndbSharp/bin/Release"
   deploy:
     needs: [build]
     runs-on: windows-latest
