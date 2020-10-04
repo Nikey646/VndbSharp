@@ -16,7 +16,7 @@ namespace VndbSharp.Models
 
 		public Login(String username, SecureString password) : this()
 		{
-			if (Vndb.AllowInsecure())
+			if (Vndb.AllowInsecure(true))
 			{
 				this.Username = username;
 				this.Password = password;

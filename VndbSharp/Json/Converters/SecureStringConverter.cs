@@ -10,7 +10,7 @@ namespace VndbSharp.Json.Converters
 	{
 		public override void WriteJson(JsonWriter writer, Object value, JsonSerializer serializer)
 		{
-			if (Vndb.AllowInsecure())
+			if (Vndb.AllowInsecure(true))
 			{
 				var unmanagedString = IntPtr.Zero;
 				try

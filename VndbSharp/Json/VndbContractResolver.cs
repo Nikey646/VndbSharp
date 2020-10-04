@@ -37,7 +37,7 @@ namespace VndbSharp.Json
 				new GenericEnumConverter<Voiced>(), 
 				new GenericEnumConverter<Animated>(), 
 			};
-			if (Vndb.AllowInsecure())
+			if (Vndb.AllowInsecure(false))
 			{
 				this.CustomConverters = this.CustomConverters.Concat(new JsonConverter[] {new SecureStringConverter()})
 					.ToArray();

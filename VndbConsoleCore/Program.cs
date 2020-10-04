@@ -51,7 +51,9 @@ namespace VndbConsole
 
 			this._client.Logout(); // Same as this._client.Dispose();
 
-#if UserAuth
+//Uncomment to Allow Insecure Login
+//Make sure that you are aware of the risks of setting this ENV. https://git.io/JU5mt
+/*
 			var userPass = this.GetUsernameAndPassword();
 			// Are all usernames forced lower? I could have sworn i registered with captials >:|
 			this._client = new Vndb(userPass.Item1.ToLower(), userPass.Item2)
@@ -65,7 +67,8 @@ namespace VndbConsole
 //			await this.SetWishlistAsync();
 
 			this._client.Logout(); // Not the same as this._client.Dispose();, it also immediately unsets the password.
-#endif
+*/
+
 
 			Boolean doRaw;
 			while (!Boolean.TryParse(this.GetUserInput("Try Raw Input (True / False): "), out doRaw)) ;
@@ -666,7 +669,10 @@ namespace VndbConsole
 			return input;
 		}
 
-#if UserAuth
+
+//Uncomment to Allow Insecure Login
+//Make sure that you are aware of the risks of setting this ENV. https://git.io/JU5mt
+/*
 		private Tuple<String, SecureString> GetUsernameAndPassword()
 		{
 			var username = this.GetUserInput("Vndb Username: ");
@@ -700,7 +706,8 @@ namespace VndbConsole
 			Console.WriteLine();
 			return new Tuple<String, SecureString>(username, password);
 		}
-#endif
+*/
+
 
 		private void HandleError(IVndbError error)
 		{

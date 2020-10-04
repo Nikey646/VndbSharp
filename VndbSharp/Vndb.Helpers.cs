@@ -251,7 +251,7 @@ namespace VndbSharp
 		{
 			// Ensure we're logged in and authenticated
 
-			if (Vndb.AllowInsecure())
+			if (Vndb.AllowInsecure(false))
 			{
 				if (!await this.LoginAsync().ConfigureAwait(false) && this.IsUserAuthenticated)
 					return false;
@@ -413,7 +413,7 @@ namespace VndbSharp
 		/// </summary>
 		public void Logout()
 		{
-			if (Vndb.AllowInsecure())
+			if (Vndb.AllowInsecure(false))
 			{
 				this.Password?.Dispose();
 			}
@@ -454,7 +454,7 @@ namespace VndbSharp
 
 			// Create a login class that can have an optional Username / Password
 			Login login;
-			if (Vndb.AllowInsecure())
+			if (Vndb.AllowInsecure(false))
 			{
 				login = new Login(this.Username, this.Password);
 			}

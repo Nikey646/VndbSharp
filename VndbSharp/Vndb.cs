@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 
@@ -33,7 +34,7 @@ namespace VndbSharp
 
 		public Vndb(String username, SecureString password)
 		{
-			if (AllowInsecure())
+			if (AllowInsecure(true))
 			{
 				this.UseTls = true;
 				this.Username = username;
@@ -95,23 +96,33 @@ namespace VndbSharp
 		/// Checks for the environment variable 'ALLOW_UNSECURE_SECURESTRING'
 		/// If it is found, allows using the insecure SecureString
 		/// </summary>
+		/// <param name="throwOnFail">Should the program throw an error if Insecure is disallowed</param>
 		/// <returns></returns>
-		public static bool AllowInsecure()
+		public static Boolean AllowInsecure(Boolean throwOnFail)
 		{
 			var value = Environment.GetEnvironmentVariable("ALLOW_UNSECURE_SECURESTRING");
 			if (!String.IsNullOrEmpty(value))
 			{
-#warning VndbSharp Unsecure SecureStrings are allowed. Make sure that you are aware of the risks of setting this ENV. https://git.io/JU5mt
+				Trace.TraceWarning("VndbSharp Unsecure SecureStrings are allowed. Make sure that you are aware of the risks of setting this ENV. https://git.io/JU5mt");
 				return true;
 			}
 			else
 			{
-				string notice =
+				var notice =
 					"SecureString is not secure on non-Windows OSes when using .Net Core, or at all in Mono." +
 					"By setting the 'ALLOW_UNSECURE_SECURESTRING' environment variable, and/or this warning, you acknowledge the risks and will not make PRs or Issues regarding this unless the situation in .Net Core / Mono changes. \n" +
 					"To read more above the above messages, check out https://github.com/Nikey646/VndbSharp/wiki/Mono-and-.Net-Core#securestring--username--password-logins \n" +
 					"If that link is down, do some research on SecureString implementations in .Net Core, to see if they encrypt the data in memory on Unix.";
-				throw new NotSupportedException(notice);
+
+				if (throwOnFail == true)
+				{
+					throw new NotSupportedException(notice);
+				}
+				else
+				{
+					return false;
+				}
+				
 			}
 		}
 
@@ -195,7 +206,7 @@ namespace VndbSharp
 		{
 			get
 			{
-				if (AllowInsecure())
+				if (AllowInsecure(false))
 				{
 					return this.Password != null && this.Stream != null;
 				}
