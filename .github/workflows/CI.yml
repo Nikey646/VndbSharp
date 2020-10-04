@@ -24,6 +24,14 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301    
+    - uses: actions/cache@v2
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+            ${{ runner.os }}-nuget-  
+    - name: Install dependencies
+      run: dotnet restore    
     - name: Build VndbSharp
       run: dotnet build VndbSharp/VndbSharp.csproj --configuration Release --no-restore
     - name: Upload Artifact
