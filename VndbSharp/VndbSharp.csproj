@@ -3,7 +3,7 @@
 		<DocumentationFile>bin\Debug\netstandard1.3\VndbSharp.xml</DocumentationFile>
 	</PropertyGroup>
 	<PropertyGroup>
-		<TargetFrameworks>net46;netstandard1.3</TargetFrameworks>
+		<TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Version>1.1.0</Version>
 		<Description>A .Net Library to communicate with the Vndb API</Description>
@@ -28,8 +28,6 @@
 		<PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.3' ">
-		<Reference Include="System" />
-		<Reference Include="System.Net.Http" />
 		<Reference Include="Microsoft.CSharp" />
 	</ItemGroup>
 </Project>
