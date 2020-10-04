@@ -53,13 +53,11 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: VndbSharp
-          path: "${{ github.workspace }}/build/"      
+          path: "${{ github.workspace }}/VndbSharp/bin/Release"      
       
       - name: Create Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: ${{ github.workspace }}\build\VndbSharp.dll
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
      
@@ -69,4 +67,4 @@ jobs:
 
       - name: Push with dotnet
         if: startsWith(github.ref, 'refs/tags/')
-        run: dotnet nuget push ${{ github.workspace }}\build\*.nupkg --skip-duplicate --api-key ${{ secrets.NUGETAPIKEY }} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ${{ github.workspace }}/VndbSharp/bin/Release/*.nupkg --skip-duplicate --api-key ${{ secrets.NUGETAPIKEY }} --source https://api.nuget.org/v3/index.json
