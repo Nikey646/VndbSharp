@@ -250,13 +250,18 @@ namespace VndbSharp
 		protected async Task<Boolean> SendSetRequestInternalAsync(String method, UInt32 id, Object data, Boolean includeNulls = false)
 		{
 			// Ensure we're logged in and authenticated
-#if UserAuth
-			
-			if (!await this.LoginAsync().ConfigureAwait(false) && this.IsUserAuthenticated)
-#else
-			if (!await this.LoginAsync().ConfigureAwait(false))
-#endif
-				return false;
+
+			if (Vndb.AllowInsecure())
+			{
+				if (!await this.LoginAsync().ConfigureAwait(false) && this.IsUserAuthenticated)
+					return false;
+			}
+			else
+			{
+				if (!await this.LoginAsync().ConfigureAwait(false))
+					return false;
+			}
+
 
 			// For logging
 			var requestData = this.FormatRequest($"{method} {id}", data, includeNulls);
