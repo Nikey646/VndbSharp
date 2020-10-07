@@ -37,7 +37,7 @@ jobs:
       if: steps.nuget-packages.outputs.cache-hit != 'true'
       run: dotnet restore    
     - name: Build VndbSharp
-      run: dotnet pack VndbSharp/VndbSharp.csproj --configuration Release --no-restore
+      run: dotnet build VndbSharp/VndbSharp.csproj --configuration Release --no-restore
     - name: Upload Artifact
       uses: actions/upload-artifact@v1
       with:
