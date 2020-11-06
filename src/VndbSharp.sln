@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VndbSharp", "VndbSharp\VndbSharp.csproj", "{712D823E-1236-4A72-BF83-50411B4E9C96}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Meta Files", "Meta Files", "{70D628F0-BE60-4BAC-913B-FF9E4344FAA3}"
+ProjectSection(SolutionItems) = preProject
+	..\.gitignore = ..\.gitignore
+	Directory.Build.props = Directory.Build.props
+	..\LICENSE = ..\LICENSE
+EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{712D823E-1236-4A72-BF83-50411B4E9C96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{712D823E-1236-4A72-BF83-50411B4E9C96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{712D823E-1236-4A72-BF83-50411B4E9C96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{712D823E-1236-4A72-BF83-50411B4E9C96}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

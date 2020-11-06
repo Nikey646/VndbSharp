@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- Package Info / Nuget Properties -->
+    <PropertyGroup>
+
+        <Version>2.0.0</Version>
+        <BaseDescription>A .Net 5 library to communicate with the VNDB TCP Socket API</BaseDescription>
+
+        <Title>$(AssemblyName)</Title>
+
+        <Authors>Nikey646,micah686</Authors>
+
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+
+        <IncludeSymbols>true</IncludeSymbols>
+        <IncludeSource>true</IncludeSource>
+
+        <PackageProjectUrl>https://github.com/Nikey646/VndbSharp</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Nikey646/VndbSharp</RepositoryUrl>
+        <RepositoryBranch>master</RepositoryBranch>
+
+        <PackageTags>api vndb</PackageTags>
+
+    </PropertyGroup>
+
+</Project>
