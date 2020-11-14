@@ -29,6 +29,10 @@ namespace VndbSharp.Models.Character
 		/// </summary>
 		public Gender? Gender { get; private set; }
 		/// <summary>
+		/// Actual Sex, if the gender is a spoiler
+		/// </summary>
+		public Gender? SpoilGender { get; private set; }
+		/// <summary>
 		/// Character's Gender
 		/// </summary>
 		[JsonProperty("bloodt")]
@@ -46,6 +50,10 @@ namespace VndbSharp.Models.Character
 		/// Description of the character
 		/// </summary>
 		public String Description { get; private set; }
+		/// <summary>
+		/// Character's age in years
+		/// </summary>
+		public Int64? Age { get; private set; }
 	    /// <summary>
 	    /// Url Image of the character
 	    /// </summary>
@@ -75,6 +83,11 @@ namespace VndbSharp.Models.Character
 		///		Weight in Kilograms
 		/// </summary>
 	    public Int64? Weight { get; private set; }
+		/// <summary>
+		/// CupSize of the character
+		/// </summary>
+		[JsonProperty("cup_size")]
+		public String CupSize { get; private set; }
 	    /// <summary>
 	    /// List of traits the character has
 	    /// </summary>

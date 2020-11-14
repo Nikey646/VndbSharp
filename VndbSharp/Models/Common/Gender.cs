@@ -21,6 +21,11 @@ namespace VndbSharp.Models.Common
 		/// Mixed/Both Gender
 		/// </summary>
 		[RealValue("b")]
-		Both
+		Both,
+		/// <summary>
+		/// Unknown gender for use with Spoil_gender
+		/// </summary>
+		[RealValue("unknown")]
+		Unknown
 	}
 }
