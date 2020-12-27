@@ -1,0 +1,75 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: 
+        - master
+        - deploy
+    tags:
+      - '*'
+  create:
+    tags:
+      - '*' 
+  pull_request:
+    branches:
+        - master 
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301    
+    - uses: actions/cache@v2
+      id: nuget-packages
+      with:
+        path: 
+          ~/.nuget/packages
+          ${{ github.workspace }}/VndbSharp/obj/project.assets.json
+        key: ${{ runner.os }}-nugetpkg-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+            ${{ runner.os }}-nuget-  
+    - name: Install dependencies
+      if: steps.nuget-packages.outputs.cache-hit != 'true'
+      run: dotnet restore    
+    - name: Build VndbSharp
+      run: dotnet build VndbSharp/VndbSharp.csproj --configuration Release --no-restore
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: VndbSharp
+        path:  "${{ github.workspace }}/VndbSharp/bin/Release"
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Should Create Release
+        if: startsWith(github.ref, 'refs/tags/') != true
+        run: |
+          echo "No new tags found. No Release/Nuget package will be created"
+              
+      - name: Grab Vndb Build
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/download-artifact@master
+        with:
+          name: VndbSharp
+          path: "${{ github.workspace }}/VndbSharp/bin/Release"      
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+     
+      - name: Install NuGet client
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: warrenbuckley/Setup-Nuget@v1
+
+      - name: Push with dotnet
+        if: startsWith(github.ref, 'refs/tags/')
+        run: dotnet nuget push ${{ github.workspace }}/VndbSharp/bin/Release/*.nupkg --skip-duplicate --api-key ${{ secrets.NUGETAPIKEY }} --source https://api.nuget.org/v3/index.json
