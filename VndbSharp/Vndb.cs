@@ -18,7 +18,7 @@ namespace VndbSharp
 	public partial class Vndb
 	{
 		//Version in Year.Month.Day
-		private static readonly Version ApiVer = new Version(2020,07,09);
+		private static readonly Version ApiVer = new Version(2020,11,13);
 		private static VersionStatus ApiStatus = VersionStatus.Incomplete;
 		/// <summary>
 		///		Creates a new instance of the Vndb class, to issue commands to the API

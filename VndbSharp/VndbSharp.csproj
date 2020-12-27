@@ -4,7 +4,7 @@
 	</PropertyGroup>
 	<PropertyGroup>
 		<TargetFrameworks>net46;netstandard1.3</TargetFrameworks>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
 		<Version>1.1.1</Version>
 		<Description>A .Net Library to communicate with the Vndb API</Description>

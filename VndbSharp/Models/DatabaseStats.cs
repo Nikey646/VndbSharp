@@ -11,12 +11,12 @@ namespace VndbSharp.Models
 		/// <summary>
 		/// AMount of Users in the DB
 		/// </summary>
-		[Obsolete("This no longer is used (Returns 0)")]
+		[Obsolete("This no longer is used (Returns 0) This will be removed in a later version of the API")]
 		public UInt32 Users { get; private set; }
 		/// <summary>
 		/// Amount of Threads in the DB
 		/// </summary>
-		[Obsolete("This no longer is used (Returns 0)")]
+		[Obsolete("This no longer is used (Returns 0) This will be removed in a later version of the API")]
 		public UInt32 Threads { get; private set; }
 		/// <summary>
 		/// Amount of Tags in the DB
@@ -38,7 +38,7 @@ namespace VndbSharp.Models
 		/// <summary>
 		/// Amount of Posts in the DB
 		/// </summary>
-		[Obsolete("This no longer is used (Returns 0)")]
+		[Obsolete("This no longer is used (Returns 0) This will be removed in a later version of the API")]
 		public UInt32 Posts{ get; private set; }
 		/// <summary>
 		/// Amount of VNs in the DB
