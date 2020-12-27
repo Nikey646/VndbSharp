@@ -3,7 +3,7 @@
 		<DocumentationFile>bin\Debug\netstandard1.3\VndbSharp.xml</DocumentationFile>
 	</PropertyGroup>
 	<PropertyGroup>
-		<TargetFrameworks>net46;netstandard1.3</TargetFrameworks>
+		<TargetFrameworks>netstandard1.3;netstandard2.1</TargetFrameworks>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Version>1.1.1</Version>
 		<Description>A .Net Library to communicate with the Vndb API</Description>
