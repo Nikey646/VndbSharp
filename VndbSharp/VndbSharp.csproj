@@ -18,7 +18,7 @@
 		<EmbeddedResource Include="**\*.resx" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Include="System.Security.SecureString" Version="4.3.0" Condition="$(DefineConstants.Contains('UserAuth'))" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
